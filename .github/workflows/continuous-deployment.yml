@@ -29,7 +29,7 @@ jobs:
         run: npm ci
 
       - name: Build Angular App
-        run: npm run-script build-prod
+        run: npm run build-prod
 
       - name: Deploy
         if: success()
