@@ -1,0 +1,117 @@
+/* login.component.css */
+
+:host {
+  font-family: 'Poppins', sans-serif;
+}
+
+.logo {
+  width: 120px; height: 120px; object-fit: cover;
+}
+
+.section-welcome {
+  background: url("/assets/img/left-login.jpg") no-repeat center center/cover;
+  min-height: 100vh;
+}
+
+.section-welcome h1 {
+  font-weight: 900;
+  font-size: 50px;
+}
+.section-welcome p {
+  font-weight: 600;
+  font-size: 20px;
+}
+.box-login {
+  max-width: 600px;
+  background: #fcfcfc;
+  box-shadow: 0px 1px 2px 0px #00000040;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.text-login {
+  font-family: Poppins, sans-serif;
+  color: #066B4B;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 100%;
+  vertical-align: middle;
+}
+
+.a-forgot-password {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  vertical-align: middle;
+  color: #066B4B;
+  text-decoration: none !important;
+}
+
+.text-question-account {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 100%;
+  vertical-align: middle;
+  color: #066B4B;
+}
+
+input {
+  background: #FCFCFC;
+  border-color: #D8D8D8;
+  height: 48px;
+  border-radius: 15px;
+  border-width: 1px !important;
+}
+
+input::placeholder {
+  color: #A0A0A0;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 200%;
+  letter-spacing: 0;
+  vertical-align: middle;
+}
+
+.form-control:focus {
+  border-color: #D8D8D8;
+  box-shadow: 0 0 0 0.2rem rgba(6, 107, 75, 0.10);
+}
+
+@media (max-width: 768px) {
+  .section-welcome {
+    min-height: 5vh !important;
+  }
+
+  .logo {
+    width: 75px !important;
+    height: 75px !important;
+  }
+
+}
+
+/********************************/
+
+.phone-input {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #D8D8D8;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.phone-input .prefix {
+  background-color: #f2f2f2;
+  border-radius: 10px;
+}
+
+.phone-input input {
+  border: none;
+  outline: none;
+  padding: 0.5em;
+  font-size: 1rem;
+  min-width: 150px;
+}
+
