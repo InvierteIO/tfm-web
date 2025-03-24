@@ -1,1 +1,77 @@
-<p>login works!</p>
+<div class="container-fluid p-0" >
+  <div class="row g-0 h-100">
+    <div
+      class="col-12 col-md-6 d-flex align-items-center justify-content-center p-0 section-welcome">
+      <div
+        class="text-white text-center bg-black bg-opacity-50 h-100 w-100 d-flex flex-column align-items-center justify-content-center">
+        <img
+          src="assets/img/invierteio.jpg"
+          alt="Logo"
+          class="rounded-circle my-3 logo"/>
+        <h1 class="mb-3 d-none d-md-block">Bienvenido</h1>
+        <p class="lead d-none d-md-block">Ingresa usuario y contraseña</p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 d-flex align-items-center justify-content-center bg-white min-vh-100">
+      <div
+        class="w-75 my-3 mx-1 box-login">
+        <h2 class="mb-5 text-center text-login">Iniciar sesión</h2>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+          <div class="mb-3">
+            <label for="email" class="form-label input-tp-sub-h6 mb-3">Correo electrónico</label>
+            <input
+              id="email"
+              type="email"
+              class="form-control input-tp-h4"
+              formControlName="email"
+              placeholder="Ingrese su correo"
+            />
+
+            <small class="text-danger" *ngIf="emailNotValid">
+              *El correo es requerido y debe tener un formato válido.
+            </small>
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label input-tp-sub-h6 mb-3">Contraseña</label>
+            <input
+              id="password"
+              type="password"
+              class="form-control input-tp-h4"
+              formControlName="password"
+              placeholder="Ingrese su contraseña"
+            />
+            <small class="text-danger" *ngIf="passwordNotValid">
+              *El password es requerido.
+            </small>
+          </div>
+
+          <div class="mb-5 text-end">
+            <a href="#" class="a-forgot-password">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <app-button-loading
+            class="mb-5"
+            type="submit"
+            [btnclasses]="'btn button-tp w-100 btn-s1 py-2'"
+            [loading]="loading"
+            msgLoading="Cargando..."
+            msgButton="Iniciar sesión">
+          </app-button-loading>
+
+
+          <div class="text-center mb-3">
+            <span class="text-question-account">¿Aún no tiene una cuenta?</span>
+          </div>
+          <div class="mb-5">
+            <button type="button" class="btn w-100 btn-s2 button-tp py-2">
+              Regístrate
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
