@@ -25,6 +25,9 @@ jobs:
       - name: Build Angular App
         run: npm run-script build-prod  # package.json -> "scripts"
 
+      - name: Run Tests & Generate Coverage
+        run: npm run test-ci
+
       - name: Initialize CodeQL
         if: success()
         uses: github/codeql-action/init@v3

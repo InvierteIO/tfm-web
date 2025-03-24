@@ -1,0 +1,130 @@
+<div class="container-fluid p-0" >
+  <div class="row g-0 h-100">
+    <div
+      class="col-12 col-md-6 d-flex align-items-center justify-content-center p-0 section-welcome">
+      <div
+        class="text-white text-center bg-black bg-opacity-50 h-100 w-100 d-flex flex-column align-items-center justify-content-center">
+        <img
+          src="assets/img/invierteio.jpg"
+          alt="Logo"
+          class="rounded-circle my-3 logo"/>
+        <h1 class="mb-3 d-none d-md-block">Bienvenido</h1>
+        <p class="lead d-none d-md-block"></p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 d-flex align-items-center justify-content-center bg-white min-vh-100">
+      <div
+        class="w-75 my-3 mx-1 box-login">
+        <h2 class="mb-5 text-center text-login">Registrarse</h2>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+          <div class="mb-3">
+            <label for="fullname" class="form-label input-tp-sub-h6 mb-2">Nombres completo</label>
+            <input
+              id="fullname"
+              type="text"
+              class="form-control input-tp-h4"
+              formControlName="fullname"
+              [maxLength]="100"
+              placeholder="Ingrese su nombres completo"
+            />
+
+            <small class="text-danger" *ngIf="fullnameNotValid">
+              *Nombre completo es requerido
+            </small>
+            <small class="text-danger" *ngIf="fullnameNotValidMinMax">
+              *Nombre completo no es válido
+            </small>
+
+          </div>
+          <div class="mb-3">
+            <label for="fullsurname" class="form-label input-tp-sub-h6 mb-2">Apellidos completos</label>
+            <input
+              id="fullsurname"
+              type="text"
+              class="form-control input-tp-h4"
+              formControlName="fullsurname"
+              [maxLength]="100"
+              placeholder="Ingrese su apellidos completos"
+            />
+
+            <small class="text-danger" *ngIf="fullsurnameNotValid">
+              *Apellido completo es requerido
+            </small>
+            <small class="text-danger" *ngIf="fullsurnameNotValidMinMax">
+              *Apellidos completos no es válido
+            </small>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label input-tp-sub-h6 mb-2">Correo electrónico</label>
+            <input
+              id="email"
+              type="email"
+              class="form-control input-tp-h4"
+              formControlName="email"
+              [maxLength]="100"
+              placeholder="Ingrese su correo"
+            />
+
+            <small class="text-danger" *ngIf="emailNotValid">
+              *El correo es requerido.
+            </small>
+            <small class="text-danger" *ngIf="emailNotValidMinMaxFormat">
+              *Email no es válido
+            </small>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label input-tp-sub-h6 mb-2">Contraseña</label>
+            <input
+              id="password"
+              type="password"
+              class="form-control input-tp-h4"
+              formControlName="password"
+              placeholder="Ingrese su contraseña"
+            />
+            <small class="text-danger" *ngIf="passwordNotValid">
+              *El password es requerido.
+            </small>
+            <small class="text-danger" *ngIf="passwordNotValidMinMax">
+              *Password debe tener por lo menos 4 carácteres
+            </small>
+          </div>
+          <div class="mb-3">
+            <label for="repeatedpwd" class="form-label input-tp-sub-h6 mb-2">Confirmar Contraseña</label>
+            <input
+              id="repeatedpwd"
+              type="password"
+              class="form-control input-tp-h4"
+              formControlName="repeatedpwd"
+              placeholder="Ingrese su contraseña"
+            />
+            <small class="text-danger" *ngIf="repeatedpwdNotValid">
+              *El password no coincide.
+            </small>
+          </div>
+
+          <div class="mb-3">
+            <label for="numbercontact" class="form-label input-tp-sub-h6 mb-2">Número de contacto</label>
+            <div>
+              <div class="phone-input">
+                <span class="prefix mx-2 my-0 px-3 pb-1 pt-2 input-tp-sub-h6">+51</span>
+                <input type="text" placeholder="Número de teléfono" id="numbercontact" class="input-tp-h4"
+                       [maxLength]="9" [minLength]="9" formControlName="numbercontact">
+              </div>
+            </div>
+            <small class="text-danger" *ngIf="numbercontactNotValid">
+              *El número de contacto debe ser 9 dígitos.
+            </small>
+          </div>
+
+          <div class="mb-3 mt-5">
+            <button type="submit" class="btn w-100 btn-s2 button-tp">
+              Siguiente
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import {LoadingComponent} from '@common/components/loading.component';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
-import {Observable, of} from 'rxjs';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +15,8 @@ export class LoginComponent {
   loginForm: FormGroup;
   loading: boolean = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private router: Router) {
     this.loginForm = this.createForm();
   }
 
@@ -27,7 +27,7 @@ export class LoginComponent {
     });
   }
 
-  onSubmit() {
+  onSubmit() : void {
     if (this.loginForm.invalid) {
       console.log('Formulario inválido');
       Object.values(this.loginForm.controls).forEach(control => {
@@ -52,5 +52,9 @@ export class LoginComponent {
 
   get passwordNotValid() {
     return this.loginForm.get('password')?.invalid && this.loginForm.get('password')?.touched;
+  }
+
+  goSignUp(): void {
+    this.router.navigate(['/signup']);
   }
 }
