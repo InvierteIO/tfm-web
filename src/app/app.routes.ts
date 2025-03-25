@@ -1,13 +1,13 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
-import { LoginComponent } from './features/login/login.component';
+import { LoginComponent } from './features/auth/login/login.component';
 import {
   RegisterPersonalInfoComponent
-} from './features/login/sign-up/register-personal-info/register-personal-info.component';
+} from './features/auth/sign-up/register-personal-info/register-personal-info.component';
 import {
   AccountConfigurationComponent
-} from './features/login/sign-up/account-configuration/account-configuration.component';
-import {AccountActivationComponent} from './features/login/sign-up/account-activation/account-activation.component';
+} from './features/auth/sign-up/account-configuration/account-configuration.component';
+import {AccountActivationComponent} from './features/auth/sign-up/account-activation/account-activation.component';
 
 export const routes: Routes = [
     {
@@ -38,5 +38,10 @@ export const routes: Routes = [
           }
         ]
     }
-
+  ,
+  {
+    path: '**',
+    redirectTo: 'auth/login',
+    pathMatch: 'full',
+  },
 ];

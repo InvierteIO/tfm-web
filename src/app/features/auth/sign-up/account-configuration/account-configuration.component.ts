@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {NgIf} from '@angular/common';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
 import {Router} from '@angular/router';
+import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
 
 @Component({
   selector: 'app-account-configuration',
@@ -10,16 +11,17 @@ import {Router} from '@angular/router';
     FormsModule,
     NgIf,
     ReactiveFormsModule,
-    ButtonLoadingComponent
+    ButtonLoadingComponent,
+    AuthLayoutComponent
   ],
-  templateUrl: './account-configuration.component.html',
-  styleUrl: './account-configuration.component.css'
+  templateUrl: './account-configuration.component.html'
 })
 export class AccountConfigurationComponent {
   form: FormGroup;
   loading: boolean = false;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private readonly fb: FormBuilder,
+              private readonly router: Router) {
     this.form = this.createForm();
   }
 

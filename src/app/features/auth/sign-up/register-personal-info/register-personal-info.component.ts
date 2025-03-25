@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {Router} from "@angular/router";
+import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
 
 @Component({
   selector: 'app-register-personal-info',
@@ -9,7 +10,8 @@ import {Router} from "@angular/router";
   imports: [
     FormsModule,
     NgIf,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AuthLayoutComponent
   ],
   templateUrl: './register-personal-info.component.html',
   styleUrl: './register-personal-info.component.css'
@@ -17,7 +19,8 @@ import {Router} from "@angular/router";
 export class RegisterPersonalInfoComponent {
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private readonly  fb: FormBuilder,
+              private readonly router: Router) {
     this.form = this.createForm();
   }
 
@@ -110,7 +113,7 @@ export class RegisterPersonalInfoComponent {
   get repeatedpwdNotValid() {
     const password = this.form.get('password')?.value;
     const repeatedpwd = this.form.get('repeatedpwd')?.value;
-    return !(password === repeatedpwd);
+    return password !== repeatedpwd;
   }
 
   get numbercontactNotValid() {

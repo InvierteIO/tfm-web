@@ -1,0 +1,50 @@
+/* auth.component.css */
+:host {
+  font-family: 'Poppins', sans-serif;
+}
+
+.logo {
+  width: 120px; height: 120px; object-fit: cover;
+}
+
+.section-welcome {
+  background: url("/assets/img/left-login.jpg") no-repeat center center/cover;
+  min-height: 100vh;
+}
+
+.section-welcome h1 {
+  font-weight: 900;
+  font-size: 50px;
+}
+.section-welcome p {
+  font-weight: 600;
+  font-size: 20px;
+}
+.box-auth {
+  max-width: 600px;
+  background: #fcfcfc;
+  box-shadow: 0px 1px 2px 0px #00000040;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .section-welcome {
+    min-height: 5vh !important;
+  }
+
+  .logo {
+    width: 75px !important;
+    height: 75px !important;
+  }
+
+}
+
+:host ::ng-deep .text-auth {
+  font-family: Poppins, sans-serif;
+  color: #066B4B;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 100%;
+  vertical-align: middle;
+}

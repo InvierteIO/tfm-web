@@ -2,10 +2,10 @@ name: CI
 on:
   push:
     branches:
-      - issue#28
+      - develop
 jobs:
   ci:
-    name: Integration & CodeSQL Analysis & Slack WebHook & SonarCloud Scan
+    name: Integration & CodeQL Analysis & Slack WebHook & SonarCloud Scan
     runs-on: ubuntu-22.04
     permissions:
       actions: read

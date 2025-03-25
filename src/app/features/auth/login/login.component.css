@@ -1,0 +1,18 @@
+.a-forgot-password {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  vertical-align: middle;
+  color: #066B4B;
+  text-decoration: none !important;
+}
+
+.text-question-account {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 100%;
+  vertical-align: middle;
+  color: #066B4B;
+}
