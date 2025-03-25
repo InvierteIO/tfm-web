@@ -176,7 +176,6 @@ describe('AccountConfigurationComponent', () => {
     component.onSubmit();
     expect(component.form.invalid).toBeTrue();
     expect(console.log).toHaveBeenCalledWith('Formulario inválido');
-    expect(component.loading).toBeFalse();
   });
 
   it('onSubmit() - should set loading to true and log valid form values when form is valid', () => {

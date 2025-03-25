@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
+import {Router} from '@angular/router';
+import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
 
 @Component({
   selector: 'app-account-configuration',
@@ -9,16 +11,17 @@ import {ButtonLoadingComponent} from '@common/components/button-loading.componen
     FormsModule,
     NgIf,
     ReactiveFormsModule,
-    ButtonLoadingComponent
+    ButtonLoadingComponent,
+    AuthLayoutComponent
   ],
-  templateUrl: './account-configuration.component.html',
-  styleUrl: './account-configuration.component.css'
+  templateUrl: './account-configuration.component.html'
 })
 export class AccountConfigurationComponent {
   form: FormGroup;
   loading: boolean = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private readonly fb: FormBuilder,
+              private readonly router: Router) {
     this.form = this.createForm();
   }
 
@@ -40,7 +43,6 @@ export class AccountConfigurationComponent {
           Object.values(control.controls).forEach(control=> control.markAsTouched());
         }else control.markAsTouched();
       });
-      return;
     }
     const companyname = this.form.get('companyname')?.value;
     const ruc = this.form.get('ruc')?.value;
@@ -53,6 +55,8 @@ export class AccountConfigurationComponent {
     console.log(`ruc: ${ruc}`);
     console.log(`rolname: ${rolname}`);
     console.log(`numberusers: ${numberusers}`);
+
+    this.router.navigate(['/auth/signup/account-activation']);
   }
 
   get companynameEmpty() {

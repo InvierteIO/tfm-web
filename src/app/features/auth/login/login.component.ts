@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
 import {Router} from '@angular/router';
+import {AuthLayoutComponent} from '../shared/components/auth-layout.component';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-auth',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonLoadingComponent],
+  imports: [CommonModule, ReactiveFormsModule, ButtonLoadingComponent, AuthLayoutComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -15,8 +16,8 @@ export class LoginComponent {
   loginForm: FormGroup;
   loading: boolean = false;
 
-  constructor(private fb: FormBuilder,
-              private router: Router) {
+  constructor(private readonly fb: FormBuilder,
+              private readonly router: Router) {
     this.loginForm = this.createForm();
   }
 
@@ -55,6 +56,6 @@ export class LoginComponent {
   }
 
   goSignUp(): void {
-    this.router.navigate(['/signup/register-info']);
+    this.router.navigate(['/auth/signup/register-info']);
   }
 }

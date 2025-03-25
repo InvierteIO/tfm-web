@@ -1,4 +1,4 @@
-/* styles.css o login.component.css */
+/* styles.css o auth.component.css */
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
@@ -21,6 +21,47 @@ body {
   font-size: 14px;
   line-height: 200%;
   vertical-align: middle;
+}
+
+.title-tp-h1 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 100%;
+  vertical-align: middle;
+  color: #3E4347;
+}
+
+.text-tp-h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+input {
+  background: #FCFCFC !important;
+  border-color: #D8D8D8 !important;
+  height: 48px !important;
+  border-radius: 15px !important;
+  border-width: 1px !important;
+}
+
+input::placeholder {
+  color: #A0A0A0 !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  line-height: 200% !important;
+  letter-spacing: 0 !important;
+  vertical-align: middle !important;
+}
+
+.form-control:focus {
+  border-color: #D8D8D8 !important;
+  box-shadow: 0 0 0 0.2rem rgba(6, 107, 75, 0.10) !important;
 }
 
 /*****************Buttons********************/
