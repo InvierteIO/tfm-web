@@ -1,0 +1,113 @@
+<div class="container-fluid p-0" >
+  <div class="row g-0 h-100">
+    <div
+      class="col-12 col-md-6 d-flex align-items-center justify-content-center p-0 section-welcome">
+      <div
+        class="text-white text-center bg-black bg-opacity-50 h-100 w-100 d-flex flex-column align-items-center justify-content-center">
+        <img
+          src="assets/img/invierteio.jpg"
+          alt="Logo"
+          class="rounded-circle my-3 logo"/>
+        <h1 class="mb-3 d-none d-md-block">Bienvenido</h1>
+        <p class="lead d-none d-md-block"></p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 d-flex align-items-center justify-content-center bg-white min-vh-100">
+      <div
+        class="w-75 my-3 mx-1 box-login">
+        <h2 class="mb-5 text-center text-login">Configuración de cuenta</h2>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+          <div class="mb-3">
+            <label for="companyname" class="form-label input-tp-sub-h6 mb-2">Nombre de Empresa</label>
+            <input
+              id="companyname"
+              type="text"
+              class="form-control input-tp-h4"
+              formControlName="companyname"
+              [maxLength]="150"
+              placeholder="Ingrese nombre de la empresa"
+            />
+
+            <small class="text-danger" *ngIf="companynameEmpty">
+              *Nombre de la empresa es requerido
+            </small>
+            <small class="text-danger" *ngIf="companynameNotValidMinMax">
+              *Nombre de la empresa no es válido
+            </small>
+
+          </div>
+          <div class="mb-3">
+            <label for="ruc" class="form-label input-tp-sub-h6 mb-2">RUC</label>
+            <input
+              id="ruc"
+              type="text"
+              class="form-control input-tp-h4"
+              formControlName="ruc"
+              [maxLength]="11"
+              [minLength]="11"
+              placeholder="Ingrese RUC de la empresa"
+            />
+
+            <small class="text-danger" *ngIf="rucEmpty">
+              *RUC es requerido
+            </small>
+            <small class="text-danger" *ngIf="rucNotValidMinMax">
+              *RUC no es válido
+            </small>
+          </div>
+          <div class="mb-3">
+            <label for="rolname" class="form-label input-tp-sub-h6 mb-2">Rol</label>
+            <input
+              id="rolname"
+              type="text"
+              class="form-control input-tp-h4"
+              formControlName="rolname"
+              [maxLength]="100"
+              placeholder="Ingrese su rol"
+            />
+
+            <small class="text-danger" *ngIf="rolnameEmpty">
+              *El rol es requerido.
+            </small>
+            <small class="text-danger" *ngIf="rolnameNotValidMinMax">
+              *El rol no es válido
+            </small>
+          </div>
+
+          <div class="mb-3">
+            <label for="numberusers" class="form-label input-tp-sub-h6 mb-2">Número de usuarios</label>
+            <input
+              id="numberusers"
+              type="text"
+              class="form-control input-tp-h4"
+              formControlName="numberusers"
+              [maxLength]="5"
+              [minLength]="1"
+              placeholder="Ingrese el numero de usuarios"
+            />
+
+            <small class="text-danger" *ngIf="numberusersEmpty">
+              *El número de usuarios es requerido.
+            </small>
+            <small class="text-danger" *ngIf="numberusersNotValid">
+              *El número de usuarios no es válido
+            </small>
+          </div>
+
+          <app-button-loading
+            class="mb-3 mt-5"
+            type="submit"
+            [btnclasses]="'btn w-100 btn-s2 button-tp py-2'"
+            [loading]="loading"
+            msgLoading="Cargando..."
+            msgButton="Crear cuenta">
+          </app-button-loading>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

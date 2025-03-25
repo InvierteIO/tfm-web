@@ -4,6 +4,9 @@ import { LoginComponent } from './features/login/login.component';
 import {
   RegisterPersonalInfoComponent
 } from './features/login/sign-up/register-personal-info/register-personal-info.component';
+import {
+  AccountConfigurationComponent
+} from './features/login/sign-up/account-configuration/account-configuration.component';
 
 export const routes: Routes = [
     {
@@ -16,6 +19,13 @@ export const routes: Routes = [
         path: 'login', component: LoginComponent
     },
     {
-        path: 'signup', component: RegisterPersonalInfoComponent
+        path: 'signup',
+        children : [
+          { path: 'register-info', component: RegisterPersonalInfoComponent},
+          {
+            path: 'account-configuration', component: AccountConfigurationComponent
+          }
+        ]
     }
+
 ];
