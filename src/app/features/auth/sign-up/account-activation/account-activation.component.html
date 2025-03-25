@@ -9,6 +9,7 @@
     [btnclasses]="'btn w-100 btn-s2 button-tp py-2'"
     [loading]="loading"
     (click)="onSubmit()"
+    (keydown.enter)="onSubmit()"
     msgLoading="Cargando..."
     msgButton="Aceptar">
   </app-button-loading>
