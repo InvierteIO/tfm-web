@@ -88,11 +88,11 @@ export class HttpService {
                 catchError(error => this.handleError(error)));
     }
 
-    authBasic(mobile: number, password: string): HttpService {
+    authBasic(mobile: number, password: string): this {
         return this.header('Authorization', 'Basic ' + btoa(mobile + ':' + password));
     }
 
-    header(key: string, value: string): HttpService {
+    header(key: string, value: string): this {
         if (value != null) {
             this.headers = this.headers.append(key, value); // This class is immutable
         }
@@ -139,7 +139,7 @@ export class HttpService {
             console.error(this.errorNotification);
             this.errorNotification = undefined;
         } else {
-            console.error(notification);            
+            console.error(notification);
         }
     }
 
