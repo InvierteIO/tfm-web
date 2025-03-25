@@ -23,6 +23,23 @@ body {
   vertical-align: middle;
 }
 
+.title-tp-h1 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 100%;
+  vertical-align: middle;
+  color: #3E4347;
+}
+
+.text-tp-h3 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  vertical-align: middle;
+}
 /*****************Buttons********************/
 .button-tp {
   font-family: 'Poppins', sans-serif;

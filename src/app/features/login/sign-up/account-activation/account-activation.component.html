@@ -1,0 +1,37 @@
+<div class="container-fluid p-0" >
+  <div class="row g-0 h-100">
+    <div
+      class="col-12 col-md-6 d-flex align-items-center justify-content-center p-0 section-welcome">
+      <div
+        class="text-white text-center bg-black bg-opacity-50 h-100 w-100 d-flex flex-column align-items-center justify-content-center">
+        <img
+          src="assets/img/invierteio.jpg"
+          alt="Logo"
+          class="rounded-circle my-3 logo"/>
+        <h1 class="mb-3 d-none d-md-block">Bienvenido</h1>
+        <p class="lead d-none d-md-block"></p>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 d-flex align-items-center justify-content-center bg-white min-vh-100">
+      <div
+        class="w-75 my-3 mx-1 box-login">
+        <h2 class="my-5 text-center text-login">Inmobiliaria</h2>
+
+        <p class="title-tp-h1 text-center">Tu cuenta esta en proceso de activación</p>
+        <p class="text-tp-h3 my-5">Hemos enviado un mensaje a tu cuenta de correo registrada para activación de cuenta , luego de activarla podrás usar todas nuestras funciones</p>
+          <app-button-loading
+            class="mb-3 mt-5"
+            type="button"
+            [btnclasses]="'btn w-100 btn-s2 button-tp py-2'"
+            [loading]="loading"
+            (click)="onSubmit()"
+            msgLoading="Cargando..."
+            msgButton="Aceptar">
+          </app-button-loading>
+
+      </div>
+    </div>
+  </div>
+</div>
+

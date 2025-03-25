@@ -7,23 +7,34 @@ import {
 import {
   AccountConfigurationComponent
 } from './features/login/sign-up/account-configuration/account-configuration.component';
+import {AccountActivationComponent} from './features/login/sign-up/account-activation/account-activation.component';
 
 export const routes: Routes = [
     {
-        path: '', pathMatch: 'full', redirectTo: 'login'
+        path: '', pathMatch: 'full', redirectTo: 'auth/login',
     },
     {
         path : 'home', component: HomeComponent
     },
     {
-        path: 'login', component: LoginComponent
-    },
-    {
-        path: 'signup',
+        path: 'auth',
         children : [
-          { path: 'register-info', component: RegisterPersonalInfoComponent},
           {
-            path: 'account-configuration', component: AccountConfigurationComponent
+            path: 'login', component: LoginComponent
+          },
+          {
+            path: 'signup',
+            children : [
+              {
+                path: 'register-info', component: RegisterPersonalInfoComponent
+              },
+              {
+                path: 'account-configuration', component: AccountConfigurationComponent
+              },
+              {
+                path: 'account-activation', component: AccountActivationComponent
+              }
+            ]
           }
         ]
     }

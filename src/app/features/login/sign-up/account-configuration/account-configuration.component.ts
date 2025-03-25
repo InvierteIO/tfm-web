@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-account-configuration',
@@ -18,7 +19,7 @@ export class AccountConfigurationComponent {
   form: FormGroup;
   loading: boolean = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.createForm();
   }
 
@@ -40,7 +41,6 @@ export class AccountConfigurationComponent {
           Object.values(control.controls).forEach(control=> control.markAsTouched());
         }else control.markAsTouched();
       });
-      return;
     }
     const companyname = this.form.get('companyname')?.value;
     const ruc = this.form.get('ruc')?.value;
@@ -53,6 +53,8 @@ export class AccountConfigurationComponent {
     console.log(`ruc: ${ruc}`);
     console.log(`rolname: ${rolname}`);
     console.log(`numberusers: ${numberusers}`);
+
+    this.router.navigate(['/auth/signup/account-activation']);
   }
 
   get companynameEmpty() {
