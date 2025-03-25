@@ -42,7 +42,6 @@ describe('RegisterPersonalInfoComponent', () => {
     expect(formValues.password).toEqual('');
     expect(formValues.repeatedpwd).toEqual('');
     expect(formValues.numbercontact).toEqual('');
-    expect(component.loading).toBeFalse();
   });
 
   it('should be invalid if fullname is empty', () => {
@@ -228,7 +227,6 @@ describe('RegisterPersonalInfoComponent', () => {
 
     expect(component.form.invalid).toBeTrue();
     expect(console.log).toHaveBeenCalledWith('Formulario inválido');
-    expect(component.loading).toBeFalse();
   });
 
   it('onSubmit() - if the form is valid, it should set loading to true and log values', () => {
@@ -243,7 +241,6 @@ describe('RegisterPersonalInfoComponent', () => {
     component.onSubmit();
 
     expect(component.form.valid).toBeTrue();
-    expect(component.loading).toBeTrue();
     expect(console.log).toHaveBeenCalledWith('Formulario válido:', component.form.value);
     expect(console.log).toHaveBeenCalledWith('fullname: John');
     expect(console.log).toHaveBeenCalledWith('fullname: Doe');

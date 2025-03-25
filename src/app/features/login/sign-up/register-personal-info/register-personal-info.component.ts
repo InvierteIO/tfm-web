@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {NgIf} from '@angular/common';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-register-personal-info',
@@ -15,9 +16,8 @@ import {NgIf} from '@angular/common';
 })
 export class RegisterPersonalInfoComponent {
   form: FormGroup;
-  loading: boolean = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.createForm();
   }
 
@@ -48,12 +48,13 @@ export class RegisterPersonalInfoComponent {
     const email = this.form.get('email')?.value;
     const password = this.form.get('password')?.value;
 
-    this.loading = true;
     console.log('Formulario válido:', this.form.value);
     console.log(`fullname: ${fullname}`);
     console.log(`fullname: ${fullsurname}`);
     console.log(`email: ${email}`);
     console.log(`password: ${password}`);
+
+    this.router.navigate(['/signup/account-configuration']);
   }
 
   get fullnameNotValid() {
