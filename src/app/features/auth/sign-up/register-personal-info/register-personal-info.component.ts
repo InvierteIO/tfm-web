@@ -57,7 +57,7 @@ export class RegisterPersonalInfoComponent {
     console.log(`email: ${email}`);
     console.log(`password: ${password}`);
 
-    this.router.navigate(['/auth/signup/account-configuration']);
+    this.router.navigate(['/public/auth/signup/account-configuration']);
   }
 
   get fullnameNotValid() {

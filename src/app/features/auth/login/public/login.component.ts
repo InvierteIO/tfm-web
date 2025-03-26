@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
 import {Router} from '@angular/router';
-import {AuthLayoutComponent} from '../shared/components/auth-layout.component';
+import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
 
 @Component({
   selector: 'app-auth',
@@ -56,6 +56,6 @@ export class LoginComponent {
   }
 
   goSignUp(): void {
-    this.router.navigate(['/auth/signup/register-info']);
+    this.router.navigate(['/public/auth/signup/register-info']);
   }
 }

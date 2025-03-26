@@ -1,0 +1,49 @@
+
+<app-auth-layout [subtitleWelcome]="'Ingresa usuario y contraseña'">
+
+  <h2 class="mb-5 text-center text-auth">Iniciar sesión</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+    <div class="mb-3">
+      <label for="email" class="form-label input-tp-sub-h6 mb-3">Correo electrónico</label>
+      <input
+        id="email"
+        type="email"
+        class="form-control input-tp-h4"
+        formControlName="email"
+        placeholder="Ingrese su correo"
+      />
+
+      <small class="text-danger" *ngIf="isEmailNotValid">
+        *El correo es requerido y debe tener un formato válido.
+      </small>
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label input-tp-sub-h6 mb-3">Contraseña</label>
+      <input
+        id="password"
+        type="password"
+        class="form-control input-tp-h4"
+        formControlName="password"
+        placeholder="Ingrese su contraseña"
+      />
+      <small class="text-danger" *ngIf="isPasswordNotValid">
+        *El password es requerido.
+      </small>
+    </div>
+
+    <div class="mb-5 text-end">
+      <a href="#" class="a-forgot-password">¿Olvidaste tu contraseña?</a>
+    </div>
+
+    <app-button-loading
+      class="mb-5"
+      type="submit"
+      [btnclasses]="'btn button-tp w-100 btn-s1 py-2'"
+      [loading]="loading"
+      msgLoading="Cargando..."
+      msgButton="Iniciar sesión">
+    </app-button-loading>
+  </form>
+</app-auth-layout>
