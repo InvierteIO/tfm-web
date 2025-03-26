@@ -56,7 +56,7 @@ export class AccountConfigurationComponent {
     console.log(`rolname: ${rolname}`);
     console.log(`numberusers: ${numberusers}`);
 
-    this.router.navigate(['/auth/signup/account-activation']);
+    this.router.navigate(['/public/auth/signup/account-activation']);
   }
 
   get companynameEmpty() {
