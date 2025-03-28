@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import {CollapseDirective} from '@common/directives/collapse.directive';
+import {RouterOutlet} from '@angular/router';
 
 @Component({
   standalone: true,
   selector: 'app-home',
   templateUrl: './home.component.html',
   imports: [
-    CollapseDirective
+    CollapseDirective,
+    RouterOutlet
   ],
   styleUrls: ['./home.component.css']
 })

@@ -45,6 +45,7 @@ export class LoginComponent {
     console.log('Formulario válido:', this.loginForm.value);
     console.log(`email: ${email}`);
     console.log(`password: ${password}`);
+    this.router.navigate(['/public/home/maintenance']);
   }
 
   get emailNotValid() {

@@ -10,6 +10,7 @@ import {
 import {AccountActivationComponent} from './features/auth/sign-up/account-activation/account-activation.component';
 import {DashboardComponent} from './features/dashboard/dashboard.component';
 import {LoginInternalComponent} from './features/auth/login/internal/login-internal.component';
+import {MaintenancePageComponent} from './features/shared/components/maintenance-page.component';
 
 export const routes: Routes = [
     {
@@ -44,7 +45,12 @@ export const routes: Routes = [
             ]
           },
           {
-            path: 'home', component: HomeComponent
+            path: 'home', component: HomeComponent,
+            children: [
+              {
+                path: 'maintenance', component: MaintenancePageComponent
+              }
+            ]
           }
         ]
     },
