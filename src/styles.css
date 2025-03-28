@@ -136,4 +136,49 @@ input::placeholder {
 
 /*****************Others********************/
 
+.main-header {
+  height: 65px;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1030;
+}
 
+.main-header .btn {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  color: #066B4B;
+  transition: color 0.3s;
+}
+
+.main-header .btn:hover,
+.main-header .btn:focus {
+  color: #03704D;
+}
+
+
+.main-header svg path {
+  fill: #066B4B;
+  transition: fill 0.3s;
+}
+
+.main-header .btn:hover svg path,
+.main-header .btn:focus svg path {
+  fill: #03704D;
+}
+
+main {
+  /*padding-top: 65px;*/
+  padding-top: 0px;
+  min-height: 100vh;
+  transition: margin-left 0.4s ease;
+  margin-left: 270px;
+}
+
+@media (max-width: 768px) {
+  main {
+    margin-left: 0px;
+  }
+}

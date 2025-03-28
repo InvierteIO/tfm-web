@@ -1,12 +1,14 @@
 import {Component, OnInit} from '@angular/core';
-import {CollapseDirective} from "@common/directives/collapse.directive";
 import {HeaderComponent} from "../shared/components/header/header.component";
 import {RouterOutlet} from "@angular/router";
+import {SidebarComponent} from '../shared/components/sidebar/sidebar.component';
+import {MenuSidebar} from '../shared/models/menu-sidebar.model';
+import {SidebarService} from '../shared/services/siderbar.service';
 
 @Component({
   selector: 'app-dashboard',
     imports: [
-        CollapseDirective,
+        SidebarComponent,
         HeaderComponent,
         RouterOutlet
     ],
@@ -14,30 +16,12 @@ import {RouterOutlet} from "@angular/router";
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
-
-  sidebarCollapsed = false;
-  currentDropdown: string | null = null;
-
-  constructor() {}
+  menus: MenuSidebar[] = [];
+  constructor(private readonly sidebarService: SidebarService) {
+  }
 
   ngOnInit(): void {
-    if (window.innerWidth <= 1024) {
-      this.sidebarCollapsed = true;
-    }
-  }
-
-  isOpen(dropdownId: string): boolean {
-    return this.currentDropdown === dropdownId;
-  }
-
-  onDropdownClick(event: MouseEvent, dropdownId: string): void {
-    event.preventDefault();
-    this.currentDropdown = this.isOpen(dropdownId) ? null : dropdownId;
-  }
-
-  toggleSidebar(): void {
-    this.currentDropdown = null;
-    this.sidebarCollapsed = !this.sidebarCollapsed;
+    this.menus = this.sidebarService.getMenusDashboard();
   }
 }
 
