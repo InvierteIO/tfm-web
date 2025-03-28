@@ -10,7 +10,7 @@ import {
 import {AccountActivationComponent} from './features/auth/sign-up/account-activation/account-activation.component';
 import {DashboardComponent} from './features/dashboard/dashboard.component';
 import {LoginInternalComponent} from './features/auth/login/internal/login-internal.component';
-import {MaintenancePageComponent} from './features/shared/components/maintenance-page.component';
+import {MaintenancePageComponent} from './features/shared/components/maintenance-page/maintenance-page.component';
 
 export const routes: Routes = [
     {
@@ -49,6 +49,11 @@ export const routes: Routes = [
             children: [
               {
                 path: 'maintenance', component: MaintenancePageComponent
+              },
+              {
+                path: '**',
+                redirectTo: 'maintenance',
+                pathMatch: 'full'
               }
             ]
           }
@@ -69,7 +74,17 @@ export const routes: Routes = [
           ]
         },
         {
-          path: 'dashboard', component: DashboardComponent
+          path: 'dashboard', component: DashboardComponent,
+          children: [
+            {
+              path: 'maintenance', component: MaintenancePageComponent
+            },
+            {
+              path: '**',
+              redirectTo: 'maintenance',
+              pathMatch: 'full'
+            }
+          ]
         }
       ]
     },
