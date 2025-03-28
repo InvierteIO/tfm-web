@@ -1,19 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../core/services/auth.service';
+import {CollapseDirective} from '@common/directives/collapse.directive';
+import {RouterOutlet} from '@angular/router';
 
 @Component({
   standalone: true,
   selector: 'app-home',
-  imports: [],
-  templateUrl: './home.component.html'
+  templateUrl: './home.component.html',
+  imports: [
+    CollapseDirective,
+    RouterOutlet
+  ],
+  styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit{
+export class HomeComponent implements OnInit {
 
-  constructor(private readonly authService: AuthService) {
-  }
+  sidebarCollapsed = false;
+  currentDropdown: string | null = null;
+
+  constructor() {}
 
   ngOnInit(): void {
-    this.authService.listUser()
-    .subscribe(response => console.log(response));
+    if (window.innerWidth <= 1024) {
+      this.sidebarCollapsed = true;
+    }
+  }
+
+  isOpen(dropdownId: string): boolean {
+    return this.currentDropdown === dropdownId;
+  }
+
+  onDropdownClick(event: MouseEvent, dropdownId: string): void {
+    event.preventDefault();
+    this.currentDropdown = this.isOpen(dropdownId) ? null : dropdownId;
+  }
+
+  toggleSidebar(): void {
+    this.currentDropdown = null;
+    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 }
