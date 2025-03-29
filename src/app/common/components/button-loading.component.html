@@ -1,8 +1,9 @@
-<button [attr.type]="type"   [disabled]="loading" [class]="btnclasses">
+<button [attr.type]="type"  [disabled]="loading" [class]="btnClasses">
   @if (loading) {
-    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+    <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
     {{ msgLoading }}
   } @else {
+    <span class="material-symbols-rounded me-1" [class.d-none]="!iconGoogle" >{{iconGoogle}}</span>
     {{ msgButton }}
   }
 </button>

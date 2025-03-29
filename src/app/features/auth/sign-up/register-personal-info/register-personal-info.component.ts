@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {NgIf} from '@angular/common';
 import {Router} from "@angular/router";
 import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
+import {FormUtil} from '@common/utils/form.util';
 
 @Component({
   selector: 'app-register-personal-info',
@@ -39,11 +40,7 @@ export class RegisterPersonalInfoComponent {
     console.log(this.form);
     if (this.form.invalid) {
       console.log('Formulario inválido');
-      Object.values(this.form.controls).forEach(control => {
-        if(control instanceof FormGroup){
-          Object.values(control.controls).forEach(control=> control.markAsTouched());
-        }else control.markAsTouched();
-      });
+      FormUtil.markAllAsTouched(this.form);
       return;
     }
     const fullname = this.form.get('fullname')?.value;

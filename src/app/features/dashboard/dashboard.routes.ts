@@ -4,7 +4,7 @@ import {MembershipComponent} from './membership/membership.component';
 
 export const dashboardRoutes: Routes = [
   {
-    path: 'membership', component: MembershipComponent,
+    path: 'memberships', component: MembershipComponent,
   },
   {
     path: 'maintenance', component: MaintenancePageComponent

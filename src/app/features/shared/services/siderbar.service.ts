@@ -63,7 +63,7 @@ export class SidebarService {
       icon_google:'settings',
       id: 'settings',
       submenus: [
-        { title: 'Membresias', url: '/internal/dashboard/membership' },
+        { title: 'Membresias', url: '/internal/dashboard/memberships' },
         { title: 'Empresas inmobiliarias', url: '/internal/dashboard/companies' }
       ]
     }

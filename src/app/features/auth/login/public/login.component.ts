@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
 import {Router} from '@angular/router';
 import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
+import {FormUtil} from '@common/utils/form.util';
 
 @Component({
   selector: 'app-auth',
@@ -31,11 +32,7 @@ export class LoginComponent {
   onSubmit() : void {
     if (this.loginForm.invalid) {
       console.log('Formulario inválido');
-      Object.values(this.loginForm.controls).forEach(control => {
-        if(control instanceof FormGroup){
-          Object.values(control.controls).forEach(control=> control.markAsTouched());
-        }else control.markAsTouched();
-      });
+      FormUtil.markAllAsTouched(this.loginForm);
       return;
     }
     const email = this.loginForm.get('email')?.value;
@@ -45,14 +42,14 @@ export class LoginComponent {
     console.log('Formulario válido:', this.loginForm.value);
     console.log(`email: ${email}`);
     console.log(`password: ${password}`);
-    this.router.navigate(['/public/home/maintenance']);
+    //this.router.navigate(['/public/home/maintenance']);
   }
 
-  get emailNotValid() {
+  get isEmailNotValid() {
     return this.loginForm.get('email')?.invalid && this.loginForm.get('email')?.touched;
   }
 
-  get passwordNotValid() {
+  get isPasswordNotValid() {
     return this.loginForm.get('password')?.invalid && this.loginForm.get('password')?.touched;
   }
 

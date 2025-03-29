@@ -275,12 +275,9 @@
   margin-right: 15px;
 }
 
-
-
 .sidebar-nav .nav-item > .nav-link.dropdown-toggle-custom.active svg path {
   fill: #03704D !important;
 }
-
 
 .sidebar-nav .dropdown-menu-custom li.active > .nav-link,
 .sidebar-nav .dropdown-menu-custom li.active > .nav-link:hover,
