@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpService } from '@core/services/http.service';
 import { of } from 'rxjs';
 import { User } from '@core/models/user.model';
+import { UserType } from '@core/models/user-type.model';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -14,7 +15,8 @@ describe('AuthService', () => {
     token: 'abc123',
     name: 'Test',    
     email: 'user@user.com',
-    isActive: true
+    isActive: true,
+    companyRoles: []
   };
 
   beforeEach(() => {
@@ -43,10 +45,10 @@ describe('AuthService', () => {
       const email = 'admin@admin.com';
       const password = 'secret';
 
-      service.login(email, password).subscribe(user => {
+      service.login(email, password, UserType.OPERATOR).subscribe(user => {
         expect(user).toEqual(fakeUser);
         expect(httpServiceSpy.authBasic).toHaveBeenCalledWith(email, password);
-        expect(httpServiceSpy.post).toHaveBeenCalledWith(AuthService.END_POINT);
+        expect(httpServiceSpy.post).toHaveBeenCalledWith(AuthService.END_POINT_OPERATOR);
         done();
       });
     });
@@ -76,16 +78,4 @@ describe('AuthService', () => {
     });
   });
 
-  describe('listUser', () => {
-    it('should call httpService.get and return an observable of user array', (done) => {
-      const fakeUserList: User[] = [fakeUser];
-      httpServiceSpy.get.and.returnValue(of(fakeUserList));
-
-      service.listUser().subscribe(users => {
-        expect(users).toEqual(fakeUserList);
-        expect(httpServiceSpy.get).toHaveBeenCalledWith(AuthService.END_POINT);
-        done();
-      });
-    });
-  });
 });

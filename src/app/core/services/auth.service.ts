@@ -78,7 +78,7 @@ export class AuthService {
     hasCompanyRoles(roles: Role[]): boolean {
         if (!this.user || !this.user.companyRoles) return false;
         return this.isAuthenticated() && roles.some(role => 
-            this.user?.companyRoles.some(companyRole => companyRole.role === role));
+            this.user?.companyRoles?.some(companyRole => companyRole.role === role));
     }
 
 }

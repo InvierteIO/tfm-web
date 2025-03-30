@@ -7,5 +7,5 @@ export interface User {
     email?: string;
     isActive?: boolean;
     role?: Role;
-    companyRoles: CompanyRole[]
+    companyRoles?: CompanyRole[]
 }
