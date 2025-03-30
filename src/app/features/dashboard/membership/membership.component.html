@@ -1,0 +1,53 @@
+<div class="container">
+  <h1 class="title-tp-h1 io-green-primary mt-5 mb-3">Membresias</h1>
+  <div class="d-flex align-items-center justify-content-end py-3 px-3" style="background-color: #F3F3F3;">
+    <button class="btn btn-s3 button-tp py-2 d-flex justify-content-center align-items-center" (click)="create()">
+      <span class="material-symbols-rounded me-1">note_stack_add</span>
+      Agregar
+    </button>
+  </div>
+  <div class="d-flex align-items-center justify-content-center mt-3" *ngIf="loading">
+    <app-loading></app-loading>
+  </div>
+  <table class="table table-s1" *ngIf="!loading">
+    <thead>
+    <tr>
+      <th class="py-3 px-3 ms-3">Nivel</th>
+      <th class="py-3">Costo mensual</th>
+      <th class="py-3">Costo anual</th>
+      <th class="py-3">Cantidad máx. de proyectos</th>
+      <th class="py-3 text-center">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let membership of memberships" >
+        <td>{{membership.levelName}}</td>
+        <td>{{membership.monthlyCost}}</td>
+        <td>{{membership.annualCost}}</td>
+        <td>{{membership.maxProjects}}</td>
+        <td class="text-center">
+          <button class="btn p-0 border-0 bg-transparent mx-1" title="Editar" (click)="update(membership)">
+            <img src="./assets/svg/edit24.svg">
+          </button>
+          <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver" (click)="view(membership)">
+            <img src="./assets/svg/view24.svg">
+          </button>
+          <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar" (click)="delete(membership.id!)">
+            <img src="./assets/svg/delete24.svg">
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="!memberships || memberships.length === 0">
+        <td colspan="5" class="text-center">No hay registros</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+<ng-template #membershipsavemodal let-modal>
+  <app-membership-save-modal></app-membership-save-modal>
+</ng-template>
+
+<ng-template #membershipviewmodal let-modal>
+  <app-membership-view-modal></app-membership-view-modal>
+</ng-template>

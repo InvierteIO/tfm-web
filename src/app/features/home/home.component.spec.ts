@@ -1,75 +1,39 @@
-import { TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeComponent } from './home.component';
+import { SidebarService } from '../shared/services/siderbar.service';
+import { MenuSidebar } from '../shared/models/menu-sidebar.model';
 
-describe('HomeComponent (with CollapseDirective)', () => {
+describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
+  let sidebarServiceSpy: jasmine.SpyObj<SidebarService>;
 
   beforeEach(async () => {
+    const spy = jasmine.createSpyObj('SidebarService', ['getMenusHome']);
     await TestBed.configureTestingModule({
-      imports: [HomeComponent]
+      imports: [HomeComponent],
+      providers: [{ provide: SidebarService, useValue: spy }]
     }).compileComponents();
+
+    sidebarServiceSpy = TestBed.inject(SidebarService) as jasmine.SpyObj<SidebarService>;
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set sidebarCollapsed=true if window.innerWidth <= 1024', () => {
-    spyOnProperty(window, 'innerWidth').and.returnValue(1024);
-
-    const newFixture = TestBed.createComponent(HomeComponent);
-    const newComp = newFixture.componentInstance;
-    newFixture.detectChanges();
-
-    expect(newComp.sidebarCollapsed).toBeTrue();
+  it('should set menus from SidebarService on ngOnInit', () => {
+    const fakeMenus: MenuSidebar[] = [
+      { title: 'Test Home', id: 'test', url: '/home/test' }
+    ];
+    sidebarServiceSpy.getMenusHome.and.returnValue(fakeMenus);
+    component.ngOnInit();
+    expect(component.menus).toEqual(fakeMenus);
+    expect(sidebarServiceSpy.getMenusHome).toHaveBeenCalled();
   });
-
-  it('toggleSidebar() should set currentDropdown=null and invert sidebarCollapsed', () => {
-    component.currentDropdown = 'proyectos';
-    component.sidebarCollapsed = false;
-
-    component.toggleSidebar();
-    expect(component.currentDropdown).toBeNull();
-    expect(component.sidebarCollapsed).toBeTrue();
-
-    component.toggleSidebar();
-    expect(component.sidebarCollapsed).toBeFalse();
-  });
-
-  it('onDropdownClick(...) should preventDefault and toggle currentDropdown', () => {
-    const mockEvent = { preventDefault: jasmine.createSpy() } as any;
-
-    expect(component.currentDropdown).toBeNull();
-    component.onDropdownClick(mockEvent, 'proyectos');
-    expect(mockEvent.preventDefault).toHaveBeenCalled();
-    expect(component.currentDropdown).toBe('proyectos');
-
-    component.onDropdownClick(mockEvent, 'proyectos');
-    expect(component.currentDropdown).toBeNull();
-  });
-
-  it('should close the "proyectos" dropdown by default', fakeAsync(() => {
-    const ulElement = fixture.debugElement.query(By.css('.dropdown-menu-custom')).nativeElement;
-
-    component.currentDropdown = 'proyectos';
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-
-    component.currentDropdown = null;
-    fixture.detectChanges();
-    tick();
-    fixture.detectChanges();
-
-    expect(ulElement.style.height).toBe('');
-  }));
 });

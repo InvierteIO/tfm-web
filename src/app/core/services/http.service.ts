@@ -4,6 +4,8 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {EMPTY, Observable, throwError} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {AppError} from '@core/models/app-error.model';
+import Swal from 'sweetalert2';
+import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 
 
 @Injectable({providedIn: 'root'})
@@ -119,6 +121,8 @@ export class HttpService {
     private extractData(response: any): any {
         if (this.successfulNotification) {
             console.log(this.successfulNotification);
+            Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.CONFIRMATION]
+            (this.successfulNotification));
             this.successfulNotification = undefined;
         }
         const contentType = response.headers.get('content-type');
@@ -137,6 +141,8 @@ export class HttpService {
     private showError(notification: string): void {
         if (this.errorNotification) {
             console.error(this.errorNotification);
+          Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR]
+          (this.errorNotification));
             this.errorNotification = undefined;
         } else {
             console.error(notification);

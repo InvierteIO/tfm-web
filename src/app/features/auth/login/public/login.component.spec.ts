@@ -72,27 +72,27 @@ describe('LoginComponent', () => {
     it('getter emailNotValid should return true when email is invalid and touched', () => {
       component.loginForm.get('email')?.setValue('invalid');
       component.loginForm.get('email')?.markAsTouched();
-      expect(component.emailNotValid).toBeTrue();
+      expect(component.isEmailNotValid).toBeTrue();
     });
 
     it('getter emailNotValid should return false when email is valid or not touched', () => {
       component.loginForm.get('email')?.setValue('test@example.com');
-      expect(component.emailNotValid).toBeFalse();
+      expect(component.isEmailNotValid).toBeFalse();
       component.loginForm.get('email')?.markAsTouched();
-      expect(component.emailNotValid).toBeFalse();
+      expect(component.isEmailNotValid).toBeFalse();
     });
 
     it('getter passwordNotValid should return true when password is empty and touched', () => {
       component.loginForm.get('password')?.setValue('');
       component.loginForm.get('password')?.markAsTouched();
-      expect(component.passwordNotValid).toBeTrue();
+      expect(component.isPasswordNotValid).toBeTrue();
     });
 
     it('getter passwordNotValid should return false when password has a value or is not touched', () => {
       component.loginForm.get('password')?.setValue('123456');
-      expect(component.passwordNotValid).toBeFalse();
+      expect(component.isPasswordNotValid).toBeFalse();
       component.loginForm.get('password')?.markAsTouched();
-      expect(component.passwordNotValid).toBeFalse();
+      expect(component.isPasswordNotValid).toBeFalse();
     });
   });
 });

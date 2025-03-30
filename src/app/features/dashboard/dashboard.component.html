@@ -1,77 +1,10 @@
 
 <app-header></app-header>
 
-<button class="sidebar-menu-button" (click)="toggleSidebar()">
-  <span class="material-symbols-rounded">menu</span>
-</button>
-
-<aside class="sidebar" [class.collapsed]="sidebarCollapsed">
-  <header class="sidebar-header">
-    <a href="#" class="header-logo">
-      <img src="./assets/img/invierteio.jpg" alt="InvierteIO" />
-    </a>
-    <button class="sidebar-toggler" (click)="toggleSidebar()">
-      <span class="material-symbols-rounded">keyboard_double_arrow_left</span>
-    </button>
-  </header>
-
-  <nav class="sidebar-nav">
-    <ul class="nav-list primary-nav px-0">
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <span class="material-symbols-rounded">apps</span>
-          <span class="nav-label">Tablero</span>
-        </a>
-        <ul class="dropdown-menu-custom">
-          <li class="nav-item"><a class="nav-link dropdown-title">Tablero</a></li>
-        </ul>
-      </li>
-
-      <!-- Dropdown -->
-      <li class="nav-item dropdown-container" [class.open]="isOpen('mantenimientos')">
-        <a href="#" class="nav-link dropdown-toggle-custom active"
-           (click)="onDropdownClick($event, 'mantenimientos')">
-          <span class="material-symbols-rounded">settings</span>
-          <span class="nav-label">Mantenimientos</span>
-          <span class="dropdown-icon material-symbols-rounded">keyboard_arrow_down</span>
-        </a>
-
-        <!-- Dropdown Menu -->
-        <ul class="dropdown-menu-custom" appCollapse [isOpen]="isOpen('mantenimientos')">
-          <li class="nav-item"><a class="nav-link dropdown-title">Mantenimientos</a></li>
-          <li class="nav-item active"><a href="#" class="nav-link dropdown-link">Empresas inmobiliarias</a></li>
-          <li class="nav-item"><a href="#" class="nav-link dropdown-link">Membresia</a></li>
-        </ul>
-      </li>
-
-
-    </ul>
-    <ul class="nav-list secondary-nav  px-0 d-none d-md-block">
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <span class="material-symbols-rounded">person_edit</span>
-          <span class="nav-label">Luis Castillo</span>
-        </a>
-        <ul class="dropdown-menu-custom">
-          <li class="nav-item"><a class="nav-link dropdown-title">Luis Castillo</a></li>
-        </ul>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <span class="material-symbols-rounded">logout</span>
-          <span class="nav-label">Cerrar sesión</span>
-        </a>
-        <ul class="dropdown-menu-custom">
-          <li class="nav-item"><a class="nav-link dropdown-title">Cerrar sesión</a></li>
-        </ul>
-      </li>
-    </ul>
-
-  </nav>
-</aside>
+<app-sidebar [menus]="menus"></app-sidebar>
 
 <main>
-  <div class="container-fluid">
+  <div class="container-fluid pt65">
     <router-outlet></router-outlet>
   </div>
 </main>

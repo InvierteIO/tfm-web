@@ -1,0 +1,77 @@
+<form [formGroup]="form" >
+<div class="modal-header">
+    <h1 class="modal-title title-tp-h1 io-green-primary" id="staticBackdropLabel">{{title}}</h1>
+    <button type="button" class="btn-close custom-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <img src="./assets/svg/close24.svg">
+    </button>
+  </div>
+  <div class="modal-body px-4 pt-4">
+    <div class="form-group d-flex mb-2">
+      <label for="levelname" class="fw-normal col-3">Nivel</label>
+      <div class="d-flex flex-column  col-8">
+        <input type="text" class="form-control" id="levelname"
+               formControlName="levelname"
+               placeholder="" [maxLength]="50" readonly>
+      </div>
+    </div>
+    <div class="form-group d-flex mb-2">
+      <label for="shortdescription" class="fw-normal col-3">Resumen</label>
+      <div class="d-flex flex-column  col-8">
+        <textarea type="text" class="form-control" id="shortdescription"
+                  formControlName="shortdescription"
+                  placeholder="" [maxLength]="255" [rows]="3" readonly>
+        </textarea>
+      </div>
+    </div>
+
+    <div class="form-group d-flex mb-2">
+      <label for="longdescription" class="fw-normal col-3">Descripción</label>
+      <div class="d-flex flex-column  col-8">
+        <textarea type="text" class="form-control" id="longdescription"
+                  formControlName="longdescription"
+                  placeholder="" [maxLength]="255" [rows]="3" [maxlength]="2000" readonly>
+        </textarea>
+      </div>
+    </div>
+
+    <div class="form-group d-flex mb-2">
+      <label for="levelname" class="fw-normal col-3">Costo mensual</label>
+      <div class="d-flex flex-column  col-3">
+        <input type="number" class="form-control" id="monthlycost"
+               formControlName="monthlycost"
+               placeholder="" [maxLength]="9" [min]="0" readonly>
+      </div>
+    </div>
+
+    <div class="form-group d-flex mb-2">
+      <label for="annualcost" class="fw-normal col-3">Costo anual</label>
+      <div class="d-flex flex-column  col-3">
+        <input type="number" class="form-control" id="annualcost"
+               formControlName="annualcost"
+               placeholder="" [maxLength]="9" [min]="0" readonly>
+      </div>
+    </div>
+
+    <div class="form-group d-flex mb-2">
+      <label for="maxrealtors" class="fw-normal col-3">Máximo de asesores inmobiliarios</label>
+      <div class="d-flex flex-column  col-3">
+        <input type="number" class="form-control" id="maxrealtors"
+               formControlName="maxrealtors"
+               placeholder="" [maxLength]="6" [min]="0" readonly>
+      </div>
+    </div>
+
+    <div class="form-group d-flex mb-2">
+      <label for="maxprojects" class="fw-normal col-3">Máximo de proyectos</label>
+      <div class="d-flex flex-column  col-3">
+        <input type="number" class="form-control disabled" id="maxprojects"
+               formControlName="maxprojects"
+               placeholder="" [maxLength]="6" [min]="0" readonly>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-s3 button-tp d-flex justify-content-center align-items-center" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
+  </div>
+</form>
