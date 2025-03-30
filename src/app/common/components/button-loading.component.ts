@@ -8,7 +8,8 @@ import {Component, Input} from '@angular/core';
 })
 export class ButtonLoadingComponent {
   @Input() type: string = 'submit';
-  @Input() btnclasses: string = 'btn button-tp';
+  @Input() btnClasses: string = 'btn button-tp';
+  @Input() iconGoogle: string | undefined = undefined;
   @Input() loading: boolean = false;
   @Input() msgLoading: string = 'Cargando...';
   @Input() msgButton: string = '';

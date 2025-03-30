@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
 import {Router} from '@angular/router';
 import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
+import {FormUtil} from '@common/utils/form.util';
 import {AuthService} from '@core/services/auth.service';
 import { UserType } from '@core/models/user-type.model';
 
@@ -19,7 +20,7 @@ export class LoginComponent {
   loading: boolean = false;
 
   constructor(private readonly fb: FormBuilder,
-              private readonly router: Router, 
+              private readonly router: Router,
               private readonly auth: AuthService) {
     this.loginForm = this.createForm();
   }
@@ -34,38 +35,39 @@ export class LoginComponent {
   onSubmit() : void {
     if (this.loginForm.invalid) {
       console.log('Formulario inválido');
-      Object.values(this.loginForm.controls).forEach(control => {
-        if(control instanceof FormGroup){
-          Object.values(control.controls).forEach(control=> control.markAsTouched());
-        }else control.markAsTouched();
-      });
+      FormUtil.markAllAsTouched(this.loginForm);
       return;
     }
     const email = this.loginForm.get('email')?.value;
     const password = this.loginForm.get('password')?.value;
 
     this.loading = true;
+    console.log('Formulario válido:', this.loginForm.value);
+    console.log(`email: ${email}`);
+    console.log(`password: ${password}`);
+    //this.router.navigate(['/public/home/maintenance']);
+
     this.auth.login(email, password, UserType.STAFF)
     .subscribe({
       next: (user) => {
         if (this.auth.untilStaff()) {
           this.router.navigate(['/public/home/maintenance']);
         } else {
-          console.log("Logueo invalido."); 
-        }        
+          console.log("Logueo invalido.");
+        }
       },
       error:(error) => {
-        console.log("Error de autenticación. Por favor, verifica tus credenciales.");        
-      }        
+        console.log("Error de autenticación. Por favor, verifica tus credenciales.");
+      }
     });
-    this.loading = false;    
+    this.loading = false;
   }
 
-  get emailNotValid() {
+  get isEmailNotValid() {
     return this.loginForm.get('email')?.invalid && this.loginForm.get('email')?.touched;
   }
 
-  get passwordNotValid() {
+  get isPasswordNotValid() {
     return this.loginForm.get('password')?.invalid && this.loginForm.get('password')?.touched;
   }
 

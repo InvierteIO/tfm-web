@@ -12,8 +12,7 @@ import {Staff} from "@core/models/staff.model"
 import {UserCompany} from "./../models/user-company.model"
 import {Company} from "@core/models/company.model"
 import { Role } from '@core/models/role.model';
-
-
+import {FormUtil} from '@common/utils/form.util';
 
 @Component({
   selector: 'app-account-configuration',
@@ -32,7 +31,7 @@ export class AccountConfigurationComponent {
 
   constructor(private readonly fb: FormBuilder,
               private readonly router: Router,
-              private registerPersonalInfoService: RegisterPersonalInfoService, 
+              private registerPersonalInfoService: RegisterPersonalInfoService,
               private accountConfigurationService: AccountConfigurationService) {
     this.form = this.createForm();
   }
@@ -50,11 +49,8 @@ export class AccountConfigurationComponent {
     console.log(this.form);
     if (this.form.invalid) {
       console.log('Formulario inválido');
-      Object.values(this.form.controls).forEach(control => {
-        if(control instanceof FormGroup){
-          Object.values(control.controls).forEach(control=> control.markAsTouched());
-        }else control.markAsTouched();
-      });
+      FormUtil.markAllAsTouched(this.form);
+      return;
     }
     const companyname = this.form.get('companyname')?.value;
     const ruc = this.form.get('ruc')?.value;
@@ -68,28 +64,28 @@ export class AccountConfigurationComponent {
       familyName: currentFormData!.familyName,
       email: currentFormData!.email,
       password: currentFormData!.password,
-      companyName: companyname, 
-      ruc: ruc, 
-      rolname: rolname, 
-      numberUsers: numberusers, 
+      companyName: companyname,
+      ruc: ruc,
+      rolname: rolname,
+      numberUsers: numberusers,
     });
 
     const updatedFormData = this.registerPersonalInfoService.getFormData()
     this.createAccountAndCompany(updatedFormData)
-    .subscribe(response => { 
+    .subscribe(response => {
       this.router.navigate(['/public/auth/signup/account-activation']);
     });
-    
+
   }
 
   createAccountAndCompany(formData: any): Observable<void> {
-  
+
     const staff: Staff = {
       firstName: formData.firstName,
-      familyName: formData.lastName, 
+      familyName: formData.lastName,
       email: formData.email,
       password: formData.password,
-      companyRole: Role.OWNER     
+      companyRole: Role.OWNER
     };
 
     const company: Company = {
@@ -103,13 +99,13 @@ export class AccountConfigurationComponent {
     };
 
     return this.accountConfigurationService.addStaffUserNoCompany(staff).pipe(
-      concatMap(() => this.accountConfigurationService.addCompany(company)), 
-      concatMap(() => this.accountConfigurationService.setUserCompany(staff.email, userCompany)), 
-      concatMap(() => this.accountConfigurationService.notifyActivationCode(staff.email, company.taxIdentificationNumber!)), 
-      finalize(() => (this.loading = false)), 
+      concatMap(() => this.accountConfigurationService.addCompany(company)),
+      concatMap(() => this.accountConfigurationService.setUserCompany(staff.email, userCompany)),
+      concatMap(() => this.accountConfigurationService.notifyActivationCode(staff.email, company.taxIdentificationNumber!)),
+      finalize(() => (this.loading = false)),
       catchError(error => {
         console.error('Error during account creation:', error);
-        return of(); 
+        return of();
       })
     );
   }

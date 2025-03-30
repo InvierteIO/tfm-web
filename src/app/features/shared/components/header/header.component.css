@@ -1,0 +1,32 @@
+.main-header {
+  height: 65px;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1030;
+}
+
+.main-header .btn {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  color: #066B4B;
+  transition: color 0.3s;
+}
+
+.main-header .btn:hover,
+.main-header .btn:focus {
+  color: #03704D;
+}
+
+
+.main-header svg path {
+  fill: #066B4B;
+  transition: fill 0.3s;
+}
+
+.main-header .btn:hover svg path,
+.main-header .btn:focus svg path {
+  fill: #03704D;
+}

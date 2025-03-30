@@ -10,7 +10,6 @@ import {
 import {AccountActivationComponent} from './features/auth/sign-up/account-activation/account-activation.component';
 import {DashboardComponent} from './features/dashboard/dashboard.component';
 import {LoginInternalComponent} from './features/auth/login/internal/login-internal.component';
-import {MaintenancePageComponent} from './features/shared/components/maintenance-page/maintenance-page.component';
 import { Role } from '@core/models/role.model';
 import { RoleGuardService } from '@core/services/role-guard.service';
 
@@ -50,16 +49,9 @@ export const routes: Routes = [
             path: 'home', component: HomeComponent,
             canActivate: [RoleGuardService],
             data: { roles: [Role.AGENT, Role.OWNER] },
-            children: [
-              {
-                path: 'maintenance', component: MaintenancePageComponent
-              },
-              {
-                path: '**',
-                redirectTo: 'maintenance',
-                pathMatch: 'full'
-              }
-            ]
+            loadChildren: () =>
+              import('./features/home/home.routes')
+                .then((m) => m.homeRoutes),
           }
         ]
     },
@@ -81,17 +73,10 @@ export const routes: Routes = [
           path: 'dashboard', component: DashboardComponent,
           canActivate: [RoleGuardService],
           data: { roles: [Role.ADMIN, Role.SUPPORT] },
-          children: [
-            {
-              path: 'maintenance', component: MaintenancePageComponent
-            },
-            {
-              path: '**',
-              redirectTo: 'maintenance',
-              pathMatch: 'full'
-            }
-          ]
-        }   
+          loadChildren: () =>
+            import('./features/dashboard/dashboard.routes')
+              .then((m) => m.dashboardRoutes),
+        }
       ]
     },
     {

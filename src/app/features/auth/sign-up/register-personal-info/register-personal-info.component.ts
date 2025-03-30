@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {NgIf} from '@angular/common';
 import {Router} from "@angular/router";
 import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
+import {FormUtil} from '@common/utils/form.util';
 import {RegisterPersonalInfoService} from './register-personal-info.service';
 
 @Component({
@@ -41,11 +42,7 @@ export class RegisterPersonalInfoComponent {
     console.log(this.form);
     if (this.form.invalid) {
       console.log('Formulario inválido');
-      Object.values(this.form.controls).forEach(control => {
-        if(control instanceof FormGroup){
-          Object.values(control.controls).forEach(control=> control.markAsTouched());
-        }else control.markAsTouched();
-      });
+      FormUtil.markAllAsTouched(this.form);
       return;
     }
     const fullname = this.form.get('fullname')?.value;
@@ -53,18 +50,23 @@ export class RegisterPersonalInfoComponent {
     const email = this.form.get('email')?.value;
     const password = this.form.get('password')?.value;
 
-    
+    console.log('Formulario válido:', this.form.value);
+    console.log(`fullname: ${fullname}`);
+    console.log(`fullname: ${fullsurname}`);
+    console.log(`email: ${email}`);
+    console.log(`password: ${password}`);
+
     this.registerPersonalInfoService.setFormData({
       firstName: fullname,
       familyName: fullsurname,
       email: email,
       password: password,
-      companyName: '', 
-      ruc: '', 
-      rolname: '', 
-      numberUsers: 0, 
+      companyName: '',
+      ruc: '',
+      rolname: '',
+      numberUsers: 0,
     });
-    
+
     this.router.navigate(['/public/auth/signup/account-configuration']);
   }
 
