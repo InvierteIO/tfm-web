@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center align-items-center" style="min-height: 50vh;">
+  <div class="col-12 col-lg-6">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" >
+      <div class="mb-3">
+        <label for="fullname" class="form-label profile-label">Nombres</label>
+        <input type="text" class="form-control" id="fullname" placeholder="Ingrese su nombre completo"
+               formControlName="fullname"  [maxLength]="100">
+        <div *ngIf="isFullnameNotValid">
+          <small *ngIf="formCurrent?.['fullname']?.errors?.['required']" class="text-danger font-italic">
+            Nombre completo es requerido
+          </small>
+          <small *ngIf="formCurrent?.['fullname']?.errors?.['maxlength']" class="text-danger font-italic">
+            La longitud máxima es de 100 carácteres
+          </small>
+          <small *ngIf="formCurrent?.['fullname']?.errors?.['minlength']" class="text-danger font-italic">
+            La longitud minima es de 2 carácteres
+          </small>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="fullsurname" class="form-label profile-label">Apellidos</label>
+        <input type="text" class="form-control" id="fullsurname" placeholder="Ingrese su apellido completo"
+               formControlName="fullsurname"  [maxLength]="100">
+        <div *ngIf="isFullsurnameNotValid">
+          <small *ngIf="formCurrent?.['fullsurname']?.errors?.['required']" class="text-danger font-italic">
+            Apellido completo es requerido
+          </small>
+          <small *ngIf="formCurrent?.['fullsurname']?.errors?.['maxlength']" class="text-danger font-italic">
+            La longitud máxima es de 100 carácteres
+          </small>
+          <small *ngIf="formCurrent?.['fullsurname']?.errors?.['minlength']" class="text-danger font-italic">
+            La longitud minima es de 2 carácteres
+          </small>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end align-items-center pt-3">
+        <app-button-loading
+          class=""
+          type="submit"
+          [btnClasses]="'btn btn-s4 button-tp d-flex justify-content-center align-items-center'"
+          [loading]="loading"
+          msgLoading="Cargando..."
+          msgButton="Guardar"
+        >
+        </app-button-loading>
+      </div>
+    </form>
+  </div>
+</div>
+

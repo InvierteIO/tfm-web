@@ -2,7 +2,7 @@ name: CI
 on:
   push:
     branches:
-      - develop
+      - issue#35
 jobs:
   ci:
     name: Integration & CodeQL Analysis & Slack WebHook & SonarCloud Scan

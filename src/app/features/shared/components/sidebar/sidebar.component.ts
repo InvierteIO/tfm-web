@@ -69,8 +69,11 @@ export class SidebarComponent implements OnInit {
       showCancelButton: true,
       confirmButtonText: 'Sí, salir',
       cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
+      confirmButtonColor: "#066B4B",
+      cancelButtonColor: "#F9B234",
+      customClass: {
+        title: 'title-tp-h1 io-green-primary mt-4 mb-1'
+      }
     }).then((result) => {
       if (result.isConfirmed) {
         this.authService.logout();

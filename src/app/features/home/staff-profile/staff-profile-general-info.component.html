@@ -1,0 +1,161 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="row g-4 m-3">
+    <div class="col-12 col-md-6">
+      <label for="fullname" class="form-label profile-label">Nombre completo</label>
+      <input
+        type="text"
+        class="form-control"
+        id="fullname"
+        placeholder="Ingrese nombre completo"
+        formControlName="fullname"  [maxLength]="100"
+      >
+      <div *ngIf="isFullnameNotValid">
+        <small *ngIf="formCurrent?.['fullname']?.errors?.['required']" class="text-danger font-italic">
+          Nombre completo es requerido
+        </small>
+        <small *ngIf="formCurrent?.['fullname']?.errors?.['maxlength']" class="text-danger font-italic">
+          La longitud máxima es de 100 carácteres
+        </small>
+        <small *ngIf="formCurrent?.['fullname']?.errors?.['minlength']" class="text-danger font-italic">
+          La longitud minima es de 2 carácteres
+        </small>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <label for="fullsurname" class="form-label profile-label">Apellido completo</label>
+      <input
+        type="text"
+        class="form-control"
+        id="fullsurname"
+        placeholder="Ingrese apellido completo"
+        formControlName="fullsurname"  [maxLength]="100">
+      <div *ngIf="isFullsurnameNotValid">
+        <small *ngIf="formCurrent?.['fullsurname']?.errors?.['required']" class="text-danger font-italic">
+          Apellido completo es requerido
+        </small>
+        <small *ngIf="formCurrent?.['fullsurname']?.errors?.['maxlength']" class="text-danger font-italic">
+          La longitud máxima es de 100 carácteres
+        </small>
+        <small *ngIf="formCurrent?.['fullsurname']?.errors?.['minlength']" class="text-danger font-italic">
+          La longitud minima es de 2 carácteres
+        </small>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <label for="gender" class="form-label profile-label">Género</label>
+      <select
+        id="gender"
+        class="form-control"
+        formControlName="gender"
+      >
+        <option value="MALE">Masculino</option>
+        <option value="FEMALE">Femenino</option>
+      </select>
+      <div *ngIf="isGenderNotValid">
+        <small *ngIf="formCurrent?.['fullsurname']?.errors?.['required']" class="text-danger font-italic">
+          Genero es requerido
+        </small>
+      </div>
+
+    </div>
+    <div class="col-12 col-md-6">
+      <label for="taxidentificationnumber" class="form-label profile-label">Documento de identidad</label>
+      <input
+        type="text"
+        class="form-control"
+        id="taxidentificationnumber"
+        placeholder="Ingresa número de tercero"
+        formControlName="taxidentificationnumber"  [maxLength]="8" [minLength]="8"
+      >
+      <div *ngIf="isTaxIdentificationNumberValid">
+        <small *ngIf="formCurrent?.['taxidentificationnumber']?.errors?.['required']" class="text-danger font-italic">
+          Número de identidad es requerido
+        </small>
+        <small *ngIf="formCurrent?.['taxidentificationnumber']?.errors?.['pattern']" class="text-danger font-italic">
+          Número de identidad es de 8 dígitos
+        </small>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <label for="birthday" class="form-label profile-label">Fecha de nacimiento</label>
+      <input
+        type="date"
+        class="form-control"
+        id="birthday"
+        placeholder="Ingrese fecha de nacimiento"
+        formControlName="birthday"
+      >
+      <div *ngIf="isBirthdayValid">
+        <small *ngIf="formCurrent?.['birthday']?.errors?.['required']" class="text-danger font-italic">
+          Fecha de nacimiento es requerido
+        </small>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <label for="numbercontact" class="form-label profile-label">Numero de contacto</label>
+      <input
+        type="text"
+        class="form-control"
+        id="numbercontact"
+        placeholder="IngresE número de contacto"
+        formControlName="numbercontact"  [maxLength]="9" [minLength]="9"
+      >
+      <div *ngIf="isNumberContactValid">
+        <small *ngIf="formCurrent?.['numbercontact']?.errors?.['required']" class="text-danger font-italic">
+          Número de contacto es requerido
+        </small>
+        <small *ngIf="formCurrent?.['numbercontact']?.errors?.['pattern']" class="text-danger font-italic">
+          Número de contacto es de 9 dígitos
+        </small>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <label for="jobtitle" class="form-label profile-label">Puesto</label>
+      <input
+        type="text"
+        class="form-control"
+        id="jobtitle"
+        placeholder="Ingrese puesto de trabajo"
+        formControlName="jobtitle"  [maxLength]="100"
+      >
+      <div *ngIf="isJobTitleValid">
+        <small *ngIf="formCurrent?.['jobtitle']?.errors?.['required']" class="text-danger font-italic">
+          Puesto de trabajo es requerido
+        </small>
+        <small *ngIf="formCurrent?.['jobtitle']?.errors?.['pattern']" class="text-danger font-italic">
+          La longitud máxima es de 100 carácteres
+        </small>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <label for="address" class="form-label profile-label">Dirección</label>
+      <input
+        type="text"
+        class="form-control"
+        id="address"
+        placeholder="Ingrese su dirección"
+        formControlName="address"  [maxLength]="255"
+      >
+      <div *ngIf="isAddressValid">
+        <small *ngIf="formCurrent?.['address']?.errors?.['required']" class="text-danger font-italic">
+          Dirección es requerido
+        </small>
+        <small *ngIf="formCurrent?.['address']?.errors?.['pattern']" class="text-danger font-italic">
+          La longitud máxima es de 2550 carácteres
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end align-items-center pt-3">
+    <app-button-loading
+      class=""
+      type="submit"
+      [btnClasses]="'btn btn-s4 button-tp d-flex justify-content-center align-items-center'"
+      [loading]="loading"
+      msgLoading="Cargando..."
+      msgButton="Guardar"
+    >
+    </app-button-loading>
+  </div>
+</form>

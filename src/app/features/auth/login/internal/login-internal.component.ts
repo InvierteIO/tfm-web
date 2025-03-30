@@ -23,7 +23,7 @@ export class LoginInternalComponent {
   loginForm: FormGroup;
   loading: boolean = false;
   constructor(private readonly fb: FormBuilder,
-              private readonly router: Router, 
+              private readonly router: Router,
               private readonly auth: AuthService) {
     this.loginForm = this.builForm();
   }
@@ -45,14 +45,14 @@ export class LoginInternalComponent {
     .subscribe({
       next: (user) => {
         if (this.auth.untilOperator()) {
-          this.router.navigate(['/internal/dashboard']);
+          this.router.navigate(['/internal/dashboard/memberships']);
         } else {
-          console.log("Logueo invalido."); 
-        }        
+          console.log("Logueo invalido.");
+        }
       },
       error:(error) => {
-        console.log("Error de autenticación. Por favor, verifica tus credenciales.");        
-      }        
+        console.log("Error de autenticación. Por favor, verifica tus credenciales.");
+      }
     });
   }
 
@@ -64,7 +64,7 @@ export class LoginInternalComponent {
     return this.loginForm.get('password')?.invalid && this.loginForm.get('password')?.touched;
   }
 
-  
+
 
   builForm() : FormGroup {
     return this.fb.group({

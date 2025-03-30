@@ -2,7 +2,7 @@ name: CD
 on:
   push:
     branches:
-      - main
+      - issue#35
 jobs:
   cd:
     name: Build & Deploy on S3
