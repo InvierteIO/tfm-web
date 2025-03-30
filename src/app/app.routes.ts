@@ -11,6 +11,8 @@ import {AccountActivationComponent} from './features/auth/sign-up/account-activa
 import {DashboardComponent} from './features/dashboard/dashboard.component';
 import {LoginInternalComponent} from './features/auth/login/internal/login-internal.component';
 import {MaintenancePageComponent} from './features/shared/components/maintenance-page/maintenance-page.component';
+import { Role } from '@core/models/role.model';
+import { RoleGuardService } from '@core/services/role-guard.service';
 
 export const routes: Routes = [
     {
@@ -46,6 +48,8 @@ export const routes: Routes = [
           },
           {
             path: 'home', component: HomeComponent,
+            canActivate: [RoleGuardService],
+            data: { roles: [Role.AGENT, Role.OWNER] },
             children: [
               {
                 path: 'maintenance', component: MaintenancePageComponent
@@ -75,6 +79,8 @@ export const routes: Routes = [
         },
         {
           path: 'dashboard', component: DashboardComponent,
+          canActivate: [RoleGuardService],
+          data: { roles: [Role.ADMIN, Role.SUPPORT] },
           children: [
             {
               path: 'maintenance', component: MaintenancePageComponent
@@ -85,7 +91,7 @@ export const routes: Routes = [
               pathMatch: 'full'
             }
           ]
-        }
+        }   
       ]
     },
     {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {CollapseDirective} from '@common/directives/collapse.directive';
 import {RouterOutlet} from '@angular/router';
 import {HeaderComponent} from '../shared/components/header/header.component';
+import { AuthService } from '@core/services/auth.service';
 
 @Component({
   standalone: true,
@@ -19,7 +20,7 @@ export class HomeComponent implements OnInit {
   sidebarCollapsed = false;
   currentDropdown: string | null = null;
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
     if (window.innerWidth <= 1024) {
@@ -40,4 +41,9 @@ export class HomeComponent implements OnInit {
     this.currentDropdown = null;
     this.sidebarCollapsed = !this.sidebarCollapsed;
   }
+
+  getName(): string {
+    return this.authService.getName();
+  }
+
 }

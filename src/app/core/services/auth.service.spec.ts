@@ -12,9 +12,8 @@ describe('AuthService', () => {
 
   const fakeUser: User = {
     token: 'abc123',
-    name: 'Test',
-    firstName: 'Test',
-    familyName: 'User',
+    name: 'Test',    
+    email: 'user@user.com',
     isActive: true
   };
 
@@ -41,12 +40,12 @@ describe('AuthService', () => {
       httpServiceSpy.authBasic.and.returnValue(httpServiceSpy);
       httpServiceSpy.post.and.returnValue(of(fakeUser));
 
-      const mobile = 123;
+      const email = 'admin@admin.com';
       const password = 'secret';
 
-      service.login(mobile, password).subscribe(user => {
+      service.login(email, password).subscribe(user => {
         expect(user).toEqual(fakeUser);
-        expect(httpServiceSpy.authBasic).toHaveBeenCalledWith(mobile, password);
+        expect(httpServiceSpy.authBasic).toHaveBeenCalledWith(email, password);
         expect(httpServiceSpy.post).toHaveBeenCalledWith(AuthService.END_POINT);
         done();
       });

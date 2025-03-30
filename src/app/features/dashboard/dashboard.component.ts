@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {CollapseDirective} from "@common/directives/collapse.directive";
 import {HeaderComponent} from "../shared/components/header/header.component";
 import {RouterOutlet} from "@angular/router";
+import { AuthService } from '@core/services/auth.service';  
+
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +20,7 @@ export class DashboardComponent implements OnInit {
   sidebarCollapsed = false;
   currentDropdown: string | null = null;
 
-  constructor() {}
+  constructor(private auth : AuthService) {}
 
   ngOnInit(): void {
     if (window.innerWidth <= 1024) {
@@ -38,6 +40,10 @@ export class DashboardComponent implements OnInit {
   toggleSidebar(): void {
     this.currentDropdown = null;
     this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+  getName(): string {
+    return this.auth.getName();
   }
 }
 
