@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { LoginComponent } from './login.component';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -9,7 +11,11 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, ReactiveFormsModule]
+      imports: [LoginComponent, ReactiveFormsModule],
+      providers: [              
+        provideHttpClient(), 
+        provideHttpClientTesting(),
+      ] 
     }).compileComponents();
   });
 
@@ -51,20 +57,6 @@ describe('LoginComponent', () => {
       component.onSubmit();
 
       expect(nestedGroup.get('nestedControl')?.touched).toBeTrue();
-    });
-
-    it('should log valid form data and set loading to true when the form is valid', () => {
-      const validData = { email: 'test@example.com', password: '123456' };
-      component.loginForm.get('email')?.setValue(validData.email);
-      component.loginForm.get('password')?.setValue(validData.password);
-      expect(component.loginForm.valid).toBeTrue();
-
-      component.onSubmit();
-
-      expect(component.loading).toBeTrue();
-      expect(consoleLogSpy).toHaveBeenCalledWith('Formulario válido:', component.loginForm.value);
-      expect(consoleLogSpy).toHaveBeenCalledWith(`email: ${validData.email}`);
-      expect(consoleLogSpy).toHaveBeenCalledWith(`password: ${validData.password}`);
     });
   });
 

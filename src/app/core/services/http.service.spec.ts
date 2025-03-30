@@ -60,11 +60,11 @@ describe('HttpService', () => {
 
   describe('authBasic method', () => {
     it('should add Authorization header with Basic scheme', () => {
-      const mobile = 12345;
+      const email = 'admin@admin.com';
       const password = 'secret';
-      service.authBasic(mobile, password);
+      service.authBasic(email, password);
       const options = (service as any).createOptions();
-      const expected = 'Basic ' + btoa(mobile + ':' + password);
+      const expected = 'Basic ' + btoa(email + ':' + password);
       expect(options.headers.get('Authorization')).toEqual(expected);
     });
   });

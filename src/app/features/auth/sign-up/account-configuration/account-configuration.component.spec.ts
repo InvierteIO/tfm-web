@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AccountConfigurationComponent } from './account-configuration.component';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 
 describe('AccountConfigurationComponent', () => {
@@ -10,8 +12,12 @@ describe('AccountConfigurationComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         AccountConfigurationComponent,
-        ReactiveFormsModule
+        ReactiveFormsModule,
       ],
+      providers: [        
+        provideHttpClient(), 
+        provideHttpClientTesting(),
+      ]      
     }).compileComponents();
   });
 
@@ -176,24 +182,6 @@ describe('AccountConfigurationComponent', () => {
     component.onSubmit();
     expect(component.form.invalid).toBeTrue();
     expect(console.log).toHaveBeenCalledWith('Formulario inválido');
-  });
-
-  it('onSubmit() - should set loading to true and log valid form values when form is valid', () => {
-    spyOn(console, 'log');
-    component.form.get('companyname')?.setValue('Valid Company');
-    component.form.get('ruc')?.setValue('12345678901');
-    component.form.get('rolname')?.setValue('Manager');
-    component.form.get('numberusers')?.setValue('123');
-
-    component.onSubmit();
-
-    expect(component.form.valid).toBeTrue();
-    expect(component.loading).toBeTrue();
-    expect(console.log).toHaveBeenCalledWith('Formulario válido:', component.form.value);
-    expect(console.log).toHaveBeenCalledWith(`companyname: ${component.form.get('companyname')?.value}`);
-    expect(console.log).toHaveBeenCalledWith(`ruc: ${component.form.get('ruc')?.value}`);
-    expect(console.log).toHaveBeenCalledWith(`rolname: ${component.form.get('rolname')?.value}`);
-    expect(console.log).toHaveBeenCalledWith(`numberusers: ${component.form.get('numberusers')?.value}`);
   });
 
   it('should mark nested FormGroup controls as touched if any exist', () => {

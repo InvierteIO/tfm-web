@@ -1,6 +1,8 @@
 import { TestBed, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { SidebarComponent } from './sidebar.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
 import { MenuSidebar } from '../../models/menu-sidebar.model';
 
@@ -21,7 +23,11 @@ describe('SidebarComponent (standalone)', () => {
           { path: 'menu2/sub1', component: DummyComponent },
           { path: '**', component: DummyComponent }
         ])
-      ]
+      ],
+      providers: [        
+        provideHttpClient(), 
+        provideHttpClientTesting(),
+      ] 
     }).compileComponents();
   });
 
