@@ -1,0 +1,20 @@
+<app-auth-layout [subtitleWelcome]="'Activando tu cuenta...'">
+    <div class="text-center">
+      <h2 class="mb-4 text-auth">Activación de Cuenta</h2>
+  
+      <div *ngIf="loading">
+        <p class="text-info">Procesando activación...</p>
+        <div class="spinner-border text-primary"></div>
+      </div>
+  
+      <div *ngIf="activationSuccess === true">
+        <p class="text-success">¡Tu cuenta ha sido activada con éxito! Redirigiéndote al inicio de sesión...</p>
+      </div>
+  
+      <div *ngIf="activationSuccess === false">
+        <p class="text-danger">Error al activar la cuenta. El enlace puede haber expirado.</p>
+        <button class="btn btn-primary" (click)="goToLogin()">Volver al Inicio</button>
+      </div>
+    </div>
+  </app-auth-layout>
+  
