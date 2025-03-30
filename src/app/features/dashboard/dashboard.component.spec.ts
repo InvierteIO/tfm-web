@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DashboardComponent } from './dashboard.component';
 import { SidebarService } from '../shared/services/siderbar.service';
 import { MenuSidebar } from '../shared/models/menu-sidebar.model';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -12,7 +14,11 @@ describe('DashboardComponent', () => {
     const spy = jasmine.createSpyObj('SidebarService', ['getMenusDashboard']);
     await TestBed.configureTestingModule({
       imports: [DashboardComponent],
-      providers: [{ provide: SidebarService, useValue: spy }]
+      providers: [
+        { provide: SidebarService, useValue: spy },        
+        provideHttpClient(), 
+        provideHttpClientTesting(),
+      ] 
     }).compileComponents();
 
     sidebarServiceSpy = TestBed.inject(SidebarService) as jasmine.SpyObj<SidebarService>;
