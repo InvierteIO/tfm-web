@@ -5,6 +5,8 @@ import {ButtonLoadingComponent} from '@common/components/button-loading.componen
 import {Router} from '@angular/router';
 import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
 import {FormUtil} from '@common/utils/form.util';
+import {AuthService} from '@core/services/auth.service';
+import { UserType } from '@core/models/user-type.model';
 
 @Component({
   selector: 'app-auth',
@@ -18,7 +20,8 @@ export class LoginComponent {
   loading: boolean = false;
 
   constructor(private readonly fb: FormBuilder,
-              private readonly router: Router) {
+              private readonly router: Router,
+              private readonly auth: AuthService) {
     this.loginForm = this.createForm();
   }
 
@@ -43,6 +46,21 @@ export class LoginComponent {
     console.log(`email: ${email}`);
     console.log(`password: ${password}`);
     //this.router.navigate(['/public/home/maintenance']);
+
+    this.auth.login(email, password, UserType.STAFF)
+    .subscribe({
+      next: (user) => {
+        if (this.auth.untilStaff()) {
+          this.router.navigate(['/public/home/maintenance']);
+        } else {
+          console.log("Logueo invalido.");
+        }
+      },
+      error:(error) => {
+        console.log("Error de autenticación. Por favor, verifica tus credenciales.");
+      }
+    });
+    this.loading = false;
   }
 
   get isEmailNotValid() {
@@ -55,5 +73,9 @@ export class LoginComponent {
 
   goSignUp(): void {
     this.router.navigate(['/public/auth/signup/register-info']);
+  }
+
+  goForgotPassword(): void {
+    this.router.navigate(['/public/auth/forgot-password']);
   }
 }

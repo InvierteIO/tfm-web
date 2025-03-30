@@ -23,5 +23,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.menus = this.sidebarService.getMenusDashboard();
   }
+
 }
 

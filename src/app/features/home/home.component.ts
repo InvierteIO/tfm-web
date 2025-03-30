@@ -24,4 +24,5 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.menus = this.sidebarService.getMenusHome();
   }
+
 }

@@ -4,6 +4,14 @@ import {NgIf} from '@angular/common';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
 import {Router} from '@angular/router';
 import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
+import { catchError, concatMap, finalize } from 'rxjs/operators';
+import {Observable, of} from 'rxjs';
+import {RegisterPersonalInfoService} from './../register-personal-info/register-personal-info.service';
+import {AccountConfigurationService} from './account-configuration.service'
+import {Staff} from "@core/models/staff.model"
+import {UserCompany} from "./../models/user-company.model"
+import {Company} from "@core/models/company.model"
+import { Role } from '@core/models/role.model';
 import {FormUtil} from '@common/utils/form.util';
 
 @Component({
@@ -22,7 +30,9 @@ export class AccountConfigurationComponent {
   loading: boolean = false;
 
   constructor(private readonly fb: FormBuilder,
-              private readonly router: Router) {
+              private readonly router: Router,
+              private registerPersonalInfoService: RegisterPersonalInfoService,
+              private accountConfigurationService: AccountConfigurationService) {
     this.form = this.createForm();
   }
 
@@ -48,13 +58,56 @@ export class AccountConfigurationComponent {
     const numberusers = this.form.get('numberusers')?.value;
     this.loading = true;
 
-    console.log('Formulario válido:', this.form.value);
-    console.log(`companyname: ${companyname}`);
-    console.log(`ruc: ${ruc}`);
-    console.log(`rolname: ${rolname}`);
-    console.log(`numberusers: ${numberusers}`);
+    const currentFormData = this.registerPersonalInfoService.getFormData()
+    this.registerPersonalInfoService.setFormData({
+      firstName: currentFormData!.firstName,
+      familyName: currentFormData!.familyName,
+      email: currentFormData!.email,
+      password: currentFormData!.password,
+      companyName: companyname,
+      ruc: ruc,
+      rolname: rolname,
+      numberUsers: numberusers,
+    });
 
-    this.router.navigate(['/public/auth/signup/account-activation']);
+    const updatedFormData = this.registerPersonalInfoService.getFormData()
+    this.createAccountAndCompany(updatedFormData)
+    .subscribe(response => {
+      this.router.navigate(['/public/auth/signup/account-activation']);
+    });
+
+  }
+
+  createAccountAndCompany(formData: any): Observable<void> {
+
+    const staff: Staff = {
+      firstName: formData.firstName,
+      familyName: formData.lastName,
+      email: formData.email,
+      password: formData.password,
+      companyRole: Role.OWNER
+    };
+
+    const company: Company = {
+      taxIdentificationNumber: formData.ruc,
+      name: formData.companyName,
+      allowedMemberQuantity: formData.numberUsers
+    };
+
+    const userCompany: UserCompany = {
+      taxIdentificationNumber: formData.ruc
+    };
+
+    return this.accountConfigurationService.addStaffUserNoCompany(staff).pipe(
+      concatMap(() => this.accountConfigurationService.addCompany(company)),
+      concatMap(() => this.accountConfigurationService.setUserCompany(staff.email, userCompany)),
+      concatMap(() => this.accountConfigurationService.notifyActivationCode(staff.email, company.taxIdentificationNumber!)),
+      finalize(() => (this.loading = false)),
+      catchError(error => {
+        console.error('Error during account creation:', error);
+        return of();
+      })
+    );
   }
 
   get companynameEmpty() {

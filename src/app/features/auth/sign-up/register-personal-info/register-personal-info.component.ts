@@ -4,6 +4,7 @@ import {NgIf} from '@angular/common';
 import {Router} from "@angular/router";
 import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
 import {FormUtil} from '@common/utils/form.util';
+import {RegisterPersonalInfoService} from './register-personal-info.service';
 
 @Component({
   selector: 'app-register-personal-info',
@@ -21,7 +22,8 @@ export class RegisterPersonalInfoComponent {
   form: FormGroup;
 
   constructor(private readonly  fb: FormBuilder,
-              private readonly router: Router) {
+              private readonly router: Router,
+              private registerPersonalInfoService: RegisterPersonalInfoService) {
     this.form = this.createForm();
   }
 
@@ -53,6 +55,17 @@ export class RegisterPersonalInfoComponent {
     console.log(`fullname: ${fullsurname}`);
     console.log(`email: ${email}`);
     console.log(`password: ${password}`);
+
+    this.registerPersonalInfoService.setFormData({
+      firstName: fullname,
+      familyName: fullsurname,
+      email: email,
+      password: password,
+      companyName: '',
+      ruc: '',
+      rolname: '',
+      numberUsers: 0,
+    });
 
     this.router.navigate(['/public/auth/signup/account-configuration']);
   }
