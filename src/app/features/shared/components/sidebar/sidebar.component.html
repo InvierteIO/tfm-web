@@ -74,19 +74,22 @@
       <li class="nav-item">
         <a href="#" class="nav-link">
           <span class="material-symbols-rounded">person_edit</span>
-          <span class="nav-label">Luis Castillo</span>
+          <span class="nav-label">{{ getName() }}</span>
         </a>
         <ul class="dropdown-menu-custom">
-          <li class="nav-item"><a class="nav-link dropdown-title">Luis Castillo</a></li>
+          <li class="nav-item"><a class="nav-link dropdown-title">{{ getName() }}</a></li>
         </ul>
       </li>
       <li class="nav-item">
-        <a href="#" class="nav-link">
+        <a class="nav-link"  (click)="logout()">
           <span class="material-symbols-rounded">logout</span>
           <span class="nav-label">Cerrar sesión</span>
         </a>
+        
         <ul class="dropdown-menu-custom">
-          <li class="nav-item"><a class="nav-link dropdown-title">Cerrar sesión</a></li>
+          <li class="nav-item">
+            <a class="nav-link dropdown-title">Cerrar sesión</a>
+          </li>
         </ul>
       </li>
     </ul>

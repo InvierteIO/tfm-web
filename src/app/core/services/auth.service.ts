@@ -8,8 +8,6 @@ import { environment } from '@env';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import { Role } from '@core/models/role.model';
 import { UserType } from '@core/models/user-type.model';
-import { CompanyRole } from '@core/models/company-role.model';
-
 
 @Injectable({providedIn: 'root'})
 export class AuthService {

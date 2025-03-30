@@ -2,7 +2,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {CollapseDirective} from "@common/directives/collapse.directive";
 import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {NgForOf} from '@angular/common';
+import Swal from 'sweetalert2';
 import {MenuSidebar} from '../../models/menu-sidebar.model';
+import { AuthService } from '@core/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -22,7 +24,7 @@ export class SidebarComponent implements OnInit {
   currentDropdown: string | null = null;
   @Input() menus: MenuSidebar[] = [];
 
-  constructor(readonly router: Router) {
+  constructor(readonly router: Router, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -53,5 +55,27 @@ export class SidebarComponent implements OnInit {
     }
 
     return menu.submenus.some(sub => currentUrl.startsWith(sub.url));
+  }
+
+  getName(): string {
+    return this.authService.getName();
+  }
+
+  logout(): void {
+    Swal.fire({
+      title: '¿Cerrar sesión?',
+      text: '¿Estás seguro de que deseas cerrar sesión?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, salir',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.authService.logout();
+        this.router.navigate(['/public/auth/login']);
+      }
+    });
   }
 }

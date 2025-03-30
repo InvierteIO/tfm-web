@@ -1,17 +1,16 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
 import { LoginComponent } from './features/auth/login/public/login.component';
-import {
-  RegisterPersonalInfoComponent
-} from './features/auth/sign-up/register-personal-info/register-personal-info.component';
-import {
-  AccountConfigurationComponent
-} from './features/auth/sign-up/account-configuration/account-configuration.component';
-import {AccountActivationComponent} from './features/auth/sign-up/account-activation/account-activation.component';
-import {DashboardComponent} from './features/dashboard/dashboard.component';
-import {LoginInternalComponent} from './features/auth/login/internal/login-internal.component';
+import { RegisterPersonalInfoComponent } from './features/auth/sign-up/register-personal-info/register-personal-info.component';
+import { AccountConfigurationComponent } from './features/auth/sign-up/account-configuration/account-configuration.component';
+import { AccountActivationComponent } from './features/auth/sign-up/account-activation/account-activation.component';
+import { AccountConfirmationComponent } from './features/auth/sign-up/account-confirmation/account-confirmation.component';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { LoginInternalComponent } from './features/auth/login/internal/login-internal.component';
+import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
 import { Role } from '@core/models/role.model';
 import { RoleGuardService } from '@core/services/role-guard.service';
+
 
 export const routes: Routes = [
     {
@@ -27,8 +26,8 @@ export const routes: Routes = [
                 path: 'login', component: LoginComponent
               },
               {
-                path: 'forgot-password', component: HomeComponent
-              },
+                path: 'forgot-password', component: ForgotPasswordComponent
+              },                 
               {
                 path: 'signup',
                 children : [
@@ -40,7 +39,10 @@ export const routes: Routes = [
                   },
                   {
                     path: 'account-activation', component: AccountActivationComponent
-                  }
+                  },
+                  {
+                    path: 'account-confirmation/:token', component: AccountConfirmationComponent
+                  }                                
                 ]
               }
             ]

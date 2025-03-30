@@ -72,4 +72,8 @@ export class LoginInternalComponent {
       password: ['', [Validators.required]]
     });
   }
+
+  goForgotPassword(): void {
+    this.router.navigate(['/public/auth/forgot-password']);
+  }
 }

@@ -4,7 +4,6 @@ import {RouterOutlet} from "@angular/router";
 import {SidebarComponent} from '../shared/components/sidebar/sidebar.component';
 import {MenuSidebar} from '../shared/models/menu-sidebar.model';
 import {SidebarService} from '../shared/services/siderbar.service';
-import { AuthService } from '@core/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,15 +17,12 @@ import { AuthService } from '@core/services/auth.service';
 })
 export class DashboardComponent implements OnInit {
   menus: MenuSidebar[] = [];
-  constructor(private readonly sidebarService: SidebarService, private auth : AuthService) {
+  constructor(private readonly sidebarService: SidebarService) {
   }
 
   ngOnInit(): void {
     this.menus = this.sidebarService.getMenusDashboard();
   }
 
-  getName(): string {
-    return this.auth.getName();
-  }
 }
 

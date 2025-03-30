@@ -74,4 +74,8 @@ export class LoginComponent {
   goSignUp(): void {
     this.router.navigate(['/public/auth/signup/register-info']);
   }
+
+  goForgotPassword(): void {
+    this.router.navigate(['/public/auth/forgot-password']);
+  }
 }
