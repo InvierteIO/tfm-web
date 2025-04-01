@@ -23,7 +23,7 @@ export class RegisterPersonalInfoComponent {
 
   constructor(private readonly  fb: FormBuilder,
               private readonly router: Router,
-              private registerPersonalInfoService: RegisterPersonalInfoService) {
+              private readonly registerPersonalInfoService: RegisterPersonalInfoService) {
     this.form = this.createForm();
   }
 

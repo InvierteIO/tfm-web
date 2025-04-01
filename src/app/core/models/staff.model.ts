@@ -1,11 +1,8 @@
 import { Role } from "./role.model";
+import { UserGeneral } from "./user-general.model";
 
-export interface Staff {
+export interface Staff extends UserGeneral {
     
-    firstName: string;
-    
-    familyName: string;
-
     email: string;
 
     password?: string;
@@ -23,4 +20,6 @@ export interface Staff {
     phone?: string;
 
     taxIdentificationNumber?: string;
+
+    gender?: string; 
 }

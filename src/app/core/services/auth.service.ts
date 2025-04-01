@@ -8,6 +8,7 @@ import { environment } from '@env';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import { Role } from '@core/models/role.model';
 import { UserType } from '@core/models/user-type.model';
+import { CompanyRole } from '@core/models/company-role.model';
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -22,7 +23,8 @@ export class AuthService {
     login(email: string, password: string, userType: UserType): Observable<User> {
 
         return this.httpService.authBasic(email, password)
-            .post(UserType.OPERATOR == userType? AuthService.END_POINT_OPERATOR : AuthService.END_POINT_STAFF)
+            .error("Error de autenticación. Por favor, verifica tus credenciales.")
+            .post(UserType.OPERATOR == userType? AuthService.END_POINT_OPERATOR : AuthService.END_POINT_STAFF)            
             .pipe(
                 map(jsonToken => {
                     const jwtHelper = new JwtHelperService();
@@ -40,6 +42,7 @@ export class AuthService {
                         role: decodedToken.role,
                         companyRoles: companyRoles
                     };               
+                    localStorage.setItem('user', JSON.stringify(this.user));
                     return this.user;
                 })
             ); 
@@ -47,15 +50,26 @@ export class AuthService {
 
     logout(): void {
         this.user = undefined as any;
+        localStorage.removeItem('user');
         this.router.navigate(['']).then();
     }
 
-    getToken(): string |undefined {
+    validateUserStorage(): void {
+        if(!this.user || localStorage.getItem('user')) {
+            this.user =  JSON.parse(localStorage.getItem('user')!);
+        }
+    }
+
+    getToken(): string |undefined {        
         return this.user ? this.user.token : undefined;
     }
 
     isAuthenticated(): boolean {
-        return this.user != null && !(new JwtHelperService().isTokenExpired(this.user.token));
+        return this.user != undefined && this.user != null && !(new JwtHelperService().isTokenExpired(this.user.token));
+    }
+
+    getEmail(): string {
+        return this.user ? this.user.email! : '???';
     }
 
     getName(): string {
@@ -81,4 +95,8 @@ export class AuthService {
             this.user?.companyRoles?.some(companyRole => companyRole.role === role));
     }
 
+    getCompanyRoles(): CompanyRole[] | undefined {
+        if (!this.user || !this.user.companyRoles || !this.isAuthenticated()) return undefined;
+        return this.user?.companyRoles;
+    }
 }

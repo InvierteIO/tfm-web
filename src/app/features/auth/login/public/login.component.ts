@@ -1,81 +1,29 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import {ButtonLoadingComponent} from '@common/components/button-loading.component';
 import {Router} from '@angular/router';
 import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
-import {FormUtil} from '@common/utils/form.util';
-import {AuthService} from '@core/services/auth.service';
 import { UserType } from '@core/models/user-type.model';
+import { LoginFormComponent } from "../login-form.component";
 
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ButtonLoadingComponent, AuthLayoutComponent],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  imports: [LoginFormComponent, AuthLayoutComponent],
+  templateUrl: './login.component.html'
 })
 export class LoginComponent {
-  loginForm: FormGroup;
-  loading: boolean = false;
+  UserType = UserType;
 
-  constructor(private readonly fb: FormBuilder,
-              private readonly router: Router,
-              private readonly auth: AuthService) {
-    this.loginForm = this.createForm();
+  constructor(private readonly router: Router) { }
+
+  onLoginSuccess(): void {
+    this.router.navigate(['/public/home/maintenance']);
   }
 
-  createForm() : FormGroup {
-    return this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
-    });
-  }
-
-  onSubmit() : void {
-    if (this.loginForm.invalid) {
-      console.log('Formulario inválido');
-      FormUtil.markAllAsTouched(this.loginForm);
-      return;
-    }
-    const email = this.loginForm.get('email')?.value;
-    const password = this.loginForm.get('password')?.value;
-
-    this.loading = true;
-    console.log('Formulario válido:', this.loginForm.value);
-    console.log(`email: ${email}`);
-    console.log(`password: ${password}`);
-    //this.router.navigate(['/public/home/maintenance']);
-
-    this.auth.login(email, password, UserType.STAFF)
-    .subscribe({
-      next: (user) => {
-        if (this.auth.untilStaff()) {
-          this.router.navigate(['/public/home/maintenance']);
-        } else {
-          console.log("Logueo invalido.");
-        }
-      },
-      error:(error) => {
-        console.log("Error de autenticación. Por favor, verifica tus credenciales.");
-      }
-    });
-    this.loading = false;
-  }
-
-  get isEmailNotValid() {
-    return this.loginForm.get('email')?.invalid && this.loginForm.get('email')?.touched;
-  }
-
-  get isPasswordNotValid() {
-    return this.loginForm.get('password')?.invalid && this.loginForm.get('password')?.touched;
-  }
-
-  goSignUp(): void {
+  onSignUp(): void {
     this.router.navigate(['/public/auth/signup/register-info']);
   }
 
-  goForgotPassword(): void {
+  onForgotPassword(): void {
     this.router.navigate(['/public/auth/forgot-password']);
   }
 }

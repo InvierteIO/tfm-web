@@ -10,6 +10,7 @@ import { LoginInternalComponent } from './features/auth/login/internal/login-int
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
 import { Role } from '@core/models/role.model';
 import { RoleGuardService } from '@core/services/role-guard.service';
+import { AuthRedirectGuard } from '@core/services/auth-redirect-guard.service';
 
 
 export const routes: Routes = [
@@ -23,25 +24,30 @@ export const routes: Routes = [
             path: 'auth',
             children : [
               {
-                path: 'login', component: LoginComponent
+                path: 'login', component: LoginComponent,
+                canActivate: [AuthRedirectGuard]
               },
               {
                 path: 'forgot-password', component: ForgotPasswordComponent
               },                 
               {
-                path: 'signup',
+                path: 'signup',                
                 children : [
                   {
-                    path: 'register-info', component: RegisterPersonalInfoComponent
+                    path: 'register-info', component: RegisterPersonalInfoComponent,
+                    canActivate: [AuthRedirectGuard]
                   },
                   {
-                    path: 'account-configuration', component: AccountConfigurationComponent
+                    path: 'account-configuration', component: AccountConfigurationComponent,
+                    canActivate: [AuthRedirectGuard]
                   },
                   {
-                    path: 'account-activation', component: AccountActivationComponent
+                    path: 'account-activation', component: AccountActivationComponent,
+                    canActivate: [AuthRedirectGuard]
                   },
                   {
-                    path: 'account-confirmation/:token', component: AccountConfirmationComponent
+                    path: 'account-confirmation/:token', component: AccountConfirmationComponent,
+                    canActivate: [AuthRedirectGuard]
                   }                                
                 ]
               }
@@ -64,10 +70,12 @@ export const routes: Routes = [
           path: 'auth',
           children : [
             {
-              path: 'login', component: LoginInternalComponent
+              path: 'login', component: LoginInternalComponent,
+              canActivate: [AuthRedirectGuard]
             },
             {
-              path: 'forgot-password', component: HomeComponent
+              path: 'forgot-password', component: HomeComponent,
+              canActivate: [AuthRedirectGuard]
             }
           ]
         },

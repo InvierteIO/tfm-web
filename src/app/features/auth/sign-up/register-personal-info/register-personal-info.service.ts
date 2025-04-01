@@ -1,19 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
-interface FormPersonalData {
-  firstName: string;
-  familyName: string;
-  email: string;
-  password: string;
-  companyName: string;
-  ruc: string;
-  rolname: string;
-  numberUsers: number;
-}
+import { FormPersonalData } from './form-personal-data.model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class RegisterPersonalInfoService {
   private formPersonalDataSubject = new BehaviorSubject<FormPersonalData | null>(null);

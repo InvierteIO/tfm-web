@@ -124,6 +124,7 @@ export class HttpService {
             Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.CONFIRMATION]
             (this.successfulNotification));
             this.successfulNotification = undefined;
+            this.errorNotification = undefined;
         }
         const contentType = response.headers.get('content-type');
         if (contentType) {
@@ -144,6 +145,7 @@ export class HttpService {
           Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR]
           (this.errorNotification));
             this.errorNotification = undefined;
+            this.successfulNotification = undefined;
         } else {
             console.error(notification);
         }
@@ -151,9 +153,12 @@ export class HttpService {
 
     private handleError(response : any): any {
         let error: AppError;
-        if (response.status === HttpService.UNAUTHORIZED) {
+        if (response.status === HttpService.UNAUTHORIZED) {            
             this.showError('Unauthorized');
-            this.router.navigate(['']).then();
+            const loginRoutes = ['/public/auth/login', '/internal/auth/login']; 
+            if (!loginRoutes.includes(this.router.url)) {
+                this.router.navigate(['']);
+             }
             return EMPTY;
         } else if (response.status === HttpService.CONNECTION_REFUSE) {
             this.showError('Connection Refuse');

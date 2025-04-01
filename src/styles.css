@@ -9,6 +9,10 @@ body {
   color: #066B4B !important;
 }
 
+io-yellow-primary {
+  color: #F9B234 !important;
+}
+
 /*****************Inputs/Texts********************/
 .input-tp-sub-h6 {
   font-family: 'Poppins', sans-serif;

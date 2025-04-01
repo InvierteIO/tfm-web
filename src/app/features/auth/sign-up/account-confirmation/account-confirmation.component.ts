@@ -10,11 +10,10 @@ import {NgIf} from "@angular/common";
     AuthLayoutComponent,
     NgIf
   ],
-  templateUrl: './account-confirmation.component.html',
-  styleUrl: './account-confirmation.component.css'
+  templateUrl: './account-confirmation.component.html'
 })
 export class AccountConfirmationComponent implements OnInit {
-  
+
   activationToken: string = '';
   activationSuccess: boolean | null = null;
   loading: boolean = false;
@@ -38,7 +37,7 @@ export class AccountConfirmationComponent implements OnInit {
       next: () => {
         this.activationSuccess = true;
         setTimeout(() => {
-          this.router.navigate(['/public/auth/login']); 
+          this.router.navigate(['/public/auth/login']);
         }, 3000);
       },
       error: () => {

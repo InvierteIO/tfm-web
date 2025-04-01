@@ -14,10 +14,10 @@ describe('AccountConfigurationComponent', () => {
         AccountConfigurationComponent,
         ReactiveFormsModule,
       ],
-      providers: [        
-        provideHttpClient(), 
+      providers: [
+        provideHttpClient(),
         provideHttpClientTesting(),
-      ]      
+      ]
     }).compileComponents();
   });
 
@@ -47,7 +47,6 @@ describe('AccountConfigurationComponent', () => {
     expect(component.loading).toBeFalse();
   });
 
-  // Tests for companyname field
   it('should be invalid if companyname is empty', () => {
     const companynameControl = component.form.get('companyname');
     companynameControl?.setValue('');
@@ -59,7 +58,7 @@ describe('AccountConfigurationComponent', () => {
 
   it('should be invalid if companyname is too short', () => {
     const companynameControl = component.form.get('companyname');
-    companynameControl?.setValue('A'); // less than 2 characters
+    companynameControl?.setValue('A');
     companynameControl?.markAsTouched();
     fixture.detectChanges();
     expect(companynameControl?.invalid).toBeTrue();
@@ -68,7 +67,7 @@ describe('AccountConfigurationComponent', () => {
 
   it('should be invalid if companyname is too long', () => {
     const companynameControl = component.form.get('companyname');
-    companynameControl?.setValue('A'.repeat(151)); // more than 150 characters
+    companynameControl?.setValue('A'.repeat(151));
     companynameControl?.markAsTouched();
     fixture.detectChanges();
     expect(companynameControl?.invalid).toBeTrue();
@@ -81,7 +80,6 @@ describe('AccountConfigurationComponent', () => {
     expect(companynameControl?.valid).toBeTrue();
   });
 
-  // Tests for ruc field
   it('should be invalid if ruc is empty', () => {
     const rucControl = component.form.get('ruc');
     rucControl?.setValue('');
@@ -93,7 +91,7 @@ describe('AccountConfigurationComponent', () => {
 
   it('should be invalid if ruc is too short', () => {
     const rucControl = component.form.get('ruc');
-    rucControl?.setValue('1234567890'); // 10 characters instead of 11
+    rucControl?.setValue('1234567890');
     rucControl?.markAsTouched();
     fixture.detectChanges();
     expect(rucControl?.invalid).toBeTrue();
@@ -102,7 +100,7 @@ describe('AccountConfigurationComponent', () => {
 
   it('should be invalid if ruc is too long', () => {
     const rucControl = component.form.get('ruc');
-    rucControl?.setValue('123456789012'); // 12 characters instead of 11
+    rucControl?.setValue('123456789012');
     rucControl?.markAsTouched();
     fixture.detectChanges();
     expect(rucControl?.invalid).toBeTrue();
@@ -115,7 +113,6 @@ describe('AccountConfigurationComponent', () => {
     expect(rucControl?.valid).toBeTrue();
   });
 
-  // Tests for rolname field
   it('should be invalid if rolname is empty', () => {
     const rolnameControl = component.form.get('rolname');
     rolnameControl?.setValue('');
@@ -127,7 +124,7 @@ describe('AccountConfigurationComponent', () => {
 
   it('should be invalid if rolname is too short', () => {
     const rolnameControl = component.form.get('rolname');
-    rolnameControl?.setValue('AB'); // less than 3 characters
+    rolnameControl?.setValue('AB');
     rolnameControl?.markAsTouched();
     fixture.detectChanges();
     expect(rolnameControl?.invalid).toBeTrue();
@@ -136,7 +133,7 @@ describe('AccountConfigurationComponent', () => {
 
   it('should be invalid if rolname is too long', () => {
     const rolnameControl = component.form.get('rolname');
-    rolnameControl?.setValue('A'.repeat(51)); // more than 50 characters
+    rolnameControl?.setValue('A'.repeat(51));
     rolnameControl?.markAsTouched();
     fixture.detectChanges();
     expect(rolnameControl?.invalid).toBeTrue();
@@ -149,7 +146,6 @@ describe('AccountConfigurationComponent', () => {
     expect(rolnameControl?.valid).toBeTrue();
   });
 
-  // Tests for numberusers field
   it('should be invalid if numberusers is empty', () => {
     const numberusersControl = component.form.get('numberusers');
     numberusersControl?.setValue('');
@@ -161,7 +157,7 @@ describe('AccountConfigurationComponent', () => {
 
   it('should be invalid if numberusers does not match the pattern', () => {
     const numberusersControl = component.form.get('numberusers');
-    numberusersControl?.setValue('0123'); // invalid: starts with 0
+    numberusersControl?.setValue('0123');
     numberusersControl?.markAsTouched();
     fixture.detectChanges();
     expect(numberusersControl?.invalid).toBeTrue();
@@ -170,14 +166,12 @@ describe('AccountConfigurationComponent', () => {
 
   it('should be valid if numberusers matches the pattern', () => {
     const numberusersControl = component.form.get('numberusers');
-    numberusersControl?.setValue('12345'); // valid according to the pattern
+    numberusersControl?.setValue('12345');
     expect(numberusersControl?.valid).toBeTrue();
   });
 
-  // Tests for onSubmit()
   it('onSubmit() - should log "Formulario inválido" and mark controls as touched when form is invalid', () => {
     spyOn(console, 'log');
-    // Make the form invalid by leaving companyname empty
     component.form.get('companyname')?.setValue('');
     component.onSubmit();
     expect(component.form.invalid).toBeTrue();

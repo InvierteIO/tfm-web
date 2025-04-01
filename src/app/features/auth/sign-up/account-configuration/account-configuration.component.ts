@@ -6,10 +6,10 @@ import {Router} from '@angular/router';
 import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
 import { catchError, concatMap, finalize } from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
-import {RegisterPersonalInfoService} from './../register-personal-info/register-personal-info.service';
+import {RegisterPersonalInfoService} from '../register-personal-info/register-personal-info.service';
 import {AccountConfigurationService} from './account-configuration.service'
 import {Staff} from "@core/models/staff.model"
-import {UserCompany} from "./../models/user-company.model"
+import {UserCompany} from "../models/user-company.model"
 import {Company} from "@core/models/company.model"
 import { Role } from '@core/models/role.model';
 import {FormUtil} from '@common/utils/form.util';

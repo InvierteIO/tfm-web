@@ -1,9 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { HomeComponent } from './home.component';
 import { SidebarService } from '../shared/services/siderbar.service';
-import { MenuSidebar } from '../shared/models/menu-sidebar.model';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -11,35 +10,61 @@ describe('HomeComponent', () => {
   let sidebarServiceSpy: jasmine.SpyObj<SidebarService>;
 
   beforeEach(async () => {
-    const spy = jasmine.createSpyObj('SidebarService', ['getMenusHome']);
+    const sSpy = jasmine.createSpyObj('SidebarService', ['getMenusHome']);
+
     await TestBed.configureTestingModule({
-      imports: [HomeComponent],
+
+      imports: [
+        HomeComponent,
+        HttpClientTestingModule,
+        RouterTestingModule,
+      ],
       providers: [
-        { provide: SidebarService, useValue: spy },
-        provideHttpClient(), 
-        provideHttpClientTesting(),
-      ]         
+        { provide: SidebarService, useValue: sSpy }
+      ]
     }).compileComponents();
 
-    sidebarServiceSpy = TestBed.inject(SidebarService) as jasmine.SpyObj<SidebarService>;
-  });
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
+
+    sidebarServiceSpy = TestBed.inject(SidebarService) as jasmine.SpyObj<SidebarService>;
+
+    sidebarServiceSpy.getMenusHome.and.returnValue([
+      {
+        title: 'Tablero',
+        icon_google: 'apps',
+        url: '/public/home/apps',
+        id: 'apps'
+      },
+      {
+        title: 'Otras opciones',
+        icon_google: 'settings',
+        id: 'settings',
+        submenus: [
+          { title: 'Opción 1', url: '/public/home/option1' },
+          { title: 'Opción 2', url: '/public/home/option2' }
+        ]
+      }
+    ]);
+
+    fixture.detectChanges();
   });
 
-  it('should create the component', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set menus from SidebarService on ngOnInit', () => {
-    const fakeMenus: MenuSidebar[] = [
-      { title: 'Test Home', id: 'test', url: '/home/test' }
-    ];
-    sidebarServiceSpy.getMenusHome.and.returnValue(fakeMenus);
-    component.ngOnInit();
-    expect(component.menus).toEqual(fakeMenus);
-    expect(sidebarServiceSpy.getMenusHome).toHaveBeenCalled();
+  describe('ngOnInit', () => {
+    it('should call sidebarService.getMenusHome and store in menus', () => {
+      expect(sidebarServiceSpy.getMenusHome).toHaveBeenCalled();
+      expect(component.menus.length).toBe(2);
+      expect(component.menus[0].title).toBe('Tablero');
+    });
+  });
+
+  it('should have an empty menus array before ngOnInit', () => {
+    const newFixture = TestBed.createComponent(HomeComponent);
+    const newComp = newFixture.componentInstance;
+    expect(newComp.menus).toEqual([]);
   });
 });

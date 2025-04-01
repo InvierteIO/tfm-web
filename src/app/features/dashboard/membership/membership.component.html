@@ -37,7 +37,7 @@
           </button>
         </td>
       </tr>
-      <tr *ngIf="!memberships || memberships.length === 0">
+      <tr *ngIf="isShowTable">
         <td colspan="5" class="text-center">No hay registros</td>
       </tr>
     </tbody>
