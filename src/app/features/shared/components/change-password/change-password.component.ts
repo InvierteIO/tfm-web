@@ -8,7 +8,7 @@ import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swa
 import { AuthService } from '@core/services/auth.service';
 import { ChangePasswordService } from '../../services/change-password.service';
 import { PasswordChange } from '../../models/password-change.model';
-import { LoadingComponent } from "../../../../common/components/loading.component";
+import { LoadingComponent } from "@common/components/loading.component";
 
 @Component({
   standalone: true,
@@ -24,7 +24,7 @@ import { LoadingComponent } from "../../../../common/components/loading.componen
 export class ChangePasswordComponent implements OnInit {
   form: FormGroup;
   loading:boolean = false;
-  emailSession:string = ""; 
+  emailSession:string = "";
 
   constructor(private readonly fb: FormBuilder, private readonly authService: AuthService,
     private readonly changePasswordService : ChangePasswordService
@@ -34,7 +34,7 @@ export class ChangePasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.emailSession = this.authService.getEmail();
-  } 
+  }
 
   createForm() : FormGroup {
     return this.fb.group({
@@ -45,7 +45,7 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) {      
+    if (this.form.invalid) {
       FormUtil.markAllAsTouched(this.form);
       return;
     }
@@ -62,13 +62,13 @@ export class ChangePasswordComponent implements OnInit {
           }
           this.loading = true;
           this.changePasswordService.updatePassword(this.emailSession, passwordChange)
-            .subscribe({ 
+            .subscribe({
               error: () => {
-                this.loading = false;  
+                this.loading = false;
               },
-              complete: () => {                           
-              this.loading = false;           
-            }});          
+              complete: () => {
+              this.loading = false;
+            }});
         }
       });
   }

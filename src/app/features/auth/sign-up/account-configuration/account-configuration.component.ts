@@ -31,8 +31,8 @@ export class AccountConfigurationComponent {
 
   constructor(private readonly fb: FormBuilder,
               private readonly router: Router,
-              private registerPersonalInfoService: RegisterPersonalInfoService,
-              private accountConfigurationService: AccountConfigurationService) {
+              private readonly registerPersonalInfoService: RegisterPersonalInfoService,
+              private readonly accountConfigurationService: AccountConfigurationService) {
     this.form = this.createForm();
   }
 

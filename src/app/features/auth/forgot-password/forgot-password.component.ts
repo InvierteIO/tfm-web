@@ -33,7 +33,5 @@ export class ForgotPasswordComponent {
     if (this.forgotPasswordForm.invalid) return;
 
     this.loading = true;
-    const email = this.forgotPasswordForm.value.email;
-
   }
 }

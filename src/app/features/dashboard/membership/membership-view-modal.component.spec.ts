@@ -25,7 +25,7 @@ describe('MembershipViewModalComponent', () => {
   });
 
   it('should reset form with membership data on ngOnInit', () => {
-    component['membership'] = {
+    (component as any).membership = {
       id: 1,
       levelName: 'Gold',
       shortDescription: 'Short',

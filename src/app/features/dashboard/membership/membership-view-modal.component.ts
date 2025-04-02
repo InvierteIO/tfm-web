@@ -13,7 +13,7 @@ import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 export class MembershipViewModalComponent implements OnInit {
   public form: FormGroup;
   @Input()
-  private membership: Membership = {};
+  private readonly membership: Membership = {};
   @Input()
   title: string = '';
 

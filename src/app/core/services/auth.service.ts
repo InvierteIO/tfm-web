@@ -16,7 +16,7 @@ export class AuthService {
     static readonly END_POINT_STAFF = environment.REST_USER + '/users/staff/token';
     private user: User | undefined = undefined;
 
-    constructor(private readonly router: Router, 
+    constructor(private readonly router: Router,
         private readonly httpService : HttpService) {
     }
 
@@ -24,7 +24,7 @@ export class AuthService {
 
         return this.httpService.authBasic(email, password)
             .error("Error de autenticación. Por favor, verifica tus credenciales.")
-            .post(UserType.OPERATOR == userType? AuthService.END_POINT_OPERATOR : AuthService.END_POINT_STAFF)            
+            .post(UserType.OPERATOR == userType? AuthService.END_POINT_OPERATOR : AuthService.END_POINT_STAFF)
             .pipe(
                 map(jsonToken => {
                     const jwtHelper = new JwtHelperService();
@@ -41,11 +41,11 @@ export class AuthService {
                         name: decodedToken.name,
                         role: decodedToken.role,
                         companyRoles: companyRoles
-                    };               
+                    };
                     localStorage.setItem('user', JSON.stringify(this.user));
                     return this.user;
                 })
-            ); 
+            );
     }
 
     logout(): void {
@@ -60,7 +60,7 @@ export class AuthService {
         }
     }
 
-    getToken(): string |undefined {        
+    getToken(): string |undefined {
         return this.user ? this.user.token : undefined;
     }
 
@@ -85,18 +85,17 @@ export class AuthService {
     }
 
     hasRoles(roles: Role[]): boolean {
-        if (!this.user || !this.user.role) return false;
-        return this.isAuthenticated() && roles.includes(this.user.role);
+      const role = this.user?.role;
+      return this.isAuthenticated() && role !== undefined && roles.includes(role);
     }
 
     hasCompanyRoles(roles: Role[]): boolean {
-        if (!this.user || !this.user.companyRoles) return false;
-        return this.isAuthenticated() && roles.some(role => 
-            this.user?.companyRoles?.some(companyRole => companyRole.role === role));
+      return this.isAuthenticated() && roles.some(role =>
+        this.user?.companyRoles?.some(companyRole => companyRole.role === role)
+      );
     }
 
     getCompanyRoles(): CompanyRole[] | undefined {
-        if (!this.user || !this.user.companyRoles || !this.isAuthenticated()) return undefined;
-        return this.user?.companyRoles;
+      return this.isAuthenticated() ? this.user?.companyRoles : undefined;
     }
 }

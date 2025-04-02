@@ -29,8 +29,8 @@ export class LoginFormComponent {
   loading: boolean = false;
 
   constructor(
-    private fb: FormBuilder,
-    private auth: AuthService
+      private readonly fb: FormBuilder,
+      private readonly auth: AuthService
   ) {
     this.loginForm = this.createForm();
   }

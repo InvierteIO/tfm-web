@@ -14,10 +14,16 @@ import { EMPTY, Observable} from 'rxjs';
 export class ChangePasswordService {
 
   constructor(private readonly httpService: HttpService, readonly router: Router,
-    private authService: AuthService) {}
+              private readonly authService: AuthService) {}
 
   updatePassword(email: string, passwordChange: PasswordChange): Observable<void> {
-    let userType = this.authService.untilOperator() ? "operator": (this.authService.untilStaff() ? "staff": undefined);
+    let userType: string | undefined;
+    if (this.authService.untilOperator()) {
+      userType = 'operator';
+    } else if (this.authService.untilStaff()) {
+      userType = 'staff';
+    }
+
     if (!userType) {
       Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("Ha caducado la sesion","Salir" ))
          .then((result) => this.router.navigate(['/public/auth/login']));

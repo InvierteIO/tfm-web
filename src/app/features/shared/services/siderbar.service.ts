@@ -6,7 +6,7 @@ import {MenuSidebar} from '../models/menu-sidebar.model';
 })
 export class SidebarService {
 
-  private menusHome: MenuSidebar[] = [
+  private readonly menusHome: MenuSidebar[] = [
     {
       title: 'Tablero',
       icon_google: 'apps',
@@ -51,7 +51,7 @@ export class SidebarService {
     }
   ];
 
-  private menusDashboard: MenuSidebar[] = [
+  private readonly menusDashboard: MenuSidebar[] = [
     {
       title: 'Tablero',
       icon_google: 'apps',

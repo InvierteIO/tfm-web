@@ -19,9 +19,9 @@ export class AccountConfirmationComponent implements OnInit {
   loading: boolean = false;
 
   constructor(
-    private route: ActivatedRoute,
-    private accountConfirmationService: AccountConfirmationService,
-    private router: Router
+    private readonly route: ActivatedRoute,
+    private readonly accountConfirmationService: AccountConfirmationService,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
