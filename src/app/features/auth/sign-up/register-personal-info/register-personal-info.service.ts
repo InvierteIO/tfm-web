@@ -7,7 +7,6 @@ import { FormPersonalData } from './form-personal-data.model';
 })
 export class RegisterPersonalInfoService {
   private formPersonalDataSubject = new BehaviorSubject<FormPersonalData | null>(null);
-  formData$ = this.formPersonalDataSubject.asObservable();
 
   setFormData(data: FormPersonalData) {
     this.formPersonalDataSubject.next(data);

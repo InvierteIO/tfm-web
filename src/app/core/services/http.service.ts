@@ -121,8 +121,9 @@ export class HttpService {
     private extractData(response: any): any {
         if (this.successfulNotification) {
             console.log(this.successfulNotification);
-            Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.CONFIRMATION]
-            (this.successfulNotification));
+            Swal.fire(
+              DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.CONFIRMATION](this.successfulNotification)
+            );
             this.successfulNotification = undefined;
             this.errorNotification = undefined;
         }
@@ -142,8 +143,7 @@ export class HttpService {
     private showError(notification: string): void {
         if (this.errorNotification) {
             console.error(this.errorNotification);
-          Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR]
-          (this.errorNotification));
+          Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR](this.errorNotification));
             this.errorNotification = undefined;
             this.successfulNotification = undefined;
         } else {
@@ -153,9 +153,9 @@ export class HttpService {
 
     private handleError(response : any): any {
         let error: AppError;
-        if (response.status === HttpService.UNAUTHORIZED) {            
+        if (response.status === HttpService.UNAUTHORIZED) {
             this.showError('Unauthorized');
-            const loginRoutes = ['/public/auth/login', '/internal/auth/login']; 
+            const loginRoutes = ['/public/auth/login', '/internal/auth/login'];
             if (!loginRoutes.includes(this.router.url)) {
                 this.router.navigate(['']);
              }

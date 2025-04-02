@@ -31,8 +31,12 @@
       </small>
     </div>
 
-    <div class="mb-5 text-end">   
-      <a class="nav-link a-forgot-password" role="button" (click)="goForgotPassword()">¿Olvidaste tu contraseña?</a>
+    <div class="mb-5 text-end">
+      <a class="nav-link a-forgot-password"
+         tabindex="0"
+         (click)="goForgotPassword()"
+         (keydown.enter)="goForgotPassword()"
+         (keydown.space)="goForgotPassword()">¿Olvidaste tu contraseña?</a>
     </div>
 
     <app-button-loading
@@ -43,7 +47,7 @@
       msgLoading="Cargando..."
       msgButton="Iniciar sesión">
     </app-button-loading>
-    
+
     <ng-container *ngIf="showAdditionalActions">
         <div class="text-center mb-3">
           <span class="text-question-account">¿Aún no tiene una cuenta?</span>

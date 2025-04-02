@@ -34,7 +34,7 @@ export class MembershipSaveModalComponent implements OnInit {
   ngOnInit(): void {
     this.loadDataForm();
   }
-  
+
   private buildForm(): FormGroup {
     return this.fb.group({
       levelname: ['', [Validators.required, Validators.maxLength(50)]],
@@ -53,7 +53,7 @@ export class MembershipSaveModalComponent implements OnInit {
       return;
     }
     this.loading= true;
-    if(this.membership && this.membership.id) {
+    if (this.membership?.id) {
       this.update();
     } else {
       this.create();
