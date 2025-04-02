@@ -3,7 +3,7 @@ import {HttpService} from "@core/services/http.service";
 import {Observable} from "rxjs";
 import { environment } from "@env";
 import {Staff} from "@core/models/staff.model"
-import {UserCompany} from "./../models/user-company.model"
+import {UserCompany} from "../models/user-company.model"
 import {Company} from "@core/models/company.model"
 
 
@@ -31,10 +31,10 @@ export class AccountConfigurationService {
         const url = `${AccountConfigurationService.END_POINT_USER_STAFF}/${encodeURIComponent(email)}/set-company`;
         return this.httpService.patch(url, userCompany);
     }
-    
-    notifyActivationCode(email: string, taxIdentificationNumber: string): Observable<void> {        
+
+    notifyActivationCode(email: string, taxIdentificationNumber: string): Observable<void> {
         const url = `${AccountConfigurationService.END_POINT_USER_STAFF}/${encodeURIComponent(email)}/companies/${encodeURIComponent(taxIdentificationNumber)}/notify-code`;
         return this.httpService.post(url);
-    }    
+    }
 
 }

@@ -9,6 +9,10 @@ body {
   color: #066B4B !important;
 }
 
+io-yellow-primary {
+  color: #F9B234 !important;
+}
+
 /*****************Inputs/Texts********************/
 .input-tp-sub-h6 {
   font-family: 'Poppins', sans-serif;
@@ -227,6 +231,43 @@ input::placeholder {
   display: block;
   width: 24px;
   height: 24px;
+}
+
+/*****************Tabs********************/
+.tab-s1 {
+  background: #D2F2DD;
+}
+.tab-s1 .nav-item .active {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 100%;
+  vertical-align: middle;
+  color: #000000;
+}
+
+.tab-s1 .nav-item .nav-link:not(.active) {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  vertical-align: middle;
+  color: #5F5F5F;
+}
+.email-s1 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 100%;
+  color: #5F5F5F;
+}
+.profile-label {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 120%;
+  vertical-align: middle;
+  color: #1A202C;
 }
 /*****************Others********************/
 

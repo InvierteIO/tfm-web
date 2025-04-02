@@ -1,8 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {Membership} from './membership.model';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
-import {MembershipService} from './membership.service';
 
 @Component({
   selector: 'app-membership-view-modal',

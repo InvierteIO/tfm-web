@@ -11,19 +11,18 @@ import {NgIf} from "@angular/common";
     ReactiveFormsModule,
     AuthLayoutComponent,
     NgIf
-  ],  
-  templateUrl: './forgot-password.component.html',
-  styleUrl: './forgot-password.component.css'
+  ],
+  templateUrl: './forgot-password.component.html'
 })
 export class ForgotPasswordComponent {
-  
+
   forgotPasswordForm: FormGroup;
   message: string | null = null;
   loading = false;
 
   constructor(
-    private fb: FormBuilder,    
-    private router: Router
+    private readonly fb: FormBuilder,
+    private readonly router: Router
   ) {
     this.forgotPasswordForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]]
@@ -35,6 +34,6 @@ export class ForgotPasswordComponent {
 
     this.loading = true;
     const email = this.forgotPasswordForm.value.email;
-    
+
   }
 }

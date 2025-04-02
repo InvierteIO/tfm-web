@@ -81,4 +81,8 @@ export class MembershipComponent implements OnInit {
     modalRef.componentInstance.membership = membership;
     modalRef.componentInstance.title = 'Ver membresia';
   }
+
+  get isShowTable() {
+    return !this.memberships || this.memberships.length === 0;
+  }
 }

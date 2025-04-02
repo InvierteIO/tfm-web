@@ -5,6 +5,7 @@ import {NgForOf} from '@angular/common';
 import Swal from 'sweetalert2';
 import {MenuSidebar} from '../../models/menu-sidebar.model';
 import { AuthService } from '@core/services/auth.service';
+import { DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS } from '@common/dialogs/dialogs-swal.constants';
 
 @Component({
   selector: 'app-sidebar',
@@ -24,7 +25,7 @@ export class SidebarComponent implements OnInit {
   currentDropdown: string | null = null;
   @Input() menus: MenuSidebar[] = [];
 
-  constructor(readonly router: Router, private authService: AuthService) {
+  constructor(public readonly router: Router, private readonly authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -57,25 +58,32 @@ export class SidebarComponent implements OnInit {
     return menu.submenus.some(sub => currentUrl.startsWith(sub.url));
   }
 
-  getName(): string {
+  get name(): string {
     return this.authService.getName();
   }
 
+  get linkProfile(): string {
+    const isOperator : boolean = this.authService.untilOperator();
+    if(isOperator) {
+      return '/internal/dashboard/profile'
+    } else {
+      return '/public/home/profile';
+    }
+  }
+
   logout(): void {
-    Swal.fire({
-      title: '¿Cerrar sesión?',
-      text: '¿Estás seguro de que deseas cerrar sesión?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, salir',
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.authService.logout();
-        this.router.navigate(['/public/auth/login']);
-      }
-    });
+    Swal.fire(
+      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Estás seguro de que deseas cerrar sesión?","Sí, salir" ))
+      .then((result) => {
+        if (result.isConfirmed) {
+          const isOperator : boolean = this.authService.untilOperator();
+          this.authService.logout();
+          if(isOperator) {
+            this.router.navigate(['/internal/auth/login']);            
+          } else {
+            this.router.navigate(['/public/auth/login']);
+          }          
+        }
+      });    
   }
 }

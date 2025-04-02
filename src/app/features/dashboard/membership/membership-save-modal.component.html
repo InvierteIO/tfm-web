@@ -16,7 +16,7 @@
           <small *ngIf="formCurrent?.['levelname']?.errors?.['required']" class="text-danger font-italic">
             Nivel es requerido
           </small>
-          <small *ngIf="formCurrent?.['levelname']?.errors?.['length']" class="text-danger font-italic">
+          <small *ngIf="formCurrent?.['levelname']?.errors?.['maxlength']" class="text-danger font-italic">
             La longitud máxima es de 50 carácteres
           </small>
         </div>
@@ -33,7 +33,7 @@
           <small *ngIf="formCurrent?.['shortdescription']?.errors?.['required']" class="text-danger font-italic">
             Resumen es requerido
           </small>
-          <small *ngIf="formCurrent?.['shortdescription']?.errors?.['length']" class="text-danger font-italic">
+          <small *ngIf="formCurrent?.['shortdescription']?.errors?.['maxlength']" class="text-danger font-italic">
             La longitud máxima es de 255 carácteres
           </small>
         </div>
@@ -48,7 +48,7 @@
                   placeholder="" [maxLength]="255" [rows]="3" [maxlength]="2000" >
         </textarea>
         <div *ngIf="isLongDescriptionNotValid">
-          <small *ngIf="formCurrent?.['longdescription']?.errors?.['length']" class="text-danger font-italic">
+          <small *ngIf="formCurrent?.['longdescription']?.errors?.['maxlength']" class="text-danger font-italic">
             La longitud máxima es de 2000 carácteres
           </small>
         </div>

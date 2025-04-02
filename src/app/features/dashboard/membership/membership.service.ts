@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpService} from '@core/services/http.service';
 import {Membership} from './membership.model';
 import {Observable} from 'rxjs';
-import {EndPoints} from '@common/utils/end-points';
+import {EndPoints} from '@core/end-points';
 
 @Injectable({providedIn: 'root'})
 export class MembershipService {

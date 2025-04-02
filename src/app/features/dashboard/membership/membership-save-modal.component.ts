@@ -34,6 +34,7 @@ export class MembershipSaveModalComponent implements OnInit {
   ngOnInit(): void {
     this.loadDataForm();
   }
+  
   private buildForm(): FormGroup {
     return this.fb.group({
       levelname: ['', [Validators.required, Validators.maxLength(50)]],

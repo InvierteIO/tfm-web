@@ -43,7 +43,6 @@ describe('MembershipSaveModalComponent', () => {
 
   it('should mark form as touched and not save if form is invalid', () => {
     spyOn(FormUtil, 'markAllAsTouched');
-    // Invalidate form by leaving a required field empty.
     component.form.get('levelname')!.setValue('');
     component.save();
     expect(FormUtil.markAllAsTouched).toHaveBeenCalledWith(component.form);
@@ -53,7 +52,6 @@ describe('MembershipSaveModalComponent', () => {
 
   describe('when saving in create mode', () => {
     beforeEach(() => {
-      // In create mode, membership does not have an id.
       component['membership'] = {};
       component.form.setValue({
         levelname: 'Silver',
@@ -95,7 +93,6 @@ describe('MembershipSaveModalComponent', () => {
 
   describe('when saving in update mode', () => {
     beforeEach(() => {
-      // In update mode, membership has an id.
       component['membership'] = { id: 10, levelName: 'Old' };
       component.form.setValue({
         levelname: 'Updated',
@@ -173,7 +170,6 @@ describe('MembershipSaveModalComponent', () => {
     component['cleanData']();
     expect(component.loading).toBeFalse();
     expect(component['membership']).toEqual({});
-    // After reset, a control's value should be null.
     expect(component.form.get('levelname')!.value).toBeNull();
   });
 
@@ -191,19 +187,19 @@ describe('MembershipSaveModalComponent', () => {
     form.get('longdescription')!.markAsTouched();
     expect(component.isLongDescriptionNotValid).toBeFalse();
 
-    form.get('monthlycost')!.setValue('abc'); // invalid due to pattern
+    form.get('monthlycost')!.setValue('abc');
     form.get('monthlycost')!.markAsTouched();
     expect(component.isMonthlyCostNotValid).toBeTrue();
 
-    form.get('annualcost')!.setValue('def'); // invalid due to pattern
+    form.get('annualcost')!.setValue('def');
     form.get('annualcost')!.markAsTouched();
     expect(component.isAnnualCostNotValid).toBeTrue();
 
-    form.get('maxrealtors')!.setValue('xyz'); // invalid pattern
+    form.get('maxrealtors')!.setValue('xyz');
     form.get('maxrealtors')!.markAsTouched();
     expect(component.isMaxRealtorsNotValid).toBeTrue();
 
-    form.get('maxprojects')!.setValue('uvw'); // invalid pattern
+    form.get('maxprojects')!.setValue('uvw');
     form.get('maxprojects')!.markAsTouched();
     expect(component.isMaxpPojectsNotValid).toBeTrue();
   });
