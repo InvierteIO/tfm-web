@@ -1,3 +1,5 @@
+import {ProjectStatus} from './project-status.model';
+
 export interface ProjectMock {
   id: number;
   name?: string;
@@ -7,4 +9,5 @@ export interface ProjectMock {
   numberHouses?: number;
   stages?: number;
   areaTotal?: number;
+  status?: ProjectStatus;
 }

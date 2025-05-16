@@ -7,25 +7,25 @@
       <ul class="nav nav-underline m-1 pb-1">
         <li class="nav-item" >
           <a class="nav-link active" id="enable-tab" data-bs-toggle="tab" href="#tabEnable" role="tab" aria-controls="#tabEnable" aria-selected="true"
-             (click)="onStatusTabClick(ProjectStatus.ACTIVE, $event)">
+             (click)="onStatusTabClick(PROJECT_STATUS.ACTIVE, $event)">
             Activos
           </a>
         </li>
         <li class="nav-item" >
           <a class="nav-link" id="disabled-tab" data-bs-toggle="tab" href="#tabDisabled" role="tab" aria-controls="#tabDisabled" aria-selected="true"
-             (click)="onStatusTabClick(ProjectStatus.DISABLED, $event)">
+             (click)="onStatusTabClick(PROJECT_STATUS.DISABLED, $event)">
             Inactivos
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" id="nopublish-tab" data-bs-toggle="tab" href="#tabNoPublish" role="tab" aria-controls="tabNoPublish" aria-selected="false"
-             (click)="onStatusTabClick(ProjectStatus.NOPUBLISHED, $event)">
+             (click)="onStatusTabClick(PROJECT_STATUS.NOPUBLISHED, $event)">
             No publicados
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" id="draft-tab" data-bs-toggle="tab" href="#tabDraft" role="tab" aria-controls="tabDraft" aria-selected="false"
-             (click)="onStatusTabClick(ProjectStatus.DRAFT, $event)">
+             (click)="onStatusTabClick(PROJECT_STATUS.DRAFT, $event)">
             Borradores
           </a>
         </li>
@@ -89,21 +89,21 @@
         <ul class="nav nav-underline m-1">
           <li class="nav-item" >
             <a class="nav-link active" data-bs-toggle="tab" href="#" role="tab" aria-controls="#" aria-selected="true"
-               (click)="onCategoryClick(PropertyCategory.APARTMENT, $event)">
+               (click)="onCategoryClick(PROPERTY_CATEGORY.APARTMENT, $event)">
               <svg width="24.55" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <use [attr.xlink:href]="'/assets/svg/aparment24.svg#svg_aparment'"></use>
               </svg> Departamentos</a>
           </li>
           <li class="nav-item" >
             <a class="nav-link"  data-bs-toggle="tab" href="#" role="tab" aria-controls="#" aria-selected="true"
-               (click)="onCategoryClick(PropertyCategory.LAND, $event)">
+               (click)="onCategoryClick(PROPERTY_CATEGORY.LAND, $event)">
               <svg width="26.32" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <use [attr.xlink:href]="'/assets/svg/land24.svg#svg_land'"></use>
               </svg> Terrenos</a>
           </li>
           <li class="nav-item">
             <a class="nav-link"  data-bs-toggle="tab" href="#" role="tab" aria-controls="#" aria-selected="false"
-               (click)="onCategoryClick(PropertyCategory.HOUSE, $event)">
+               (click)="onCategoryClick(PROPERTY_CATEGORY.HOUSE, $event)">
               <svg width="27.87" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <use [attr.xlink:href]="'/assets/svg/house24.svg#svg_house'"></use>
               </svg> Casas</a>
@@ -115,32 +115,30 @@
         <div class="tab-pane fade show active" id="tabEnable" role="tabpanel" aria-labelledby="enable-tab">
           <div class="d-flex flex-wrap justify-content-center mt-2">
             @for(item of projects; track item.id) {
-              <app-project-card [project]="item" [propertyCategory]="categoryCurrent" [projectStatus]="ProjectStatus.ACTIVE"/>
+              <app-project-card [project]="item" [propertyCategory]="categoryCurrent"/>
             }
-
           </div>
         </div>
         <div class="tab-pane fade" id="tabDisabled" role="tabpanel" aria-labelledby="disabled-tab">
-          <div class="d-flex flex-wrap mt-2">
+          <div class="d-flex flex-wrap justify-content-center mt-2">
             @for(item of projects; track item.id) {
-              <app-project-card [project]="item" [propertyCategory]="categoryCurrent" [projectStatus]="ProjectStatus.DISABLED"/>
+              <app-project-card [project]="item" [propertyCategory]="categoryCurrent"/>
             }
           </div>
         </div>
 
         <div class="tab-pane fade" id="tabNoPublish" role="tabpanel" aria-labelledby="nopublish-tab">
-          <div class="d-flex flex-wrap mt-2">
+          <div class="d-flex flex-wrap justify-content-center mt-2">
             @for(item of projects; track item.id) {
-              <app-project-card [project]="item" [propertyCategory]="categoryCurrent" [projectStatus]="ProjectStatus.NOPUBLISHED"/>
+              <app-project-card [project]="item" [propertyCategory]="categoryCurrent"/>
             }
           </div>
         </div>
 
         <div class="tab-pane fade" id="tabDraft" role="tabpanel" aria-labelledby="draft-tab">
           <div class="d-flex flex-wrap mt-2">
-            <!--Proyectos borradores-->
             @for(item of projects; track item.id) {
-              <app-project-card [project]="item" [propertyCategory]="categoryCurrent" [projectStatus]="ProjectStatus.DRAFT"/>
+              <app-project-card [project]="item" [propertyCategory]="categoryCurrent" />
             }
           </div>
         </div>

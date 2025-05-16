@@ -1,0 +1,12 @@
+.stage-badge {
+  width: 100px;
+  height: 48px;
+  border-radius: 20px;
+  right: 5px !important;
+  background: rgba(255, 255, 255, .75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #066B4B;
+}

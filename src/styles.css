@@ -368,6 +368,31 @@ input::placeholder {
   color: #5F5F5F;
 }
 
+.tab-s3 {
+  background: #C9E1BF;
+}
+.tab-s3 .nav-item .active {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 100%;
+  vertical-align: middle;
+  color: #066B4B;
+}
+
+.tab-s3 .nav-item .nav-link:not(.active) {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  vertical-align: middle;
+  color: #5F5F5F;
+}
+
+.tab-s3.disable-active-nav .nav-underline .nav-link.active {
+  border-bottom: none !important;
+}
+
 /*****************Cards********************/
 .card-s1 {
   width: 20rem; background-color: #EBEBEB;
@@ -389,6 +414,7 @@ input::placeholder {
   vertical-align: bottom;
   color: #696969;
 }
+
 /*****************Others********************/
 
 .main-header {
