@@ -2,23 +2,26 @@ import {Component, OnInit} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {ProjectCardComponent} from './project-card.component';
-import {ProjectStatus} from './models/project-status.model';
+import {ProjectStatus} from './shared/models/project-status.model';
 import {PropertyCategory} from '../../shared/models/property-category.model';
-import {ProjectService} from './services/project.service';
-import {ProjectMock} from './models/project.mock.model';
+import {ProjectService} from './shared/services/project.service';
+import {ProjectMock} from './shared/models/project.mock.model';
 
 @Component({
   selector: 'app-projects',
+  standalone: true,
   imports: [
     FormsModule,
     ReactiveFormsModule,
     NgIf,
     ProjectCardComponent
   ],
-  templateUrl: './projects.component.html',
-  styleUrl: './projects.component.css'
+  templateUrl: './projects.component.html'
 })
 export class ProjectsComponent implements OnInit {
+  protected readonly PROJECT_STATUS = ProjectStatus;
+  protected readonly PROPERTY_CATEGORY = PropertyCategory;
+
   selectedFilter: string = 'Nombre';
   categoryCurrent: PropertyCategory = PropertyCategory.APARTMENT;
   statusCurrent: ProjectStatus = ProjectStatus.ACTIVE;
@@ -35,7 +38,7 @@ export class ProjectsComponent implements OnInit {
 
   search(): void {
     console.log('Buscando por:', this.selectedFilter);
-    this.projectService.listProject(this.categoryCurrent, "")
+    this.projectService.listProject(this.categoryCurrent, this.statusCurrent, "")
       .subscribe(projects => {
         this.projects = projects;
         console.log(this.projects);
@@ -59,7 +62,4 @@ export class ProjectsComponent implements OnInit {
     console.log('Categoría seleccionada:', category);
     this.search();
   }
-
-  protected readonly ProjectStatus = ProjectStatus;
-  protected readonly PropertyCategory = PropertyCategory;
 }

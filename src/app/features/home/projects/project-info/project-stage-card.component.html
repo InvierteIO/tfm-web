@@ -1,10 +1,15 @@
 <div class="card me-3 mb-3 card-s1 p-2">
-  <img src="./assets/img/property/example-aparments.jpg" alt="Portada proyecto"
-       class="rounded-2 overflow-hidden title-image"/>
+  <div class="position-relative">
+    <img src="./assets/img/property/example-aparments.jpg"
+      alt="Portada la etapa" class="rounded-2 overflow-hidden title-image w-100" />
+    <span class="stage-badge position-absolute top-0 mt-2">
+      Etapa&nbsp;{{stage?.stage}}
+    </span>
+  </div>
   <div class="card-body px-0 pb-1 pt-2">
-    <h5 class="card-title io-green-primary lh-1">{{project!.name}}</h5>
-    <p class="card-text"><img src="./assets/svg/location.svg" alt="Direccion del proyecto">
-      <span class="card-location"> {{project!.address}}</span>
+    <h5 class="card-title io-green-primary lh-1">{{stage!.name}}</h5>
+    <p class="card-text"><img src="./assets/svg/location.svg" alt="Direccion de la etapa">
+      <span class="card-location"> {{stage!.address}}</span>
     </p>
   </div>
   <div class="card-body px-0 py-2">
@@ -15,7 +20,7 @@
             <svg width="27" height="27" fill="none" xmlns="http://www.w3.org/2000/svg">
               <use xlink:href="/assets/svg/aparment24.svg#svg_aparment"></use>
             </svg>
-          </strong> {{project.numberApartments}}
+          </strong> {{stage?.numberApartments}}
         </span>
       }
       @if (isShowNumberLands) {
@@ -24,7 +29,7 @@
             <svg width="27" height="27" fill="none" xmlns="http://www.w3.org/2000/svg">
               <use xlink:href="/assets/svg/land24.svg#svg_land"></use>
             </svg>
-          </strong> {{project.numberLands}}
+          </strong> {{stage?.numberLands}}
         </span>
       }
       @if (isShowNumberHouse) {
@@ -33,38 +38,34 @@
               <svg width="27" height="27" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <use xlink:href="/assets/svg/house24.svg#svg_house"></use>
               </svg>
-            </strong> {{project.numberHouses}}
+            </strong> {{stage?.numberHouses}}
         </span>
       }
 
-      <span class="d-inline-flex align-items-center me-2 py-1"><strong class="material-symbols-rounded io-green-primary">format_list_numbered_rtl</strong> {{project!.stages}}</span>
-      <span><img src="./assets/svg/project-area.svg" alt="Área del proyecto"> {{project!.areaTotal}}m2</span>
+      <span class="d-inline-flex align-items-center me-2 py-1"><strong class="material-symbols-rounded io-green-primary">team_dashboard</strong> {{stage!.typesProperty}}</span>
+      <span><img src="./assets/svg/project-area.svg" alt="Área de la etapa proyecto"> {{stage!.areaTotal}}m2</span>
     </div>
   </div>
   <div class="card-body px-0 py-2">
-    @if (isShowProjectProgress) {
-      <button type="button" class="btn w-100 btn-s4 button-tp mb-2">
-        Registrar avance
-      </button>
-    }
-    @if (isShowEditProject) {
+    @if (isShowEditStage) {
       <button type="button" class="btn w-100 btn-s4 button-tp mb-2" (click)="edit()">
-        Editar proyecto
+        Editar etapa
       </button>
     }
-    @if (isShowDeleteProject) {
+    @if (isShowDeleteStage) {
       <button type="button" class="btn w-100 btn-s4 button-tp mb-2">
-        Eliminar proyecto
+        Eliminar etapa
       </button>
     }
-    @if (isShowPublishProject) {
+    @if (isShowPublishStage) {
       <button type="button" class="btn w-100 btn-s4 button-tp mb-2">
-        Publicar proyecto
+        Publicar etapa
       </button>
     }
     <button type="button" class="btn w-100 btn-s3 button-tp mb2-2">
-      Ver proyecto
+      Ver Etapa
     </button>
   </div>
 </div>
+
 

@@ -1,18 +1,25 @@
 import {Component, Input} from '@angular/core';
-import {ProjectStatus} from './models/project-status.model';
+import {ProjectStatus} from './shared/models/project-status.model';
 import {PropertyCategory} from '../../shared/models/property-category.model';
-import {ProjectMock} from './models/project.mock.model';
+import {ProjectMock} from './shared/models/project.mock.model';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-project-card',
   imports: [],
-  templateUrl: './project-card.component.html',
-  styleUrl: './project-card.component.css'
+  standalone: true,
+  templateUrl: './project-card.component.html'
 })
 export class ProjectCardComponent {
-  @Input() projectStatus: ProjectStatus = ProjectStatus.ACTIVE;
   @Input() propertyCategory: PropertyCategory = PropertyCategory.APARTMENT;
-  @Input() project: ProjectMock = { id : 1 };
+  @Input() project: ProjectMock = { id : 0 };
+
+  constructor(private readonly router: Router) {
+  }
+
+  edit(): void {
+    this.router.navigate(['/public/home/project-info'], { state: { project: this.project } });
+  }
 
   get isShowNumberApartments() {
     return this.project.numberApartments && this.project.numberApartments>0;
@@ -27,18 +34,18 @@ export class ProjectCardComponent {
   }
 
   get isShowEditProject() {
-   return this.projectStatus === ProjectStatus.DRAFT || this.projectStatus === ProjectStatus.NOPUBLISHED;
+   return this.project.status === ProjectStatus.DRAFT || this.project.status === ProjectStatus.NOPUBLISHED;
  }
 
   get isShowDeleteProject() {
-    return this.projectStatus === ProjectStatus.DRAFT || this.projectStatus === ProjectStatus.NOPUBLISHED;
+    return this.project.status === ProjectStatus.DRAFT || this.project.status === ProjectStatus.NOPUBLISHED;
   }
 
   get isShowPublishProject() {
-    return this.projectStatus === ProjectStatus.NOPUBLISHED;
+    return this.project.status === ProjectStatus.NOPUBLISHED;
   }
 
   get isShowProjectProgress() {
-    return this.projectStatus === ProjectStatus.ACTIVE;
+    return this.project.status === ProjectStatus.ACTIVE;
   }
 }

@@ -1,0 +1,45 @@
+<div class="container">
+  <h1 class="title-tp-h1 io-green-primary mt-5 mb-3">Mis proyectos / {{project?.name}}</h1>
+
+  <div class="card p-0 border-0 rounded-0">
+
+    <div class="card-header tab-s3 disable-active-nav py-2 border-0 rounded-0">
+      <ul class="nav nav-underline m-1">
+        <li class="nav-item" >
+          <a class="nav-link active" id="detail-tab" data-bs-toggle="tab" href="#tabDetail" role="tab" aria-controls="#tabDetail" aria-selected="true">
+            Detalle
+          </a>
+        </li>
+        <li class="nav-item" >
+          <a class="nav-link" id="stages-tab" data-bs-toggle="tab" href="#tabStages" role="tab" aria-controls="#tabStages" aria-selected="true">
+            Etapas
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="documents-tab" data-bs-toggle="tab" href="#tabDocuments" role="tab" aria-controls="tabDocuments" aria-selected="false">
+            Documentos
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card-body p-3">
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="tabDetail" role="tabpanel" aria-labelledby="detail-tab">
+        </div>
+        <div class="tab-pane fade" id="tabStages" role="tabpanel" aria-labelledby="stages-tab">
+          <div class="d-flex flex-wrap justify-content-center mt-2">
+            @for(item of stages; track item.id) {
+              <app-project-stage-card [stage]="item" [projectStatus]="statusCurrent"/>
+            }
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabDocuments" role="tabpanel" aria-labelledby="documents-tab">
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
