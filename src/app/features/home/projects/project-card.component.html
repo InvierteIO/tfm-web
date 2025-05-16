@@ -1,0 +1,70 @@
+<div class="card me-3 mb-3 card-s1 p-2">
+  <img src="./assets/img/property/example-aparments.jpg" alt="Portada proyecto"
+       class="rounded-2 overflow-hidden title-image"/>
+  <div class="card-body px-0 pb-1 pt-2">
+    <h5 class="card-title io-green-primary lh-1">{{project!.name}}</h5>
+    <p class="card-text"><img src="./assets/svg/location.svg" alt="Direccion del proyecto">
+      <span class="card-location"> {{project!.address}}</span>
+    </p>
+  </div>
+  <div class="card-body px-0 py-2">
+    <div class="d-flex flex-wrap align-items-center">
+      @if (isShowNumberApartments) {
+        <span class="me-2 py-2">
+          <strong class="io-green-primary">
+            <svg width="27" height="27" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="/assets/svg/aparment24.svg#svg_aparment"></use>
+            </svg>
+          </strong> {{project.numberApartments}}
+        </span>
+      }
+      @if (isShowNumberLands) {
+        <span class="me-2 py-2">
+          <strong class="io-green-primary">
+            <svg width="27" height="27" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <use xlink:href="/assets/svg/land24.svg#svg_land"></use>
+            </svg>
+          </strong> {{project.numberLands}}
+        </span>
+      }
+      @if (isShowNumberHouse) {
+        <span class="me-2 py-2">
+            <strong class="io-green-primary">
+              <svg width="27" height="27" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <use xlink:href="/assets/svg/house24.svg#svg_house"></use>
+              </svg>
+            </strong> {{project.numberHouses}}
+        </span>
+      }
+
+      <span class="d-inline-flex align-items-center me-2 py-1"><strong class="material-symbols-rounded io-green-primary">stacks</strong> {{project!.stages}}</span>
+      <span><img src="./assets/svg/project-area.svg" alt="Área del proyecto"> {{project!.areaTotal}}m2</span>
+    </div>
+  </div>
+  <div class="card-body px-0 py-2">
+    @if (isShowProjectProgress) {
+      <button type="button" class="btn w-100 btn-s4 button-tp mb-2">
+        Registrar avance
+      </button>
+    }
+    @if (isShowEditProject) {
+      <button type="button" class="btn w-100 btn-s4 button-tp mb-2">
+        Editar proyecto
+      </button>
+    }
+    @if (isShowDeleteProject) {
+      <button type="button" class="btn w-100 btn-s4 button-tp mb-2">
+        Eliminar proyecto
+      </button>
+    }
+    @if (isShowPublishProject) {
+      <button type="button" class="btn w-100 btn-s4 button-tp mb-2">
+        Publicar proyecto
+      </button>
+    }
+    <button type="button" class="btn w-100 btn-s3 button-tp mb2-2">
+      Ver proyecto
+    </button>
+  </div>
+</div>
+

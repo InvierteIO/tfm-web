@@ -6,7 +6,7 @@ import { FormPersonalData } from './form-personal-data.model';
   providedIn: 'root'
 })
 export class RegisterPersonalInfoService {
-  private formPersonalDataSubject = new BehaviorSubject<FormPersonalData | null>(null);
+  private readonly formPersonalDataSubject = new BehaviorSubject<FormPersonalData | null>(null);
 
   setFormData(data: FormPersonalData) {
     this.formPersonalDataSubject.next(data);

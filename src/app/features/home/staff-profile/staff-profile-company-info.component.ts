@@ -40,7 +40,7 @@ export class StaffProfileCompanyInfoComponent implements OnInit {
     return this.fb.group({
       companyname: [''],
       ruc: [''],
-      address: [''],
+      address_company: [''],
       phone: ['']
     });
   }
@@ -58,7 +58,7 @@ export class StaffProfileCompanyInfoComponent implements OnInit {
         this.form?.reset({
           companyname : company.name,
           ruc: company.taxIdentificationNumber,
-          address: company.address,
+          address_company: company.address,
           phone: company.phone
         });
       },

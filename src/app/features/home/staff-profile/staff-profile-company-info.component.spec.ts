@@ -70,7 +70,7 @@ describe('StaffProfileCompanyInfoComponent', () => {
       const form = component.createForm();
       expect(form.get('companyname')).toBeTruthy();
       expect(form.get('ruc')).toBeTruthy();
-      expect(form.get('address')).toBeTruthy();
+      expect(form.get('address_company')).toBeTruthy();
       expect(form.get('phone')).toBeTruthy();
     });
   });
@@ -103,7 +103,7 @@ describe('StaffProfileCompanyInfoComponent', () => {
 
       expect(component.form.get('companyname')?.value).toBe('MyCorp');
       expect(component.form.get('ruc')?.value).toBe('99999999');
-      expect(component.form.get('address')?.value).toBe('My St 123');
+      expect(component.form.get('address_company')?.value).toBe('My St 123');
       expect(component.form.get('phone')?.value).toBe('987654321');
       expect(component.loadingInfo).toBeFalse();
     });

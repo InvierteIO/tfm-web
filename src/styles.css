@@ -9,10 +9,13 @@ body {
   color: #066B4B !important;
 }
 
-io-yellow-primary {
+.io-yellow-primary {
   color: #F9B234 !important;
 }
 
+.io-bg-gray-s1 {
+  background-color: #F3F3F3;
+}
 /*****************Inputs/Texts********************/
 .input-tp-sub-h6 {
   font-family: 'Poppins', sans-serif;
@@ -88,7 +91,71 @@ input::placeholder {
 
 .form-control:focus {
   border-color: #D8D8D8 !important;
-  box-shadow: 0 0 0 0.2rem rgba(6, 107, 75, 0.10) !important;
+  box-shadow: 0 0 0 0.1rem rgba(6, 107, 75, 0.10) !important;
+}
+
+.email-s1 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 100%;
+  color: #5F5F5F;
+}
+.profile-label {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 120%;
+  vertical-align: middle;
+  color: #1A202C;
+}
+
+.input-s2 {
+  border-radius: 5px !important;
+  height: 45px !important;
+  border: 1px solid #C6C6C6 !important;
+}
+
+.input-s2::placeholder {
+  color: #ADADAD !important;
+}
+
+.input-s3 {
+  height: 45px !important;
+  border-radius: 5px 0 0 5px !important;
+  border-bottom: 1px solid #C6C6C6 !important;
+  border-left: 1px solid #C6C6C6 !important;
+  border-top: 1px solid #C6C6C6 !important;
+  border-right: none;
+}
+
+.input-s3::placeholder {
+  color: #ADADAD !important;
+}
+
+.text-icon-search {
+  background-color: #FCFCFC !important;
+  color:  #B7BCBA !important;
+  cursor: pointer;
+  border-radius: 0 5px 5px 0 !important;
+  border-bottom: 1px solid #C6C6C6 !important;
+  border-right: 1px solid #C6C6C6 !important;
+  border-top: 1px solid #C6C6C6 !important;
+  border-left: none !important;
+}
+
+.input-group.ig-s1 .form-control:focus {
+  box-shadow: none !important;
+  border-color: #C6C6C6 !important;
+}
+
+.input-group.ig-s1:focus-within {
+  box-shadow: 0 0 0 0.1rem rgba(6, 107, 75, 0.10) !important;
+  border-radius: 5px;
+}
+
+.input-group.ig-s1:focus-within .text-icon-search {
+  border-color: #C6C6C6 !important;
 }
 
 /*****************Buttons********************/
@@ -154,15 +221,15 @@ input::placeholder {
 .btn-s3 {
   min-height: 45px;
   border-radius: 5px;
-  background: #F2C94C;
+  background: #F9B234;
   border: none;
 }
 .btn-s3:hover,
 .btn-s3:focus,
 .btn-s3:active  {
-  background-color: #F9B234 !important;
-  border-color: #F9B234 !important;
-  color: #F6F6F6 !important;
+  background-color: #F2C94C !important;
+  border-color: #F2C94C !important;
+  color: #FFF !important;
 }
 
 .btn-s3:disabled {
@@ -190,6 +257,30 @@ input::placeholder {
   border: 1px solid #D8D8D8;
   color: #D8D8D8 !important;
 }
+/***********Dropdown************************/
+.mn-btn-s1 {
+  background: #FAFAFA;
+  height: 45px;
+  border: 1px solid #E2E2E2;
+}
+.mn-btn-s1:hover,
+.mn-btn-s1:focus,
+.mn-btn-s1:active {
+  background-color: #FCFCFC;
+  border: 1px solid #C6C6C6;
+}
+
+.dropdown-toggle.mn-btn-s1::after {
+  display: none !important;
+  border: 1px solid #E2E2E2;
+}
+
+.dropdown.mn-1 > .dropdown-menu .dropdown-item.active,
+.dropdown.mn-1 > .dropdown-menu .dropdown-item:active {
+  color: #066B4B !important;
+  background-color: #D2F2DD !important;
+}
+
 /*****************Tables********************/
 .table-s1 thead tr th {
   background-color: #E0E0E0;
@@ -239,11 +330,11 @@ input::placeholder {
 }
 .tab-s1 .nav-item .active {
   font-family: 'Poppins', sans-serif;
-  font-weight: 500;
+  font-weight: 700;
   font-size: 16px;
   line-height: 100%;
   vertical-align: middle;
-  color: #000000;
+  color: #5F5F5F;
 }
 
 .tab-s1 .nav-item .nav-link:not(.active) {
@@ -254,20 +345,49 @@ input::placeholder {
   vertical-align: middle;
   color: #5F5F5F;
 }
-.email-s1 {
-  font-family: 'Roboto', sans-serif;
-  font-weight: 800;
+
+.tab-s1.disable-active-nav .nav-underline .nav-link.active {
+  border-bottom: none !important;
+}
+
+.tab-s2 .nav-item .active {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
   font-size: 16px;
   line-height: 100%;
+  vertical-align: middle;
+  color: #066B4B;
+}
+
+.tab-s2 .nav-item .nav-link:not(.active) {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 100%;
+  vertical-align: middle;
   color: #5F5F5F;
 }
-.profile-label {
-  font-family: 'Poppins', sans-serif;
+
+/*****************Cards********************/
+.card-s1 {
+  width: 20rem; background-color: #EBEBEB;
+  border: 1px solid #FFFFFF
+}
+.card-s1 .title-image {
+  height: 11rem;
+}
+.card-s1 h5 {
+  font-weight: 600;
+}
+.card-s1 .card-body span {
+  font-weight: 600 !important; font-size: 16px;
+}
+.card-s1 .card-location {
   font-weight: 600;
   font-size: 16px;
-  line-height: 120%;
-  vertical-align: middle;
-  color: #1A202C;
+  line-height: 100%;
+  vertical-align: bottom;
+  color: #696969;
 }
 /*****************Others********************/
 
@@ -320,3 +440,4 @@ main .pt65 {
     margin-left: 0px;
   }
 }
+
