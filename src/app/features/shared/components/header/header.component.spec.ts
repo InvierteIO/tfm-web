@@ -62,7 +62,7 @@ describe('HeaderComponent', () => {
         Promise.resolve({ isConfirmed: false } as any)
       );
 
-      component.logoutShort();
+      component.logout();
       tick();
 
       expect(authServiceSpy.logout).not.toHaveBeenCalled();
@@ -72,7 +72,7 @@ describe('HeaderComponent', () => {
     it('should logout and navigate to /internal/auth/login if user confirms and is operator', fakeAsync(() => {
       authServiceSpy.untilOperator.and.returnValue(true);
 
-      component.logoutShort();
+      component.logout();
       tick();
 
       expect(authServiceSpy.logout).toHaveBeenCalled();
@@ -82,7 +82,7 @@ describe('HeaderComponent', () => {
     it('should logout and navigate to /public/auth/login if user confirms and is not operator', fakeAsync(() => {
       authServiceSpy.untilOperator.and.returnValue(false);
 
-      component.logoutShort();
+      component.logout();
       tick();
 
       expect(authServiceSpy.logout).toHaveBeenCalled();

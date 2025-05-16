@@ -12,18 +12,18 @@ import Swal from 'sweetalert2';
 export class HeaderComponent {
   constructor(private readonly router: Router, private readonly authService: AuthService) {
   }
-  
+
   goProfile() {
     const isOperator : boolean = this.authService.untilOperator();
     if(isOperator) {
-      this.router.navigate(['/internal/dashboard/profile']);            
+      this.router.navigate(['/internal/dashboard/profile']);
     } else {
       this.router.navigate(['/public/home/profile']);
     }
   }
 
 
-  logoutShort(): void {
+  logout(): void {
     Swal.fire(
       DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Estás seguro de que deseas cerrar sesión?","Sí, salir" ))
       .then((result) => {
@@ -31,11 +31,11 @@ export class HeaderComponent {
           const isOperator : boolean = this.authService.untilOperator();
           this.authService.logout();
           if(isOperator) {
-            this.router.navigate(['/internal/auth/login']);            
+            this.router.navigate(['/internal/auth/login']);
           } else {
             this.router.navigate(['/public/auth/login']);
-          }          
+          }
         }
-      });    
+      });
   }
 }

@@ -29,9 +29,9 @@ export const routes: Routes = [
               },
               {
                 path: 'forgot-password', component: ForgotPasswordComponent
-              },                 
+              },
               {
-                path: 'signup',                
+                path: 'signup',
                 children : [
                   {
                     path: 'register-info', component: RegisterPersonalInfoComponent,
@@ -48,7 +48,7 @@ export const routes: Routes = [
                   {
                     path: 'account-confirmation/:token', component: AccountConfirmationComponent,
                     canActivate: [AuthRedirectGuard]
-                  }                                
+                  }
                 ]
               }
             ]
@@ -95,3 +95,4 @@ export const routes: Routes = [
       pathMatch: 'full',
     }
 ];
+

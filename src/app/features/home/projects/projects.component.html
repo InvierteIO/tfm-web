@@ -1,0 +1,150 @@
+<div class="container">
+  <h1 class="title-tp-h1 io-green-primary mt-5 mb-3">Mis proyectos</h1>
+
+  <div class="card p-0 border-0 rounded-0">
+
+    <div class="card-header tab-s1 disable-active-nav py-2 border-0 rounded-0">
+      <ul class="nav nav-underline m-1 pb-1">
+        <li class="nav-item" >
+          <a class="nav-link active" id="enable-tab" data-bs-toggle="tab" href="#tabEnable" role="tab" aria-controls="#tabEnable" aria-selected="true"
+             (click)="onStatusTabClick(ProjectStatus.ACTIVE, $event)">
+            Activos
+          </a>
+        </li>
+        <li class="nav-item" >
+          <a class="nav-link" id="disabled-tab" data-bs-toggle="tab" href="#tabDisabled" role="tab" aria-controls="#tabDisabled" aria-selected="true"
+             (click)="onStatusTabClick(ProjectStatus.DISABLED, $event)">
+            Inactivos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="nopublish-tab" data-bs-toggle="tab" href="#tabNoPublish" role="tab" aria-controls="tabNoPublish" aria-selected="false"
+             (click)="onStatusTabClick(ProjectStatus.NOPUBLISHED, $event)">
+            No publicados
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="draft-tab" data-bs-toggle="tab" href="#tabDraft" role="tab" aria-controls="tabDraft" aria-selected="false"
+             (click)="onStatusTabClick(ProjectStatus.DRAFT, $event)">
+            Borradores
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="row gx-0 gy-2 align-items-center py-4 px-3 io-bg-gray-s1">
+      <div class="col-12 col-sm-6 col-md-6 col-lg-5 col-xl-5">
+        <div class="input-group ig-s1">
+          <input id="txtBusqueda" type="text" (keyup.enter)="search()"
+            class="form-control input-tp-h4 input-s3"
+            placeholder="Busca por {{this.selectedFilter}}" />
+          <span class="input-group-text text-icon-search" (click)="search()" ><i class="material-symbols-rounded">search</i></span>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex justify-content-center align-items-center">
+        <div class="dropdown mn-1">
+          <button class="btn dropdown-toggle mn-btn-s1" type="button" id="mn-search-project" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="./assets/svg/arrowsearch.svg" alt="arrow" />
+            <span class="io-green-primary fw-bolder">  Filtrado por</span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="mn-search-project">
+            <li>
+              <button type="button" class="dropdown-item d-flex align-items-center justify-content-between"
+                [class.active]="selectedFilter === 'Nombre'" (click)="setFilter('Nombre')">
+                <span>Nombre</span>
+                <span *ngIf="selectedFilter === 'Nombre'" class="material-symbols-rounded">check</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="dropdown-item d-flex align-items-center justify-content-between"
+                [class.active]="selectedFilter === 'Dirección'" (click)="setFilter('Dirección')">
+                <span>Dirección</span>
+                <span *ngIf="selectedFilter === 'Dirección'" class="material-symbols-rounded">check</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="dropdown-item d-flex align-items-center justify-content-between"
+                [class.active]="selectedFilter === 'N° Etapas'" (click)="setFilter('N° Etapas')">
+                <span>N° Etapas</span>
+                <span *ngIf="selectedFilter === 'N° Etapas'" class="material-symbols-rounded">check</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="dropdown-item d-flex align-items-center justify-content-between"
+                [class.active]="selectedFilter === 'N° Inmuebles'" (click)="setFilter('N° Inmuebles')">
+                <span>N° Inmuebles</span>
+                <span *ngIf="selectedFilter === 'N° Inmuebles'" class="material-symbols-rounded">check</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-auto ms-auto">
+        <button class="btn btn-s3 button-tp py-2 d-flex justify-content-center align-items-center" (click)="create()">
+          Crear proyecto
+        </button>
+      </div>
+    </div>
+    <div class="card-body p-3">
+      <div class="tab-s2 pb-2">
+        <ul class="nav nav-underline m-1">
+          <li class="nav-item" >
+            <a class="nav-link active" data-bs-toggle="tab" href="#" role="tab" aria-controls="#" aria-selected="true"
+               (click)="onCategoryClick(PropertyCategory.APARTMENT, $event)">
+              <svg width="24.55" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <use [attr.xlink:href]="'/assets/svg/aparment24.svg#svg_aparment'"></use>
+              </svg> Departamentos</a>
+          </li>
+          <li class="nav-item" >
+            <a class="nav-link"  data-bs-toggle="tab" href="#" role="tab" aria-controls="#" aria-selected="true"
+               (click)="onCategoryClick(PropertyCategory.LAND, $event)">
+              <svg width="26.32" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <use [attr.xlink:href]="'/assets/svg/land24.svg#svg_land'"></use>
+              </svg> Terrenos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"  data-bs-toggle="tab" href="#" role="tab" aria-controls="#" aria-selected="false"
+               (click)="onCategoryClick(PropertyCategory.HOUSE, $event)">
+              <svg width="27.87" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <use [attr.xlink:href]="'/assets/svg/house24.svg#svg_house'"></use>
+              </svg> Casas</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="tabEnable" role="tabpanel" aria-labelledby="enable-tab">
+          <div class="d-flex flex-wrap justify-content-center mt-2">
+            @for(item of projects; track item.id) {
+              <app-project-card [project]="item" [propertyCategory]="categoryCurrent" [projectStatus]="ProjectStatus.ACTIVE"/>
+            }
+
+          </div>
+        </div>
+        <div class="tab-pane fade" id="tabDisabled" role="tabpanel" aria-labelledby="disabled-tab">
+          <div class="d-flex flex-wrap mt-2">
+            @for(item of projects; track item.id) {
+              <app-project-card [project]="item" [propertyCategory]="categoryCurrent" [projectStatus]="ProjectStatus.DISABLED"/>
+            }
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabNoPublish" role="tabpanel" aria-labelledby="nopublish-tab">
+          <div class="d-flex flex-wrap mt-2">
+            @for(item of projects; track item.id) {
+              <app-project-card [project]="item" [propertyCategory]="categoryCurrent" [projectStatus]="ProjectStatus.NOPUBLISHED"/>
+            }
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="tabDraft" role="tabpanel" aria-labelledby="draft-tab">
+          <div class="d-flex flex-wrap mt-2">
+            <!--Proyectos borradores-->
+            @for(item of projects; track item.id) {
+              <app-project-card [project]="item" [propertyCategory]="categoryCurrent" [projectStatus]="ProjectStatus.DRAFT"/>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
