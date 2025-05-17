@@ -5,13 +5,15 @@ import {ProjectStatus} from '../shared/models/project-status.model';
 import {ProjectStageMock} from '../shared/models/project-stage.mock.model';
 import {ProjectStageService} from '../shared/services/project-stage.service';
 import {ProjectStageCardComponent} from './project-stage-card.component';
+import {ProjectInfoGeneralComponent} from "./project-info-general.component";
 
 @Component({
   selector: 'app-project-info',
   standalone: true,
-  imports: [
-    ProjectStageCardComponent
-  ],
+    imports: [
+        ProjectStageCardComponent,
+        ProjectInfoGeneralComponent
+    ],
   templateUrl: './project-info.component.html'
 })
 export class ProjectInfoComponent implements OnInit {
@@ -40,5 +42,9 @@ export class ProjectInfoComponent implements OnInit {
       .subscribe(stages => {
         this.stages = stages;
       });
+  }
+
+  back(): void {
+    this.router.navigate(['/public/home/projects']);
   }
 }
