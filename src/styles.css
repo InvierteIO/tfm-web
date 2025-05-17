@@ -79,7 +79,7 @@ input {
   border-width: 1px !important;
 }
 
-input::placeholder {
+input::placeholder , textarea::placeholder {
   color: #A0A0A0 !important;
   font-family: 'Poppins', sans-serif !important;
   font-weight: 400 !important;
@@ -158,6 +158,32 @@ input::placeholder {
   border-color: #C6C6C6 !important;
 }
 
+.input-s4 {
+  border-radius: 10px !important;
+  border: 1px solid #B8B8B8 !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 200%;
+  vertical-align: middle;
+  height: 45px !important;
+}
+
+.textarea-s1 {
+  border-radius: 10px !important;
+  border: 1px solid #B8B8B8 !important;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 200%;
+  background: #FCFCFC !important;
+  vertical-align: middle;
+}
+.input-s4:disabled, .textarea-s1:disabled {
+  background: #F6F7F9 !important;
+  border: 1px solid #B8B8B8 !important;
+  color: #90A3BF !important;
+}
 /*****************Buttons********************/
 .button-tp {
   font-family: 'Poppins', sans-serif;
@@ -256,6 +282,11 @@ input::placeholder {
   background-color: rgba(3, 112, 77, 0.9) !important;
   border: 1px solid #D8D8D8;
   color: #D8D8D8 !important;
+}
+
+.btn-width300 {
+  max-width: 300px;
+  width: 100%;
 }
 /***********Dropdown************************/
 .mn-btn-s1 {
@@ -416,7 +447,13 @@ input::placeholder {
 }
 
 /*****************Others********************/
-
+.arrow-back {
+  background-color: #F9B234 !important;
+  color: white !important;
+  font-weight: 500;
+  font-size: 25px;
+  cursor: pointer !important;
+}
 .main-header {
   height: 65px;
   background-color: #fff;

@@ -1,5 +1,7 @@
 <div class="container">
-  <h1 class="title-tp-h1 io-green-primary mt-5 mb-3">Mis proyectos / {{project?.name}}</h1>
+  <h1 class="title-tp-h1 mt-4 mb-3 d-flex align-items-center">
+    <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
+    <span class="io-green-primary">Mis proyectos / {{project?.name}} </span></h1>
 
   <div class="card p-0 border-0 rounded-0">
 
@@ -20,12 +22,18 @@
             Documentos
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" id="typesproperty-tab" data-bs-toggle="tab" href="#tabTypesProperty" role="tab" aria-controls="tabTypesProperty" aria-selected="false">
+            Tipos de inmuebles
+          </a>
+        </li>
       </ul>
     </div>
 
     <div class="card-body p-3">
       <div class="tab-content">
         <div class="tab-pane fade show active" id="tabDetail" role="tabpanel" aria-labelledby="detail-tab">
+          <app-project-info-general [project]="project!"/>
         </div>
         <div class="tab-pane fade" id="tabStages" role="tabpanel" aria-labelledby="stages-tab">
           <div class="d-flex flex-wrap justify-content-center mt-2">
@@ -36,7 +44,9 @@
         </div>
 
         <div class="tab-pane fade" id="tabDocuments" role="tabpanel" aria-labelledby="documents-tab">
+        </div>
 
+        <div class="tab-pane fade" id="tabTypesProperty" role="tabpanel" aria-labelledby="typesproperty-tab">
         </div>
       </div>
     </div>
