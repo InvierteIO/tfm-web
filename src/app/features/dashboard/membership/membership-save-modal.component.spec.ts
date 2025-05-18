@@ -177,30 +177,30 @@ describe('MembershipSaveModalComponent', () => {
     const form = component.form;
     form.get('levelname')!.setValue('');
     form.get('levelname')!.markAsTouched();
-    expect(component.isLevelNameNotValid).toBeTrue();
+    expect(component.isFieldNotValid('levelname')).toBeTrue();
 
     form.get('shortdescription')!.setValue('');
     form.get('shortdescription')!.markAsTouched();
-    expect(component.isShortDescriptionNotValid).toBeTrue();
+    expect(component.isFieldNotValid('shortdescription')).toBeTrue();
 
     form.get('longdescription')!.setValue('');
     form.get('longdescription')!.markAsTouched();
-    expect(component.isLongDescriptionNotValid).toBeFalse();
+    expect(component.isFieldNotValid('longdescription')).toBeFalse();
 
     form.get('monthlycost')!.setValue('abc');
     form.get('monthlycost')!.markAsTouched();
-    expect(component.isMonthlyCostNotValid).toBeTrue();
+    expect(component.isFieldNotValid('monthlycost')).toBeTrue();
 
     form.get('annualcost')!.setValue('def');
     form.get('annualcost')!.markAsTouched();
-    expect(component.isAnnualCostNotValid).toBeTrue();
+    expect(component.isFieldNotValid('annualcost')).toBeTrue();
 
     form.get('maxrealtors')!.setValue('xyz');
     form.get('maxrealtors')!.markAsTouched();
-    expect(component.isMaxRealtorsNotValid).toBeTrue();
+    expect(component.isFieldNotValid('maxrealtors')).toBeTrue();
 
     form.get('maxprojects')!.setValue('uvw');
     form.get('maxprojects')!.markAsTouched();
-    expect(component.isMaxpPojectsNotValid).toBeTrue();
+    expect(component.isFieldNotValid('maxprojects')).toBeTrue();
   });
 });

@@ -1,0 +1,30 @@
+.form-select {
+  background: #FCFCFC !important;
+  border-color: #D8D8D8 !important;
+  color: #A0A0A0;
+}
+
+.form-select option {
+  color: #1A202C;
+}
+.custom-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select-arrow {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.custom-arrow-icon {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  pointer-events: none;
+  transform: translateY(-50%);
+  font-size: 1.8rem;
+  color: #A0A0A0;
+  z-index: 2;
+}

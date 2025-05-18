@@ -12,7 +12,7 @@
         <input type="text" class="form-control" id="levelname"
                formControlName="levelname"
                placeholder="" [maxLength]="50" >
-        <div *ngIf="isLevelNameNotValid">
+        <div *ngIf="isFieldNotValid('levelname')">
           <small *ngIf="formCurrent?.['levelname']?.errors?.['required']" class="text-danger font-italic">
             Nivel es requerido
           </small>
@@ -29,7 +29,7 @@
                formControlName="shortdescription"
                   placeholder="" [maxLength]="255" [rows]="3" >
         </textarea>
-        <div *ngIf="isShortDescriptionNotValid">
+        <div *ngIf="isFieldNotValid('shortdescription')">
           <small *ngIf="formCurrent?.['shortdescription']?.errors?.['required']" class="text-danger font-italic">
             Resumen es requerido
           </small>
@@ -47,7 +47,7 @@
                   formControlName="longdescription"
                   placeholder="" [maxLength]="255" [rows]="3" [maxlength]="2000" >
         </textarea>
-        <div *ngIf="isLongDescriptionNotValid">
+        <div *ngIf="isFieldNotValid('longdescription')">
           <small *ngIf="formCurrent?.['longdescription']?.errors?.['maxlength']" class="text-danger font-italic">
             La longitud máxima es de 2000 carácteres
           </small>
@@ -61,7 +61,7 @@
         <input type="number" class="form-control" id="monthlycost"
                formControlName="monthlycost"
                placeholder="" [maxLength]="9" [min]="0">
-        <div *ngIf="isMonthlyCostNotValid" >
+        <div *ngIf="isFieldNotValid('monthlycost')" >
           <small *ngIf="formCurrent?.['monthlycost']?.errors?.['required']" class="text-danger font-italic">
             Costo mensual es requerido
           </small>
@@ -78,7 +78,7 @@
         <input type="number" class="form-control" id="annualcost"
                formControlName="annualcost"
                placeholder="" [maxLength]="9" [min]="0">
-        <div *ngIf="isAnnualCostNotValid">
+        <div *ngIf="isFieldNotValid('annualcost')">
           <small *ngIf="formCurrent?.['annualcost']?.errors?.['required']" class="text-danger font-italic">
             Costo anual es requerido
           </small>
@@ -95,7 +95,7 @@
         <input type="number" class="form-control" id="maxrealtors"
                formControlName="maxrealtors"
                placeholder="" [maxLength]="6" [min]="0">
-        <div *ngIf="isMaxRealtorsNotValid">
+        <div *ngIf="isFieldNotValid('maxrealtors')">
           <small *ngIf="formCurrent?.['maxrealtors']?.errors?.['required']" class="text-danger font-italic">
             Número de asesores es requerido
           </small>
@@ -112,7 +112,7 @@
         <input type="number" class="form-control" id="maxprojects"
                formControlName="maxprojects"
                placeholder="" [maxLength]="6" [min]="0">
-        <div *ngIf="isMaxpPojectsNotValid">
+        <div *ngIf="isFieldNotValid('maxprojects')">
           <small *ngIf="formCurrent?.['maxprojects']?.errors?.['required']" class="text-danger font-italic">
             Número de proyectos es requerido
           </small>

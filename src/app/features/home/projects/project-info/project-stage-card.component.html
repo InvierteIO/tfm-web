@@ -3,7 +3,7 @@
     <img src="./assets/img/property/example-aparments.jpg"
       alt="Portada la etapa" class="rounded-2 overflow-hidden title-image w-100" />
     <span class="stage-badge position-absolute top-0 mt-2">
-      Etapa&nbsp;{{stage?.stage}}
+      Etapa {{stage?.stage}}
     </span>
   </div>
   <div class="card-body px-0 pb-1 pt-2">
@@ -48,21 +48,21 @@
   </div>
   <div class="card-body px-0 py-2">
     @if (isShowEditStage) {
-      <button type="button" class="btn w-100 btn-s4 button-tp mb-2" (click)="edit()">
+      <button type="button" class="btn w-100 btn-s4 button-tp br5 mb-2" (click)="edit()">
         Editar etapa
       </button>
     }
     @if (isShowDeleteStage) {
-      <button type="button" class="btn w-100 btn-s4 button-tp mb-2">
+      <button type="button" class="btn w-100 btn-s4 button-tp br5 mb-2">
         Eliminar etapa
       </button>
     }
     @if (isShowPublishStage) {
-      <button type="button" class="btn w-100 btn-s4 button-tp mb-2">
+      <button type="button" class="btn w-100 btn-s4 button-tp br5 mb-2">
         Publicar etapa
       </button>
     }
-    <button type="button" class="btn w-100 btn-s3 button-tp mb2-2">
+    <button type="button" class="btn w-100 btn-s3 button-tp mb2-2 br5 h37">
       Ver Etapa
     </button>
   </div>

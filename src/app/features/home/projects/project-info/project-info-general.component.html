@@ -15,7 +15,7 @@
         <label for="project_name" class="form-label text-tp-h3">Nombre del proyecto</label>
         <input type="text" class="form-control input-s4" id="project_name" formControlName="project_name"
                placeholder="Ingrese nombre" [maxLength]="100"/>
-        <div *ngIf="isFieldNameNotValid('project_name')">
+        <div *ngIf="isFieldNotValid('project_name')">
           <small *ngFor="let msg of form.get('project_name') | formErrorMessages:'Nombre del proyecto'"
                  class="text-danger font-italic">{{ msg }}</small>
         </div>
@@ -26,7 +26,7 @@
           class="form-control input-s4"
           id="office_address" formControlName="office_address"
           placeholder="Ingrese dirección oficina" [maxLength]="200"/>
-        <div *ngIf="isFieldNameNotValid('office_address')">
+        <div *ngIf="isFieldNotValid('office_address')">
           <small *ngFor="let msg of form.get('office_address') | formErrorMessages:'Direccion de oficina'"
                  class="text-danger font-italic">{{ msg }}</small>
         </div>
@@ -37,7 +37,7 @@
         <label for="office_number" class="form-label text-tp-h3">Número de oficina</label>
         <input type="text" class="form-control input-s4" id="office_number" formControlName="office_number"
                placeholder="Ingrese numero de oficina" [maxLength]="6"/>
-        <div *ngIf="isFieldNameNotValid('office_number')">
+        <div *ngIf="isFieldNotValid('office_number')">
           <small *ngFor="let msg of form.get('office_number') | formErrorMessages:'Número de oficina'"
                  class="text-danger font-italic">{{ msg }}</small>
         </div>
@@ -48,7 +48,7 @@
                class="form-control input-s4"
                id="supervisor" formControlName="supervisor"
                placeholder="Ingrese nombre del encargado del proyecto" [maxLength]="200"/>
-        <div *ngIf="isFieldNameNotValid('supervisor')">
+        <div *ngIf="isFieldNotValid('supervisor')">
           <small *ngFor="let msg of form.get('supervisor') | formErrorMessages:'encargado'"
                  class="text-danger font-italic">{{ msg }}</small>
         </div>
@@ -67,7 +67,7 @@
         <label for="address" class="form-label text-tp-h3">Dirección</label>
         <input type="text" class="form-control input-s4" id="address" formControlName="address"
                placeholder="Ingrese dirección" [maxLength]="200"/>
-        <div *ngIf="isFieldNameNotValid('address')">
+        <div *ngIf="isFieldNotValid('address')">
           <small *ngFor="let msg of form.get('address') | formErrorMessages:'dirección'"
                  class="text-danger font-italic">{{ msg }}</small>
         </div>
@@ -79,7 +79,7 @@
         <input type="text" class="form-control input-s4" id="zipcode"  formControlName="zipcode"
                placeholder="Ingrese código postal"
                [maxLength]="8" [minLength]="6"/>
-        <div *ngIf="isFieldNameNotValid('zipcode')">
+        <div *ngIf="isFieldNotValid('zipcode')">
           <small *ngFor="let msg of form.get('zipcode') | formErrorMessages:'dirección'"
                  class="text-danger font-italic">{{ msg }}</small>
         </div>
@@ -87,9 +87,8 @@
     </div>
 
     <app-button-loading
-      class=""
       type="submit"
-      [btnClasses]="'btn button-tp btn-s4 d-block mx-auto mt-3 btn-width300'"
+      [btnClasses]="'btn d-block mx-auto mt-3 btn-width300 h37 btn-s4 button-tp br5'"
       [loading]="loading"
       msgLoading="Cargando..."
       msgButton="Guardar proyecto"

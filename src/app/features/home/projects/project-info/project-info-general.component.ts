@@ -77,7 +77,7 @@ export class ProjectInfoGeneralComponent implements OnInit {
       });
   }
 
-  get isFieldNameNotValid() {
+  get isFieldNotValid() {
     return (field: string) =>
       this.form?.get(field)?.invalid && this.form?.get(field)?.touched;
   }

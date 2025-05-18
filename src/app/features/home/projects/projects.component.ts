@@ -6,6 +6,7 @@ import {ProjectStatus} from './shared/models/project-status.model';
 import {PropertyCategory} from '../../shared/models/property-category.model';
 import {ProjectService} from './shared/services/project.service';
 import {ProjectMock} from './shared/models/project.mock.model';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-projects',
@@ -27,9 +28,10 @@ export class ProjectsComponent implements OnInit {
   statusCurrent: ProjectStatus = ProjectStatus.ACTIVE;
   projects: ProjectMock[] = [];
 
-  constructor(private readonly projectService: ProjectService) { }
+  constructor(private router: Router, private readonly projectService: ProjectService) { }
 
   create(): void {
+    this.router.navigate(['/public/home/project-new/section1']);
   }
 
   ngOnInit(): void {
