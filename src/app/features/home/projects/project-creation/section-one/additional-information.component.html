@@ -70,8 +70,7 @@
                 <div class="custom-select-wrapper"  *ngIf="type.dataType === DATA_TYPE.BOOLEAN">
                   <select
                     class="input-s4 form-select form-control custom-select-arrow"
-                    formControlName="value"
-                    [ngStyle]="{ 'color': bonusesFormArray.controls[i].get('types') ?.value[j] === '' ? '#A0A0A0' : '#1A202C', 'background': '#FCFCFC', 'borderColor': '#D8D8D8'}">
+                    formControlName="value" appSelectStyle>
                     <option value="" disabled hidden>Selecciona</option>
                     <option value="SI">Si</option>
                     <option value="NO">No</option>

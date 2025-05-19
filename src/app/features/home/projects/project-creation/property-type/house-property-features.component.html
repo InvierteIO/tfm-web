@@ -1,0 +1,128 @@
+<section [formGroup]="formGroup">
+
+  <h2 class="mb-3 mt-2 subtitle-tp-h2 io-green-primary">Características especiales del inmueble</h2>
+  <small>Seleciona según sea el caso</small>
+  <div class="row pt-2" formArrayName="house_features">
+    @for (feature of houseFeatures; track feature.id; let i = $index) {
+      <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3" [formGroupName]="i">
+        <div class="d-flex align-items-center mb-2">
+          <div class="checkbox-wrapper-19 me-2">
+            <input type="checkbox" [id]="'chk_house_feature_' + i" formControlName="checked"/>
+            <label [for]="'chk_house_feature_' + i" class="check-box"></label>
+          </div>
+          <label [for]="'chk_house_feature_' + i">{{ feature.name }}</label>
+        </div>
+      </div>
+    }
+  </div>
+
+  <h2 class="mb-4 mt-2 subtitle-tp-h2 io-green-primary">Características del inmueble Casa</h2>
+
+  <div class="row">
+    <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+      <label for="house_total_bathrooms" class="form-label text-tp-h3">N° de baños</label>
+      <input type="number" class="form-control input-s4" id="house_total_bathrooms" formControlName="house_total_bathrooms"
+             placeholder="Ingrese número" [maxLength]="4" [max]="1000" [min]="0"/>
+      <div *ngIf="formGroup.get('house_total_bathrooms') | isInvalidField">
+        <small *ngFor="let msg of formGroup.get('house_total_bathrooms') | formErrorMessages:'N° de baños '"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+    </div>
+
+    <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+      <label for="house_total_rooms" class="form-label text-tp-h3">N° de habitaciones</label>
+      <input type="number" class="form-control input-s4" id="house_total_rooms" formControlName="house_total_rooms"
+             placeholder="Ingrese número" [maxLength]="4" [max]="1000" [min]="0"/>
+      <div *ngIf="formGroup.get('house_total_rooms') | isInvalidField">
+        <small *ngFor="let msg of formGroup.get('house_total_rooms') | formErrorMessages:'N° de habitaciones '"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+      <label for="house_block_location" class="form-label text-tp-h3">Ubicación dentro de la manzana</label>
+      <div class="custom-select-wrapper">
+        <select
+          class="input-s4 form-select form-control custom-select-arrow" id="house_block_location"
+          formControlName="house_block_location" appSelectStyle>
+          <option value="" disabled hidden>Seleccionar </option>
+          <option value="ESQUINA">Esquina</option>
+          <option value="CENTRO">Centro</option>
+        </select>
+        <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+      </div>
+      <div *ngIf="formGroup.get('house_block_location') | isInvalidField">
+        <small *ngFor="let msg of formGroup.get('house_block_location') | formErrorMessages:'ubicación'"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+    </div>
+    <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+      <label for="house_road_way" class="form-label text-tp-h3">Tipo de via</label>
+      <div class="custom-select-wrapper" >
+        <select
+          class="input-s4 form-select form-control custom-select-arrow" id="house_road_way"
+          formControlName="house_road_way" appSelectStyle>
+          <option value="" disabled hidden>Seleccionar </option>
+          <option value="AVENIDA">Avenida</option>
+          <option value="CALLE">Calle</option>
+        </select>
+        <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+      </div>
+      <div *ngIf="formGroup.get('house_road_way') | isInvalidField">
+        <small *ngFor="let msg of formGroup.get('house_road_way') | formErrorMessages:'tipo de via'"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+    </div>
+
+
+  </div>
+  <div class="row">
+    <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+      <label for="house_roofed_area" class="form-label text-tp-h3">Area techada (m&#178;)</label>
+      <input type="number" class="form-control input-s4" id="house_roofed_area" formControlName="house_roofed_area"
+             placeholder="Ingrese area (m²)" [maxLength]="4" [max]="1000" [min]="0"/>
+      <div *ngIf="formGroup.get('house_roofed_area') | isInvalidField">
+        <small *ngFor="let msg of formGroup.get('house_roofed_area') | formErrorMessages:'Area techada '"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+    </div>
+
+    <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+      <label for="house_total_floors" class="form-label text-tp-h3">N° de pisos</label>
+      <input type="number" class="form-control input-s4" id="house_total_floors" formControlName="house_total_floors"
+             placeholder="Ingrese número" [maxLength]="2" [max]="10" [min]="0"/>
+      <div *ngIf="formGroup.get('house_total_floors') | isInvalidField">
+        <small *ngFor="let msg of formGroup.get('house_total_floors') | formErrorMessages:'N° de pisos '"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" formArrayName="house_floor_areas">
+    @for (_ of houseFloorAreas.controls; let i = $index; track i) {
+      <div class="col-xl-6 col-lg-6 col-sm-12 mb-3" [formGroupName]="i">
+        <label [for]="'house_floor_area_' + (i + 1)"
+               class="form-label text-tp-h3">
+          Área piso {{ i + 1 }} (m&#178;)
+        </label>
+
+        <input type="number"
+               class="form-control input-s4"
+               [id]="'house_floor_area_' + (i + 1)"
+               formControlName="value"
+               placeholder="Ingrese área (m²)"
+               [maxLength]="4" [max]="1000" [min]="0"/>
+
+        <div *ngIf="isFieldFloorHouseNotValid(i)">
+          <small *ngFor="let msg of houseFloorAreas.at(i).get('value') | formErrorMessages:('Área piso ' + (i + 1))"
+                 class="text-danger font-italic">
+            {{ msg }}
+          </small>
+        </div>
+      </div>
+    }
+  </div>
+
+</section>
+

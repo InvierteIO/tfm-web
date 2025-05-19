@@ -1,0 +1,108 @@
+<section [formGroup]="formGroup">
+  <h2 class="mb-4 mt-2 subtitle-tp-h2 io-green-primary">Características especiales del inmueble</h2>
+  <small>Seleciona según sea el caso</small>
+  <div class="row pt-2" formArrayName="apartment_features">
+    @for (feature of apartmentFeatures; track feature.id; let i = $index) {
+      <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3" [formGroupName]="i">
+        <div class="d-flex align-items-center mb-2">
+          <div class="checkbox-wrapper-19 me-2">
+            <input type="checkbox" [id]="'chk_apartment_feature_' + i" formControlName="checked"/>
+            <label [for]="'chk_apartment_feature_' + i" class="check-box"></label>
+          </div>
+          <label [for]="'chk_apartment_feature_' + i">{{ feature.name }}</label>
+        </div>
+      </div>
+    }
+  </div>
+
+  <h2 class="mb-4 mt-2 subtitle-tp-h2 io-green-primary">Características del inmueble Departamento</h2>
+
+  <div class="row">
+    <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+      <label for="apartment_total_bathrooms" class="form-label text-tp-h3">N° de baños</label>
+      <input type="number" class="form-control input-s4" id="apartment_total_bathrooms" formControlName="apartment_total_bathrooms"
+             placeholder="Ingrese número" [maxLength]="4" [max]="1000" [min]="0"/>
+      <div *ngIf="formGroup.get('apartment_total_bathrooms') | isInvalidField">
+        <small *ngFor="let msg of formGroup.get('apartment_total_bathrooms') | formErrorMessages:'N° de baños '"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+    </div>
+
+    <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+      <label for="apartment_total_rooms" class="form-label text-tp-h3">N° de habitaciones</label>
+      <input type="number" class="form-control input-s4" id="apartment_total_rooms" formControlName="apartment_total_rooms"
+             placeholder="Ingrese número" [maxLength]="4" [max]="1000" [min]="0"/>
+      <div *ngIf="formGroup.get('apartment_total_rooms') | isInvalidField">
+        <small *ngFor="let msg of formGroup.get('apartment_total_rooms') | formErrorMessages:'N° de habitaciones '"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+      <label for="apartment_tower_location" class="form-label text-tp-h3">Ubicación dentro de la torre</label>
+      <div class="custom-select-wrapper">
+        <select
+          class="input-s4 form-select form-control custom-select-arrow" id="apartment_tower_location"
+          formControlName="apartment_tower_location" appSelectStyle>
+          <option value="" disabled hidden>Seleccionar </option>
+          <option value="INTERIOR">Interior</option>
+          <option value="EXTERIOR">Exterior</option>
+        </select>
+        <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+      </div>
+      <div *ngIf="formGroup.get('apartment_tower_location') | isInvalidField">
+        <small *ngFor="let msg of formGroup.get('apartment_tower_location') | formErrorMessages:'ubicación'"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+    </div>
+    <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+      <label for="apartment_type" class="form-label text-tp-h3">Tipo de departamento</label>
+      <div class="custom-select-wrapper">
+        <select
+          class="input-s4 form-select form-control custom-select-arrow" id="apartment_type"
+          formControlName="apartment_type" appSelectStyle>
+          <option value="" disabled hidden>Seleccionar </option>
+          <option value="SIMPLEX">Simplex</option>
+          <option value="DUPLEX">Duplex</option>
+          <option value="TRIPLEX">Triplex</option>
+        </select>
+        <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+      </div>
+      <div *ngIf="formGroup.get('apartment_type') | isInvalidField">
+        <small *ngFor="let msg of formGroup.get('apartment_type') | formErrorMessages:'tipo de departamento'"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+    </div>
+
+  </div>
+
+  @if(['DUPLEX', 'TRIPLEX'].includes(formGroup.get('apartment_type')?.value)) {
+    <div class="row">
+      <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+        <label for="area_floor_two" class="form-label text-tp-h3">Área de 2° piso (m&#178;)</label>
+        <input type="number" class="form-control input-s4" id="area_floor_two" formControlName="area_floor_two"
+               placeholder="Ingrese area (m²)" [maxLength]="4" [max]="1000" [min]="0"/>
+
+        <div *ngIf="formGroup.get('area_floor_two') | isInvalidField">
+          <small *ngFor="let msg of formGroup.get('area_floor_two') | formErrorMessages:'área '"
+                 class="text-danger font-italic">{{ msg }}</small>
+        </div>
+      </div>
+      @if(formGroup.get('apartment_type')?.value === "TRIPLEX" ) {
+        <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+          <label for="area_floor_three" class="form-label text-tp-h3">Área de 3° piso (m&#178;)</label>
+          <input type="number" class="form-control input-s4" id="area_floor_three" formControlName="area_floor_three"
+                 placeholder="Ingrese area (m²)" [maxLength]="4" [max]="1000" [min]="0"/>
+          <div *ngIf="formGroup.get('area_floor_three') | isInvalidField">
+            <small *ngFor="let msg of formGroup.get('area_floor_three') | formErrorMessages:'área '"
+                   class="text-danger font-italic">{{ msg }}</small>
+          </div>
+        </div>
+      }
+
+    </div>
+
+  }
+</section>
+

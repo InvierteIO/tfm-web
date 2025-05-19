@@ -3,13 +3,8 @@ import {MaintenancePageComponent} from '../shared/components/maintenance-page/ma
 import {StaffProfileComponent} from './staff-profile/staff-profile.component';
 import {ProjectsComponent} from './projects/projects.component';
 import {ProjectInfoComponent} from "./projects/project-info/project-info.component";
-import {LoginInternalComponent} from '../auth/login/internal/login-internal.component';
-import {AuthRedirectGuard} from '@core/services/auth-redirect-guard.service';
-import {HomeComponent} from './home.component';
-import {DashboardComponent} from '../dashboard/dashboard.component';
-import {RoleGuardService} from '@core/services/role-guard.service';
-import {Role} from '@core/models/role.model';
 import {SectionOneComponent} from './projects/project-creation/section-one/section-one.component';
+import {PropertyTypeComponent} from './projects/project-creation/property-type/property-type.component';
 
 export const homeRoutes: Routes = [
   {
@@ -29,6 +24,9 @@ export const homeRoutes: Routes = [
     children : [
       {
         path: 'section1', component: SectionOneComponent
+      },
+      {
+        path: 'property-type', component: PropertyTypeComponent
       }
     ]
   },
