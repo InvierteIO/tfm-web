@@ -117,29 +117,9 @@ export class MembershipSaveModalComponent implements OnInit {
     return this.form?.controls;
   }
 
-  get isLevelNameNotValid() {
-    return this.form?.get('levelname')?.invalid && this.form?.get('levelname')?.touched;
-  }
-  get isShortDescriptionNotValid() {
-    return this.form?.get('shortdescription')?.invalid && this.form?.get('shortdescription')?.touched;
+  get isFieldNotValid() {
+    return (field: string) =>
+      this.form?.get(field)?.invalid && this.form?.get(field)?.touched;
   }
 
-  get isLongDescriptionNotValid() {
-    return this.form?.get('longdescription')?.invalid && this.form?.get('longdescription')?.touched;
-  }
-
-  get isMonthlyCostNotValid() {
-    return this.form?.get('monthlycost')?.invalid && this.form?.get('monthlycost')?.touched;
-  }
-  get isAnnualCostNotValid() {
-    return this.form?.get('annualcost')?.invalid && this.form?.get('annualcost')?.touched;
-  }
-
-  get isMaxRealtorsNotValid() {
-    return this.form?.get('maxrealtors')?.invalid && this.form?.get('maxrealtors')?.touched;
-  }
-
-  get isMaxpPojectsNotValid() {
-    return this.form?.get('maxprojects')?.invalid && this.form?.get('maxprojects')?.touched;
-  }
 }

@@ -1,4 +1,7 @@
-/* styles.css o auth.component.css */
+@import 'assets/styles/custom-checkbox.css';
+@import 'assets/styles/custom-select.css';
+@import 'assets/styles/custom-tables.css';
+
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
@@ -16,6 +19,7 @@ body {
 .io-bg-gray-s1 {
   background-color: #F3F3F3;
 }
+
 /*****************Inputs/Texts********************/
 .input-tp-sub-h6 {
   font-family: 'Poppins', sans-serif;
@@ -245,7 +249,7 @@ input::placeholder , textarea::placeholder {
 }
 
 .btn-s3 {
-  min-height: 45px;
+  height: 45px;
   border-radius: 5px;
   background: #F9B234;
   border: none;
@@ -265,7 +269,7 @@ input::placeholder , textarea::placeholder {
 }
 
 .btn-s4 {
-  min-height: 45px;
+  min-height: 37px;
   background-color: #066B4B;
   border-color: #066B4B;
 }
@@ -312,31 +316,7 @@ input::placeholder , textarea::placeholder {
   background-color: #D2F2DD !important;
 }
 
-/*****************Tables********************/
-.table-s1 thead tr th {
-  background-color: #E0E0E0;
-  color: #5F5F5F;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 100%;
-  vertical-align: middle;
-}
-.table-s1 tbody tr {
-  color: #7B7B7B;
-}
 
-.table-s1 tbody tr td{
-  font-family: 'Poppins', sans-serif;
-  color: #7B7B7B;
-  font-weight: 400;
-  font-size: 14px;
-}
-
-.table-borderless tbody tr td,
-.table-borderless thead th {
-  border: none;
-}
 /*****************Modals********************/
 .btn-close.custom-close {
   background: transparent;
@@ -454,6 +434,13 @@ input::placeholder , textarea::placeholder {
   font-size: 25px;
   cursor: pointer !important;
 }
+
+.h37 {
+  height: 37px !important;
+}
+.br5 {
+  border-radius: 5px !important;
+}
 .main-header {
   height: 65px;
   background-color: #fff;
@@ -500,7 +487,7 @@ main .pt65 {
 
 @media (max-width: 768px) {
   main {
-    margin-left: 0px;
+    margin-left: 0;
   }
 }
 

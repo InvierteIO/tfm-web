@@ -1,0 +1,131 @@
+<section [formGroup]="form">
+  <h2 class="my-4 subtitle-tp-h2 io-green-primary">Informacion adicional</h2>
+
+  <span class="fw-bolder mb-2 d-block">Bonos</span>
+  <div class="row" formArrayName="bonuses">
+    @for (bonus of financialsBonus;track bonus.id; let i = $index) {
+      @if (bonus.types.length <= 1) {
+        <div class="col-xl-6 col-lg-6 col-sm-12" [formGroupName]="i">
+
+          <div class="d-flex align-items-center mb-2">
+            <div class="checkbox-wrapper-19 me-2">
+              <input type="checkbox" [id]="'chk_bonus_' + i" formControlName="checked" (change)="onBonusCheck(i)"/>
+              <label [for]="'chk_bonus_' + i"  class="check-box"></label>
+            </div>
+            <label [for]="'chk_bonus_' + i">{{ bonus.name }}</label>
+          </div>
+          @if (bonus.types.length == 1) {
+            <div *ngIf="bonusesFormArray.controls[i].get('checked')?.value"
+                 formArrayName="types" class="mb-4">
+              <label class="form-label text-tp-h3">{{ bonus.types[0].name }}</label>
+              <div [formGroupName]="0">
+                @if (bonus.types[0].dataType === DATA_TYPE.TEXT) {
+                  <input type="text" class="form-control input-s4"
+                         [placeholder]="'Ingresa ' + bonus.types[0].name?.toLowerCase()"
+                         formControlName="value"/>
+                } @else {
+                  <div class="custom-select-wrapper" >
+                    <select class="input-s4 form-select custom-select-arrow"
+                            formControlName="value"
+                            [ngStyle]="{'color': bonusesFormArray.controls[i].get('types')?.value[0] === '' ?
+                                    '#A0A0A0' : '#1A202C','background': '#FCFCFC','borderColor': '#D8D8D8'}">
+                      <option value="" disabled hidden>Selecciona</option>
+                      <option value="SI">Si</option>
+                      <option value="NO">No</option>
+                    </select>
+                    <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+                  </div>
+                }
+                <div *ngIf="isTypeInvalid(i,0)">
+                  <small *ngFor="let msg of fieldTypeControl(i,0) | formErrorMessages:bonus.types[0].name"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+      } @else {
+
+        <div class="col-12 mb-2" [formGroupName]="i">
+          <div class="d-flex align-items-center mb-2">
+            <div class="checkbox-wrapper-19 me-2">
+              <input type="checkbox" [id]="'chk_bonus_' + i" formControlName="checked" (change)="onBonusCheck(i)"/>
+              <label [for]="'chk_bonus_' + i"  class="check-box"></label>
+            </div>
+            <label [for]="'chk_bonus_' + i"  >{{ bonus.name }}</label>
+          </div>
+
+          <div class="row g-3"
+               *ngIf="bonusesFormArray.controls[i].get('checked')?.value"
+               formArrayName="types">
+
+            @for (type of bonus.types;track type.id;let j = $index) {
+              <div class="col" [formGroupName]="j">
+                <label class="form-label text-tp-h3">{{ type.name }}</label>
+
+                <input *ngIf="type.dataType === DATA_TYPE.TEXT"
+                       type="text" class="form-control" formControlName="value"/>
+
+                <div class="custom-select-wrapper"  *ngIf="type.dataType === DATA_TYPE.BOOLEAN">
+                  <select
+                    class="input-s4 form-select form-control custom-select-arrow"
+                    formControlName="value"
+                    [ngStyle]="{ 'color': bonusesFormArray.controls[i].get('types') ?.value[j] === '' ? '#A0A0A0' : '#1A202C', 'background': '#FCFCFC', 'borderColor': '#D8D8D8'}">
+                    <option value="" disabled hidden>Selecciona</option>
+                    <option value="SI">Si</option>
+                    <option value="NO">No</option>
+                  </select>
+                  <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+                </div>
+                <div *ngIf="isTypeInvalid(i,j)">
+                  <small *ngFor="let msg of fieldTypeControl(i,j) | formErrorMessages:bonus.types[j].name"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+      }
+    }
+  </div>
+
+  <span class="fw-bolder mt-3 d-block">Bancos Depósitos</span>
+  <small>(Puede seleccionar mas de una cuenta)</small>
+  <div class="mt-2 mb-4" formArrayName="banks">
+    @for (bank of banks;track bank.id; let i = $index) {
+      <div [formGroupName]="i">
+        <div class="d-flex align-items-center mb-2">
+          <div class="checkbox-wrapper-19 me-2">
+            <input type="checkbox" [id]="'chk_bank_' + i" formControlName="checked" (change)="onBankCheck(i)"/>
+            <label [for]="'chk_bank_' + i"  class="check-box"></label>
+          </div>
+          <label [for]="'chk_bank_' + i">{{ bank.name }}</label>
+        </div>
+        <div class="row" *ngIf="banksFormArray.controls[i].get('checked')?.value">
+          <div class="col-xl-6 col-lg-6 col-sm-12 mb-3"  formGroupName="account">
+            <label class="form-label text-tp-h3" [for]="'account_bank_' + i" >Numero de Cuenta</label>
+            <input type="text" class="form-control input-s4" placeholder="Ingrese número de cuenta" [id]="'account_bank_' + i"
+                   formControlName="value"/>
+            <div *ngIf="isFieldBankInvalid(i,'account')">
+              <small *ngFor="let msg of fieldBankControl(i,'account') | formErrorMessages:'account'"
+                     class="text-danger font-italic">{{ msg }}</small>
+            </div>
+          </div>
+          <div class="col-xl-6 col-lg-6 col-sm-12 mb-3" formGroupName="cci">
+            <label class="form-label text-tp-h3" [for]="'cci_bank_' + i">CCI</label>
+            <input type="text" class="form-control input-s4" placeholder="Ingrese CCI"
+                   [id]="'cci_bank_' + i" formControlName="value"/>
+            <div *ngIf="isFieldBankInvalid(i,'cci')">
+              <small *ngFor="let msg of fieldBankControl(i,'cci') | formErrorMessages:'cci'"
+                     class="text-danger font-italic">{{ msg }}</small>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    }
+  </div>
+</section>
+
