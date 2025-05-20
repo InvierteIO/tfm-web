@@ -1,0 +1,58 @@
+<section [formGroup]="formGroup">
+
+  <h2 class="mb-3 mt-2 subtitle-tp-h2 io-green-primary">Características especiales del inmueble</h2>
+  <small>Seleciona según sea el caso</small>
+  <div class="row pt-2" formArrayName="land_features">
+    @for (feature of landFeatures; track feature.id; let i = $index) {
+      <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3" [formGroupName]="i">
+        <div class="d-flex align-items-center mb-2">
+          <div class="checkbox-wrapper-19 me-2">
+            <input type="checkbox" [id]="'chk_land_feature_' + i" formControlName="checked"/>
+            <label [for]="'chk_land_feature_' + i" class="check-box"></label>
+          </div>
+          <label [for]="'chk_land_feature_' + i">{{ feature.name }}</label>
+        </div>
+      </div>
+    }
+  </div>
+
+  <h2 class="mb-4 mt-2 subtitle-tp-h2 io-green-primary">Características del inmueble Terreno</h2>
+
+  <div class="row">
+    <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+      <label for="land_block_location" class="form-label text-tp-h3">Ubicación dentro de la manzana</label>
+      <div class="custom-select-wrapper">
+        <select
+          class="input-s4 form-select form-control custom-select-arrow" id="land_block_location"
+          formControlName="land_block_location" appSelectStyle>
+          <option value="" disabled hidden>Seleccionar </option>
+          <option value="ESQUINA">Esquina</option>
+          <option value="CENTRO">Centro</option>
+        </select>
+        <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+      </div>
+      <div *ngIf="formGroup.get('land_block_location') | isInvalidField">
+        <small *ngFor="let msg of formGroup.get('land_block_location') | formErrorMessages:'ubicación'"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+    </div>
+    <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+      <label for="land_road_way" class="form-label text-tp-h3">Tipo de via</label>
+      <div class="custom-select-wrapper" >
+        <select
+          class="input-s4 form-select form-control custom-select-arrow" id="land_road_way"
+          formControlName="land_road_way" appSelectStyle>
+          <option value="" disabled hidden>Seleccionar </option>
+          <option value="AVENIDA">Avenida</option>
+          <option value="CALLE">Calle</option>
+        </select>
+        <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+      </div>
+      <div *ngIf="formGroup.get('land_road_way') | isInvalidField">
+        <small *ngFor="let msg of formGroup.get('land_road_way') | formErrorMessages:'tipo de via'"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+    </div>
+
+  </div>
+</section>

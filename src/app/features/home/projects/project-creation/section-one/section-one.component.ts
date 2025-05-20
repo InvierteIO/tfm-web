@@ -9,6 +9,10 @@ import {DataType} from '../../shared/models/data-type.model';
 import {AdditionalInformationComponent} from './additional-information.component';
 import {BankMock} from '../../shared/models/bank.mock.model';
 import {StagePropertyGroupMock} from '../../shared/models/stage-property-group.mock.model';
+import {Router} from "@angular/router";
+import Swal from "sweetalert2";
+import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from "@common/dialogs/dialogs-swal.constants";
+import {IsInvalidFieldPipe} from "@common/pipes/is-invalid-field.pipe";
 
 @Component({
   selector: 'app-section-one',
@@ -18,7 +22,8 @@ import {StagePropertyGroupMock} from '../../shared/models/stage-property-group.m
     ButtonLoadingComponent,
     NgForOf,
     NgIf,
-    AdditionalInformationComponent
+    AdditionalInformationComponent,
+    IsInvalidFieldPipe
   ],
   templateUrl: './section-one.component.html',
   styleUrl: './section-one.component.css'
@@ -28,9 +33,9 @@ export class SectionOneComponent  implements OnInit  {
   loading:boolean = false;
   financialsBonus: FinancialBonusMock[] = [];
   banks: BankMock[] = [];
-  stagesTypesProperty: StagePropertyGroupMock[]= [];
+  stagesPropertyTypes: StagePropertyGroupMock[]= [];
 
-  constructor(private readonly fb: FormBuilder) {
+  constructor(private router: Router, private readonly fb: FormBuilder) {
     this.form = this.buildForm();
   }
 
@@ -54,11 +59,6 @@ export class SectionOneComponent  implements OnInit  {
       bonuses: this.fb.array([]),
       banks: this.fb.array([])
     });
-  }
-
-  get isFieldNotValid() {
-    return (field: string) =>
-      this.form?.get(field)?.invalid && this.form?.get(field)?.touched;
   }
 
   public next(): void {
@@ -120,8 +120,32 @@ export class SectionOneComponent  implements OnInit  {
     });
   }
 
+  toPropertyType():void {
+    // Debe validarse que este el campo: stage
+    if(!this.form?.get("stages")?.valid) {
+      Swal.fire(
+          DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("Número de etapas sin definir")).then(r => {}) ;
+      return;
+    }
+    this.router.navigate(['/public/home/project-new/property-type']);
+  }
+
   get isShowTable() {
-    return !this.stagesTypesProperty || this.stagesTypesProperty.length === 0;
+    return !this.stagesPropertyTypes || this.stagesPropertyTypes.length === 0;
+  }
+
+  deletePropertyType(propertyType: StagePropertyGroupMock):void {
+    Swal.fire(
+        DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Desea eliminar el tipo de inmueble?")).then(r => {
+
+    }) ;
+  }
+
+  duplicatePropertyType(propertyType: StagePropertyGroupMock):void {
+    Swal.fire(
+        DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea duplicar el tipo de inmueble?")).then(r => {
+
+    }) ;
   }
 
   onDragOver(event: DragEvent): void {
@@ -185,7 +209,7 @@ export class SectionOneComponent  implements OnInit  {
       { id: 4, name : "MI BANCO"}
     ];
 
-    this.stagesTypesProperty = [{
+    this.stagesPropertyTypes = [{
      stage : {
        id: 1, stage: "I"
      },

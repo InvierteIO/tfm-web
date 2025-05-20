@@ -5,16 +5,18 @@ import {DataType} from '../../shared/models/data-type.model';
 import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
 import {NgForOf, NgIf, NgStyle} from '@angular/common';
 import {BankMock} from '../../shared/models/bank.mock.model';
+import {SelectStyleDirective} from "@common/directives/select-style.directive";
 
 @Component({
   selector: 'app-additional-information',
-  imports: [
-    ReactiveFormsModule,
-    FormErrorMessagesPipe,
-    NgForOf,
-    NgIf,
-    NgStyle
-  ],
+    imports: [
+        ReactiveFormsModule,
+        FormErrorMessagesPipe,
+        NgForOf,
+        NgIf,
+        NgStyle,
+        SelectStyleDirective
+    ],
   templateUrl: './additional-information.component.html'
 })
 export class AdditionalInformationComponent {
