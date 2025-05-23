@@ -4,7 +4,7 @@ import {FormUtil} from '@common/utils/form.util';
 import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
 import {NgForOf, NgIf} from '@angular/common';
-import {FinancialBonusMock} from '../../shared/models/financial-bonus.mock';
+import {FinancialBonusMockModel} from '../../shared/models/financial-bonus.mock.model';
 import {DataType} from '../../shared/models/data-type.model';
 import {AdditionalInformationComponent} from './additional-information.component';
 import {BankMock} from '../../shared/models/bank.mock.model';
@@ -31,7 +31,7 @@ import {IsInvalidFieldPipe} from "@common/pipes/is-invalid-field.pipe";
 export class SectionOneComponent  implements OnInit  {
   public form: FormGroup;
   loading:boolean = false;
-  financialsBonus: FinancialBonusMock[] = [];
+  financialsBonus: FinancialBonusMockModel[] = [];
   banks: BankMock[] = [];
   stagesPropertyTypes: StagePropertyGroupMock[]= [];
 
@@ -69,6 +69,7 @@ export class SectionOneComponent  implements OnInit  {
       return;
     }
     console.log(this.form.value);
+    this.router.navigate(['/public/home/project-new/infrastructure-installation']);
   }
 
   private initBonusesForm(): void {

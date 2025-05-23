@@ -1,6 +1,6 @@
 import {DataType} from './data-type.model';
 
-export interface FinancialBonusTypeMock {
+export interface FinancialBonusTypeMockModel {
   id?: number;
   name?: string;
   required?: boolean;

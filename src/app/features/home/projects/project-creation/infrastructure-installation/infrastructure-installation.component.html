@@ -1,0 +1,152 @@
+<div class="container">
+  <h1 class="title-tp-h1 mt-4 mb-3 d-flex align-items-center io-green-primary">
+    <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
+    <span class="">Crear Proyecto /</span>
+    <span class="fw-light">&nbsp;Característica de habilitación</span>
+  </h1>
+
+  <div class="card p-0 border-0 rounded-0">
+    <div class="card-body px-3 my-4">
+      <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
+          <form  [formGroup]="form" (ngSubmit)="next()" >
+            <h2 class="mb-4 subtitle-tp-h2 io-green-primary">Características de Habilitación</h2>
+            <div class="row" formArrayName="infra_features_defined" >
+              @for (infra of infraInstallationsDefined; track infra.id; let i = $index) {
+                <div class="col-xl-6 col-lg-6 col-sm-12 mb-3"  [formGroupName]="i">
+                  <label [for]="'select_infra_' + infra.id" class="form-label text-tp-h3">{{infra.name}}</label>
+
+                  @if (isListForInfra(infra)) {
+
+                    <div class="custom-select-wrapper" >
+                      <select
+                        class="input-s4 form-select form-control custom-select-arrow" [id]="'select_infra_' + infra.id"
+                        formControlName="value" appSelectStyle>
+                        <option value="" disabled hidden>Selecciona</option>
+                        @for (catalogDetail of infra.catalog?.catalogDetails; track catalogDetail.id) {
+                          <option value="{{catalogDetail.id}}">{{catalogDetail.name}}</option>
+                        }
+                      </select>
+                      <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+                    </div>
+
+                  } @else if (isBooleanForInfra(infra)){
+
+                    <div class="custom-select-wrapper" >
+                      <select
+                        class="input-s4 form-select form-control custom-select-arrow" [id]="'select_infra_' + infra.id"
+                        formControlName="value" appSelectStyle>
+                        <option value="" disabled hidden>Selecciona</option>
+                        <option value="SI">Si</option>
+                        <option value="NO">No</option>
+                      </select>
+                      <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+                    </div>
+
+                  }
+                  <div *ngIf="fieldInfraFeatureDefinedControl(i) | isInvalidField">
+                    <small *ngFor="let msg of fieldInfraFeatureDefinedControl(i) | formErrorMessages:infra.name"
+                           class="text-danger font-italic">{{ msg }}</small>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <div class="row" formArrayName="infra_features_projected">
+              @for (infra of infraInstallationsProjected; track infra.id; let i = $index) {
+                <div class="col-12" [formGroupName]="i">
+                  <span class="subtitle-tp-h2 io-green-primary mt-3 mb-1 d-block">{{infra.name}}</span>
+                  <small>{{infra.other}}</small>
+
+                  <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2 mt-3">
+                      <div class="radio">
+                        <input   [id]="'radio-'+i+'-installed'" [attr.name]="'status-'+i"
+                                 type="radio" formControlName="status" value="INSTALLED" checked>
+                        <label [for]="'radio-'+i+'-installed'" class="radio-label">Ya cuenta</label>
+                      </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2 mt-3">
+                      <div class="radio">
+                        <input [id]="'radio-'+i+'-projected'" [attr.name]="'status-'+i"
+                               type="radio" formControlName="status" value="PROJECTED" >
+                        <label [for]="'radio-'+i+'-projected'" class="radio-label">A futuro</label>
+                      </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2 mt-3">
+                      <div class="radio">
+                        <input [id]="'radio-'+i+'-missing'" [attr.name]="'status-'+i"
+                               type="radio" formControlName="status" value="MISSING" >
+                        <label [for]="'radio-'+i+'-missing'"  class="radio-label">No</label>
+                      </div>
+                    </div>
+
+                    <div  class="col-12" *ngIf="isProjectedStatusInvalid(i)">
+                      <small *ngFor="let msg of projectedStatusControl(i) | formErrorMessages: infra.name"
+                             class="text-danger font-italic">{{ msg }}</small>
+                    </div>
+                  </div>
+
+                  @if (isVisibleTypeFeatureProjected(infra, i)) {
+                    <span class="fw-bold  mt-3 mb-1 d-block">{{infra?.catalog?.other}}</span>
+                    <small>Seleccione el tipo</small>
+                    <div class="row">
+                      @for (detail of infra?.catalog?.catalogDetails;
+                        track detail.id; let j = $index) {
+
+                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2 mt-3">
+                          <div class="radio">
+                            <input [id]="'radio-'+i+'-'+j" [attr.name]="'type-'+i" [value]="detail.id"
+                                   type="radio" formControlName="type">
+                            <label [for]="'radio-'+i+'-'+j" class="radio-label">{{detail.name}}</label>
+                          </div>
+                        </div>
+                      }
+                      <div  class="col-12" *ngIf="isProjectedTypeInvalid(i)">
+                        <small *ngFor="let msg of projectedTypeControl(i) | formErrorMessages: infra.catalog?.other"
+                               class="text-danger font-italic">{{ msg }}</small>
+                      </div>
+                    </div>
+
+                  }
+                </div>
+              }
+            </div>
+
+            <h2 class="mb-4 mt-3 subtitle-tp-h2 io-green-primary">Año de finalización y entrega</h2>
+            <div class="row">
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="end_date" class="form-label text-tp-h3">Ingrega Fecha de Finalización</label>
+                <input type="date" class="form-control input-s4" id="end_date" formControlName="end_date"
+                       placeholder="__/__/__" [maxLength]="10"/>
+                <div *ngIf="form.get('end_date') | isInvalidField">
+                  <small *ngFor="let msg of form.get('end_date') | formErrorMessages:'Fecha de finalizacion'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="handover_date" class="form-label text-tp-h3">Ingresa Fecha de Entrega</label>
+                <input type="date"
+                       class="form-control input-s4"
+                       id="handover_date" formControlName="handover_date"
+                       placeholder="__/__/__" [maxLength]="10"/>
+                <div *ngIf="form.get('handover_date') | isInvalidField">
+                  <small *ngFor="let msg of form.get('handover_date') | formErrorMessages:'Fecha de entrega'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            </div>
+            <app-button-loading
+              type="submit"
+              [btnClasses]="'btn d-block mx-auto mt-5 btn-width300 h37  btn-s4 button-tp br5'"
+              [loading]="loading"
+              msgLoading="Cargando..."
+              msgButton="Siguiente"/>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
