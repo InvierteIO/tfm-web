@@ -10,7 +10,7 @@ import { NgIf } from '@angular/common';
   selector: 'app-login-form',
   standalone: true,
   templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.css'],
+  styleUrls: ['./login-form.component.css','../shared/components/sign-up.component.css'],
   imports: [ButtonLoadingComponent ,
     ButtonLoadingComponent,
     FormsModule,

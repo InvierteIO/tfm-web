@@ -1,0 +1,290 @@
+<div class="container">
+    <h1 class="title-tp-h1 mt-4 mb-3 d-flex align-items-center io-green-primary">
+        <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
+        <span class="">Crear Proyecto /</span>
+        <span class="fw-light">&nbsp;Complementarios</span>
+    </h1>
+    <div class="card p-0 border-0 rounded-0">
+        <div class="card-body px-3 my-4">
+            <div class="row justify-content-center">
+                <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
+                    <form  [formGroup]="form" (ngSubmit)="next()" >
+                        <h2 class="mb-4 subtitle-tp-h2 io-green-primary">Ubicación del proyecto</h2>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="address" class="form-label text-tp-h3">Dirección</label>
+                                <input type="text" class="form-control input-s4" id="address" formControlName="address"
+                                       placeholder="Ingresa dirección" [maxLength]="200"/>
+                                <div *ngIf="form.get('address') | isInvalidField" class="d-flex flex-column">
+                                    <small *ngFor="let msg of form.get('address') | formErrorMessages:'Número'"
+                                           class="text-danger font-italic">{{ msg }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                                <label for="address_number" class="form-label text-tp-h3">Número</label>
+                                <input type="text" class="form-control input-s4" id="address_number" formControlName="address_number"
+                                       placeholder="Ingresa número, piso" [maxLength]="20"/>
+                                <div *ngIf="form.get('address_number') | isInvalidField" class="d-flex flex-column">
+                                    <small *ngFor="let msg of form.get('address_number') | formErrorMessages:'Número'"
+                                           class="text-danger font-italic">{{ msg }}</small>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                                <label for="address_reference" class="form-label text-tp-h3">Referencia</label>
+                                <input type="text"
+                                       class="form-control input-s4"
+                                       id="address_reference" formControlName="address_reference"
+                                       placeholder="Ingresa referencia"
+                                       [maxLength]="200"/>
+                                <div *ngIf="form.get('address_reference') | isInvalidField" class="d-flex flex-column">
+                                    <small *ngFor="let msg of form.get('address_reference') | formErrorMessages:'Referencia'"
+                                           class="text-danger font-italic">{{ msg }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                                <label for="zipcode" class="form-label text-tp-h3">Código postal</label>
+                                <input type="text"
+                                       class="form-control input-s4"
+                                       id="zipcode" formControlName="zipcode"
+                                       placeholder="Ingresa código postal"
+                                       [minLength]="6" [maxLength]="8"
+                                       inputmode="numeric" appNumericOnly/>
+                                <div *ngIf="form.get('zipcode') | isInvalidField" class="d-flex flex-column">
+                                    <small *ngFor="let msg of form.get('zipcode') | formErrorMessages:'Código postal'"
+                                           class="text-danger font-italic">{{ msg }}</small>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                                <label for="region" class="form-label text-tp-h3">Departamento</label>
+                                <ng-select
+                                        id="region"
+                                        [items]="regions"
+                                        bindValue="code"
+                                        bindLabel="name"
+                                        [searchable]="true"
+                                        placeholder="Selecciona"
+                                        formControlName="region"
+                                        notFoundText="No encontrado">
+                                </ng-select>
+                                <div *ngIf="form.get('region') | isInvalidField" class="d-flex flex-column">
+                                    <small *ngFor="let msg of form.get('region') | formErrorMessages:'Departamento'"
+                                           class="text-danger font-italic">{{ msg }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                                <label for="province" class="form-label text-tp-h3">Provincia</label>
+                                <ng-select
+                                        id="province"
+                                        [items]="provinces"
+                                        bindValue="code"
+                                        bindLabel="name"
+                                        [searchable]="true"
+                                        placeholder="Selecciona"
+                                        notFoundText="No encontrado"
+                                        formControlName="province">
+                                </ng-select>
+                                <div *ngIf="form.get('province') | isInvalidField" class="d-flex flex-column">
+                                    <small *ngFor="let msg of form.get('province') | formErrorMessages:'Provincia'"
+                                           class="text-danger font-italic">{{ msg }}</small>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                                <label for="district" class="form-label text-tp-h3">Distrito</label>
+                                <ng-select
+                                        id="district"
+                                        [items]="districts"
+                                        bindValue="code"
+                                        bindLabel="name"
+                                        [searchable]="true"
+                                        placeholder="Selecciona"
+                                        notFoundText="No encontrado"
+                                        formControlName="district">
+                                </ng-select>
+                                <div *ngIf="form.get('district') | isInvalidField" class="d-flex flex-column">
+                                    <small *ngFor="let msg of form.get('district') | formErrorMessages:'Distrito'"
+                                           class="text-danger font-italic">{{ msg }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <span class="fw-bold  mt-3 mb-1 d-block">Vista del Mapa</span>
+                        @if (!this.urlKmlKmz) {
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <span class="fs-s1">Sube archivo para la informacion geográfica</span>
+                                    <app-file-dropzone class="mt-2"
+                                                       dropzoneClass="dz-s1"
+                                                       text="Arrastra archivos KML / KMZ"
+                                                       accept=".kml,.kmz"
+                                                       (dropFile)="onDropFile($event, 'kml_kmz')"
+                                                       (fileSelected)="onFileSelected($event, 'kml_kmz')">
+                                    </app-file-dropzone>
+                                </div>
+                            </div>
+                        } @else {
+                            <span class="fs-s1">Informacion geográfica (Kml / Kmz) en mapa</span>
+                            <table class="table table-s3 mb-3 mt-2">
+                                <tbody>
+                                <tr>
+                                    <td  class="px-2 ms-1  d-flex justify-content-start align-items-center">
+                                        <span class="material-symbols-rounded">{{this.urlKmlKmz | typeFileIconGoogleFonts}}</span>
+                                    </td>
+                                    <td class="">{{this.urlKmlKmz}}</td>
+                                    <td  class="text-center">
+                                        <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                                            <img src="./assets/svg/view15.svg" alt="ver"  (click)="refreshMap()">
+                                        </button>
+                                        <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar">
+                                            <img src="./assets/svg/delete16.svg" alt="eliminar" (click)="deleteKmlKmz()">
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <app-map [urlKml]="this.urlKmlKmz" />
+                        }
+
+                        <span class="fw-bold  mt-3 mb-1 d-block">Planos General de lotizacion</span>
+                        <div class="row">
+                            <!--<div class="col-12 mb-3 d-flex flex-column justify-content-start">
+                                <span class="fw-bold mt-3 mb-1 d-block">Planos General de lotizacion</span>
+                                <span class="fs-s1">Información en imagen</span>
+                                <button type="button" class="btn mt-2 h37 btn-s4 button-tp br5 px-4 align-self-start">Subir archivo</button>
+                            </div>-->
+                            <div class="col-12 col-sm-6 mt-3">
+                                <label for="blueprint_name" class="form-label text-tp-h3">Nombre de plano</label>
+                                <input type="text" class="form-control input-s4" id="blueprint_name"
+                                       placeholder="Ingresa nombre" [maxLength]="100"
+                                       [(ngModel)]="blueprintName"
+                                       (ngModelChange)="onBlueprintNameChange($event)"
+                                       [ngModelOptions]="{standalone: true}" />
+                                <div *ngIf="blueprintNameError"  class="text-danger font-italic">
+                                    <small>Debe definir el nombre del plano</small>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3 mt-2">
+                                <span class="fs-s1">Sube documento en pdf o imagen</span>
+                                <app-file-dropzone class="mt-2"
+                                                   dropzoneClass="dz-s1"
+                                                   text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                                                   accept="image/png,image/jpeg"
+                                                   (dropFile)="onDropFile($event, 'blueprint')"
+                                                   (fileSelected)="onFileSelected($event, 'blueprint')" />
+                            </div>
+                            <div class="col-12" *ngIf="blueprints.length>0">
+                                <table class="table table-s3 mb-1">
+                                    <tbody>
+                                    <tr *ngFor="let file of blueprints" >
+                                        <td  class="px-2 ms-1  d-flex justify-content-start align-items-center">
+                                            <span class="material-symbols-rounded">{{file!!.filename | typeFileIconGoogleFonts}}</span>
+                                        </td>
+                                        <td class="">{{file.name}}</td>
+                                        <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+                                        <td  class="text-center">
+                                            <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                                                <img src="./assets/svg/view15.svg" alt="ver">
+                                            </button>
+                                            <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                                                    (click)="deleteBlueprint(file)">
+                                                <img src="./assets/svg/delete16.svg" alt="eliminar">
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <h2 class="mb-3 mt-4 subtitle-tp-h2 io-green-primary">Publicidad / Multimedia</h2>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <span class="fw-bold  mt-2 mb-1 d-block">Registro fotográfico</span>
+                                <span class="fs-s1">Sube imagen, proyeccion, 3D o VIDEO</span>
+                                <app-file-dropzone class="mt-2"
+                                                   dropzoneClass="dz-s1"
+                                                   text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                                                   accept="image/png,image/jpeg"
+                                                   (dropFile)="onDropFile($event, 'photographic_record')"
+                                                   (fileSelected)="onFileSelected($event, 'photographic_record')" />
+                            </div>
+                            <div class="col-12"  *ngIf="photographicRecords.length>0">
+                                <table class="table table-s3 mb-1">
+                                    <tbody>
+                                        <tr *ngFor="let file of photographicRecords" >
+                                            <td  class="px-2 ms-1  d-flex justify-content-start align-items-center">
+                                                <span class="material-symbols-rounded">{{file!!.filename | typeFileIconGoogleFonts}}</span>
+                                            </td>
+                                            <td class="">{{file.name}}</td>
+                                            <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+                                            <td  class="text-center">
+                                                <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                                                    <img src="./assets/svg/view15.svg" alt="ver">
+                                                </button>
+                                                <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                                                (click)="deletePhotographicRecord(file)">
+                                                    <img src="./assets/svg/delete16.svg" alt="eliminar">
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <span class="fw-bold  mt-2 mb-1 d-block">Brochure</span>
+                                <span class="fs-s1">Sube documento en pdf o imagen</span>
+                                <app-file-dropzone class="mt-2"
+                                                   dropzoneClass="dz-s1"
+                                                   text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                                                   accept=".pdf,image/png,image/jpeg"
+                                                   (dropFile)="onDropFile($event, 'brochure')"
+                                                   (fileSelected)="onFileSelected($event, 'brochure')" />
+                            </div>
+                            <div class="col-12" *ngIf="brochures.length>0">
+                                <table class="table table-s3 mb-1">
+                                    <tbody>
+                                    <tr *ngFor="let file of brochures" >
+                                        <td  class="px-2 ms-1  d-flex justify-content-start align-items-center">
+                                            <span class="material-symbols-rounded">{{file!!.filename | typeFileIconGoogleFonts}}</span>
+                                        </td>
+                                        <td class="">{{file.name}}</td>
+                                        <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+                                        <td  class="text-center">
+                                            <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                                                <img src="./assets/svg/view15.svg" alt="ver">
+                                            </button>
+                                            <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                                                    (click)="deleteBrochure(file)">
+                                                <img src="./assets/svg/delete16.svg" alt="eliminar">
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <app-button-loading
+                                type="submit"
+                                [btnClasses]="'btn d-block mx-auto mt-5 btn-width300 h37  btn-s4 button-tp br5'"
+                                [loading]="loading"
+                                msgLoading="Cargando..."
+                                msgButton="Siguiente"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

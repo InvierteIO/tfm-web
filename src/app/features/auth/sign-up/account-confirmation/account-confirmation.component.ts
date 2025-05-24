@@ -10,7 +10,8 @@ import {NgIf} from "@angular/common";
     AuthLayoutComponent,
     NgIf
   ],
-  templateUrl: './account-confirmation.component.html'
+  templateUrl: './account-confirmation.component.html',
+  styleUrl: '../../shared/components/sign-up.component.css'
 })
 export class AccountConfirmationComponent implements OnInit {
 

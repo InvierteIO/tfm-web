@@ -25,7 +25,7 @@
                   </select>
                   <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
                 </div>
-                <div *ngIf="form.get('stage') | isInvalidField">
+                <div *ngIf="form.get('stage') | isInvalidField" class="d-flex flex-column">
                   <small *ngFor="let msg of form.get('stage') | formErrorMessages:'Etapa del proyecto'"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
@@ -43,7 +43,7 @@
                   </select>
                   <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
                 </div>
-                <div *ngIf="form.get('category') | isInvalidField">
+                <div *ngIf="form.get('category') | isInvalidField" class="d-flex flex-column">
                   <small *ngFor="let msg of form.get('category') | formErrorMessages:'Categoria del inmueble'"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
@@ -56,7 +56,7 @@
                 <label for="name" class="form-label text-tp-h3">Nombre del tipo</label>
                 <input type="text" class="form-control input-s4" id="name" formControlName="name"
                        placeholder="Ingrese nombre" [maxLength]="100"/>
-                <div *ngIf="form.get('name') | isInvalidField">
+                <div *ngIf="form.get('name') | isInvalidField" class="d-flex flex-column">
                   <small *ngFor="let msg of form.get('name') | formErrorMessages:'Nombre '"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
@@ -67,7 +67,7 @@
                        class="form-control input-s4"
                        id="perimeter" formControlName="perimeter"
                        placeholder="Ingrese perímetro (m)" [maxLength]="13" [min]="0"/>
-                <div *ngIf="form.get('perimeter') | isInvalidField">
+                <div *ngIf="form.get('perimeter') | isInvalidField" class="d-flex flex-column">
                   <small *ngFor="let msg of form.get('perimeter') | formErrorMessages:'Perímetro'"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
@@ -80,7 +80,7 @@
                        class="form-control input-s4"
                        id="area" formControlName="area"
                        placeholder="Ingrese area (m²)" [maxLength]="13" [min]="0"/>
-                <div *ngIf="form.get('area') | isInvalidField">
+                <div *ngIf="form.get('area') | isInvalidField" class="d-flex flex-column">
                   <small *ngFor="let msg of form.get('area') | formErrorMessages:'área'"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
@@ -97,7 +97,7 @@
                   </select>
                   <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
                 </div>
-                <div *ngIf="form.get('parking_space') | isInvalidField">
+                <div *ngIf="form.get('parking_space') | isInvalidField" class="d-flex flex-column">
                   <small *ngFor="let msg of form.get('parking_space') | formErrorMessages:'plaza de parking'"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
@@ -114,7 +114,7 @@
                   </select>
                   <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
                 </div>
-                <div *ngIf="form.get('front_park') | isInvalidField">
+                <div *ngIf="form.get('front_park') | isInvalidField" class="d-flex flex-column">
                   <small *ngFor="let msg of form.get('front_park') | formErrorMessages:'frente a parque'"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
@@ -148,7 +148,7 @@
                   </select>
                   <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
                 </div>
-                <div *ngIf="form.get('currency') | isInvalidField">
+                <div *ngIf="form.get('currency') | isInvalidField" class="d-flex flex-column">
                   <small *ngFor="let msg of form.get('currency') | formErrorMessages:'tipo de moneda'"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
@@ -157,7 +157,7 @@
                 <label for="price" class="form-label text-tp-h3">$ Valor</label>
                 <input type="text" class="form-control input-s4" id="price" formControlName="price"
                        placeholder="Ingrese valor" [maxLength]="100"/>
-                <div *ngIf="form.get('price') | isInvalidField">
+                <div *ngIf="form.get('price') | isInvalidField" class="d-flex flex-column">
                   <small *ngFor="let msg of form.get('price') | formErrorMessages:'$ Valor '"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
@@ -168,7 +168,7 @@
                 <label for="percentage_rate" class="form-label text-tp-h3">% Interes anual</label>
                 <input type="text" class="form-control input-s4" id="percentage_rate" formControlName="percentage_rate"
                        placeholder="Ingrese el % interes" [maxLength]="100"/>
-                <div *ngIf="form.get('percentage_rate') | isInvalidField">
+                <div *ngIf="form.get('percentage_rate') | isInvalidField" class="d-flex flex-column">
                   <small *ngFor="let msg of form.get('percentage_rate') | formErrorMessages:'porcentaje de interes '"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>

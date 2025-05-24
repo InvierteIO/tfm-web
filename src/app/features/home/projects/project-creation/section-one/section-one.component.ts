@@ -13,6 +13,7 @@ import {Router} from "@angular/router";
 import Swal from "sweetalert2";
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from "@common/dialogs/dialogs-swal.constants";
 import {IsInvalidFieldPipe} from "@common/pipes/is-invalid-field.pipe";
+import {FileDropzoneComponent} from '@common/components/file-dropzone.component';
 
 @Component({
   selector: 'app-section-one',
@@ -23,10 +24,10 @@ import {IsInvalidFieldPipe} from "@common/pipes/is-invalid-field.pipe";
     NgForOf,
     NgIf,
     AdditionalInformationComponent,
-    IsInvalidFieldPipe
+    IsInvalidFieldPipe,
+    FileDropzoneComponent
   ],
-  templateUrl: './section-one.component.html',
-  styleUrl: './section-one.component.css'
+  templateUrl: './section-one.component.html'
 })
 export class SectionOneComponent  implements OnInit  {
   public form: FormGroup;
@@ -42,7 +43,7 @@ export class SectionOneComponent  implements OnInit  {
   ngOnInit(): void {
     // Simulación asíncrona de carga
     setTimeout(() => {
-      this.setData();
+      this.loadData();
       this.initBonusesForm();
       this.initBanksForm();
     }, 500);
@@ -186,7 +187,7 @@ export class SectionOneComponent  implements OnInit  {
     }
   }
 
-  setData(): void {
+  loadData(): void {
     this.financialsBonus = [ {
       id: 1, name : "Techo Propio",
       types : [{

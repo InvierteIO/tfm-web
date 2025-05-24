@@ -8,6 +8,7 @@ import {PropertyTypeComponent} from './projects/project-creation/property-type/p
 import {
   InfrastructureInstallationComponent
 } from './projects/project-creation/infrastructure-installation/infrastructure-installation.component';
+import {ComplementaryComponent} from './projects/project-creation/complementary/complementary.component';
 
 export const homeRoutes: Routes = [
   {
@@ -33,6 +34,9 @@ export const homeRoutes: Routes = [
       },
       {
         path: 'infrastructure-installation', component: InfrastructureInstallationComponent
+      },
+      {
+        path: 'complementary', component: ComplementaryComponent
       }
     ]
   },

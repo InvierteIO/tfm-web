@@ -36,7 +36,7 @@ export class InfrastructureInstallationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initData();
+    this.loadData();
     this.initFeaturesDefinedFormGroup();
     this.initFeaturesProjectedFormGroup();
   }
@@ -161,6 +161,7 @@ export class InfrastructureInstallationComponent implements OnInit {
       console.log("Form invalid!!");
       return;
     }
+    this.router.navigate(['/public/home/project-new/complementary']);
   }
 
   isListForInfra(infra: InfraestructureInstallationMock): boolean {
@@ -181,7 +182,7 @@ export class InfrastructureInstallationComponent implements OnInit {
       .filter(infra => infra.installationType == InstallationType.PROJECTED) ;
   }
 
-  initData(): void {
+  loadData(): void {
     this.infraInstallations = [
       {
         id : 1,

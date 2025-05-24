@@ -54,3 +54,38 @@
 
 .table-s2 tbody tr:last-child td:first-child {border-bottom-left-radius:5px;}
 .table-s2 tbody tr:last-child td:last-child  {border-bottom-right-radius:5px;}
+
+/*****************/
+
+.table-s3 {
+  border: 1px solid #BBBBBB;
+  border-radius:10px;
+  overflow:hidden;
+  border-collapse:separate;
+  border-spacing:0;
+}
+
+.table-s3 thead{
+  border-bottom:1px solid #B8B8B8!important;
+}
+.table-s3 thead th{
+  height:37px;
+  min-height:37px;
+  background:#F9B23487;
+  color:#1A202C;
+  font:400 16px/100% 'Poppins',sans-serif;
+  vertical-align:middle;
+}
+
+.table-s3 thead th:first-child  {border-top-left-radius:10px;}
+.table-s3 thead th:last-child   {border-top-right-radius:10px;}
+
+.table-s3 tbody td{
+  border:none!important;
+  font:300 12px 'Poppins',sans-serif;
+  color:#F9B234;
+  align-content: center;
+}
+
+.table-s3 tbody tr:last-child td:first-child {border-bottom-left-radius:10px;}
+.table-s3 tbody tr:last-child td:last-child  {border-bottom-right-radius:10px;}

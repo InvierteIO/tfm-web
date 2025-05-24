@@ -35,7 +35,7 @@
                     <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
                   </div>
                 }
-                <div *ngIf="isTypeInvalid(i,0)">
+                <div *ngIf="isTypeInvalid(i,0)" class="d-flex flex-column">
                   <small *ngFor="let msg of fieldTypeControl(i,0) | formErrorMessages:bonus.types[0].name"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
@@ -76,7 +76,7 @@
                   </select>
                   <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
                 </div>
-                <div *ngIf="isTypeInvalid(i,j)">
+                <div *ngIf="isTypeInvalid(i,j)" class="d-flex flex-column">
                   <small *ngFor="let msg of fieldTypeControl(i,j) | formErrorMessages:bonus.types[j].name"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
@@ -90,7 +90,7 @@
   </div>
 
   <span class="fw-bolder mt-3 d-block">Bancos Depósitos</span>
-  <small>(Puede seleccionar mas de una cuenta)</small>
+  <small class="fw-light">(Puede seleccionar mas de una cuenta)</small>
   <div class="mt-2 mb-4" formArrayName="banks">
     @for (bank of banks;track bank.id; let i = $index) {
       <div [formGroupName]="i">
@@ -106,7 +106,7 @@
             <label class="form-label text-tp-h3" [for]="'account_bank_' + i" >Numero de Cuenta</label>
             <input type="text" class="form-control input-s4" placeholder="Ingrese número de cuenta" [id]="'account_bank_' + i"
                    formControlName="value"/>
-            <div *ngIf="isFieldBankInvalid(i,'account')">
+            <div *ngIf="isFieldBankInvalid(i,'account')" class="d-flex flex-column">
               <small *ngFor="let msg of fieldBankControl(i,'account') | formErrorMessages:'account'"
                      class="text-danger font-italic">{{ msg }}</small>
             </div>
@@ -115,7 +115,7 @@
             <label class="form-label text-tp-h3" [for]="'cci_bank_' + i">CCI</label>
             <input type="text" class="form-control input-s4" placeholder="Ingrese CCI"
                    [id]="'cci_bank_' + i" formControlName="value"/>
-            <div *ngIf="isFieldBankInvalid(i,'cci')">
+            <div *ngIf="isFieldBankInvalid(i,'cci')" class="d-flex flex-column">
               <small *ngFor="let msg of fieldBankControl(i,'cci') | formErrorMessages:'cci'"
                      class="text-danger font-italic">{{ msg }}</small>
             </div>

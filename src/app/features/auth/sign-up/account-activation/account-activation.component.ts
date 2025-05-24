@@ -11,7 +11,8 @@ import {AuthLayoutComponent} from '../../shared/components/auth-layout.component
     ReactiveFormsModule,
     AuthLayoutComponent
   ],
-  templateUrl: './account-activation.component.html'
+  templateUrl: './account-activation.component.html',
+  styleUrl: '../../shared/components/sign-up.component.css'
 })
 export class AccountActivationComponent {
   loading: boolean = false;

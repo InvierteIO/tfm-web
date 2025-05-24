@@ -16,7 +16,7 @@ import {RegisterPersonalInfoService} from './register-personal-info.service';
     AuthLayoutComponent
   ],
   templateUrl: './register-personal-info.component.html',
-  styleUrl: './register-personal-info.component.css'
+  styleUrls: ['./register-personal-info.component.css', '../../shared/components/sign-up.component.css'],
 })
 export class RegisterPersonalInfoComponent {
   form: FormGroup;
