@@ -27,8 +27,7 @@
                   <div class="custom-select-wrapper" >
                     <select class="input-s4 form-select custom-select-arrow"
                             formControlName="value"
-                            [ngStyle]="{'color': bonusesFormArray.controls[i].get('types')?.value[0] === '' ?
-                                    '#A0A0A0' : '#1A202C','background': '#FCFCFC','borderColor': '#D8D8D8'}">
+                            appSelectStyle>
                       <option value="" disabled hidden>Selecciona</option>
                       <option value="SI">Si</option>
                       <option value="NO">No</option>

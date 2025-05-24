@@ -1,4 +1,5 @@
 @import 'assets/styles/custom-checkbox.css';
+@import 'assets/styles/custom-radiobutton.scss';
 @import 'assets/styles/custom-select.css';
 @import 'assets/styles/custom-tables.css';
 
@@ -75,23 +76,6 @@ body {
   vertical-align: middle;
 }
 
-input {
-  background: #FCFCFC !important;
-  border-color: #D8D8D8 !important;
-  height: 48px !important;
-  border-radius: 15px !important;
-  border-width: 1px !important;
-}
-
-input::placeholder , textarea::placeholder {
-  color: #A0A0A0 !important;
-  font-family: 'Poppins', sans-serif !important;
-  font-weight: 400 !important;
-  font-size: 14px !important;
-  line-height: 200% !important;
-  letter-spacing: 0 !important;
-  vertical-align: middle !important;
-}
 
 .form-control:focus {
   border-color: #D8D8D8 !important;
@@ -475,7 +459,7 @@ input::placeholder , textarea::placeholder {
 }
 
 main {
-  padding-top: 0px;
+  padding-top: 0;
   min-height: 100vh;
   transition: margin-left 0.4s ease;
   margin-left: 270px;
@@ -491,3 +475,4 @@ main .pt65 {
   }
 }
 
+/***********************/

@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {FormArray, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {FinancialBonusMock} from '../../shared/models/financial-bonus.mock';
+import {FinancialBonusMockModel} from '../../shared/models/financial-bonus.mock.model';
 import {DataType} from '../../shared/models/data-type.model';
 import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
 import {NgForOf, NgIf, NgStyle} from '@angular/common';
@@ -14,7 +14,6 @@ import {SelectStyleDirective} from "@common/directives/select-style.directive";
         FormErrorMessagesPipe,
         NgForOf,
         NgIf,
-        NgStyle,
         SelectStyleDirective
     ],
   templateUrl: './additional-information.component.html'
@@ -22,7 +21,7 @@ import {SelectStyleDirective} from "@common/directives/select-style.directive";
 export class AdditionalInformationComponent {
 
   @Input({ required: true }) form!: FormGroup;
-  @Input({ required: true }) financialsBonus: FinancialBonusMock[] = [];
+  @Input({ required: true }) financialsBonus: FinancialBonusMockModel[] = [];
   @Input({ required: true }) banks: BankMock[] = [];
   protected readonly DATA_TYPE = DataType;
 
