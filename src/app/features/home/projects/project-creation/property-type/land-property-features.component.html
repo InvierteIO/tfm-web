@@ -1,7 +1,7 @@
 <section [formGroup]="formGroup">
 
   <h2 class="mb-3 mt-2 subtitle-tp-h2 io-green-primary">Características especiales del inmueble</h2>
-  <small>Seleciona según sea el caso</small>
+  <small class="fw-light">Seleciona según sea el caso</small>
   <div class="row pt-2" formArrayName="land_features">
     @for (feature of landFeatures; track feature.id; let i = $index) {
       <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3" [formGroupName]="i">
@@ -31,7 +31,7 @@
         </select>
         <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
       </div>
-      <div *ngIf="formGroup.get('land_block_location') | isInvalidField">
+      <div *ngIf="formGroup.get('land_block_location') | isInvalidField" class="d-flex flex-column">
         <small *ngFor="let msg of formGroup.get('land_block_location') | formErrorMessages:'ubicación'"
                class="text-danger font-italic">{{ msg }}</small>
       </div>
@@ -48,7 +48,7 @@
         </select>
         <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
       </div>
-      <div *ngIf="formGroup.get('land_road_way') | isInvalidField">
+      <div *ngIf="formGroup.get('land_road_way') | isInvalidField" class="d-flex flex-column">
         <small *ngFor="let msg of formGroup.get('land_road_way') | formErrorMessages:'tipo de via'"
                class="text-danger font-italic">{{ msg }}</small>
       </div>

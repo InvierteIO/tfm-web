@@ -23,7 +23,8 @@ import {FormUtil} from '@common/utils/form.util';
     ButtonLoadingComponent,
     AuthLayoutComponent
   ],
-  templateUrl: './account-configuration.component.html'
+  templateUrl: './account-configuration.component.html',
+  styleUrl: '../../shared/components/sign-up.component.css'
 })
 export class AccountConfigurationComponent {
   form: FormGroup;

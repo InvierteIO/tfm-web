@@ -1,6 +1,7 @@
 @import 'assets/styles/custom-checkbox.css';
 @import 'assets/styles/custom-radiobutton.scss';
 @import 'assets/styles/custom-select.css';
+@import 'assets/styles/custom-input.css';
 @import 'assets/styles/custom-tables.css';
 
 body {
@@ -21,23 +22,7 @@ body {
   background-color: #F3F3F3;
 }
 
-/*****************Inputs/Texts********************/
-.input-tp-sub-h6 {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 120%;
-  vertical-align: middle;
-  color: #3E4347;
-}
-
-.input-tp-h4 {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 200%;
-  vertical-align: middle;
-}
+/*****************Texts / labels********************/
 
 .title-tp-h1 {
   font-family: 'Poppins', sans-serif;
@@ -76,7 +61,6 @@ body {
   vertical-align: middle;
 }
 
-
 .form-control:focus {
   border-color: #D8D8D8 !important;
   box-shadow: 0 0 0 0.1rem rgba(6, 107, 75, 0.10) !important;
@@ -89,6 +73,7 @@ body {
   line-height: 100%;
   color: #5F5F5F;
 }
+
 .profile-label {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
@@ -98,80 +83,12 @@ body {
   color: #1A202C;
 }
 
-.input-s2 {
-  border-radius: 5px !important;
-  height: 45px !important;
-  border: 1px solid #C6C6C6 !important;
-}
-
-.input-s2::placeholder {
-  color: #ADADAD !important;
-}
-
-.input-s3 {
-  height: 45px !important;
-  border-radius: 5px 0 0 5px !important;
-  border-bottom: 1px solid #C6C6C6 !important;
-  border-left: 1px solid #C6C6C6 !important;
-  border-top: 1px solid #C6C6C6 !important;
-  border-right: none;
-}
-
-.input-s3::placeholder {
-  color: #ADADAD !important;
-}
-
-.text-icon-search {
-  background-color: #FCFCFC !important;
-  color:  #B7BCBA !important;
-  cursor: pointer;
-  border-radius: 0 5px 5px 0 !important;
-  border-bottom: 1px solid #C6C6C6 !important;
-  border-right: 1px solid #C6C6C6 !important;
-  border-top: 1px solid #C6C6C6 !important;
-  border-left: none !important;
-}
-
-.input-group.ig-s1 .form-control:focus {
-  box-shadow: none !important;
-  border-color: #C6C6C6 !important;
-}
-
-.input-group.ig-s1:focus-within {
-  box-shadow: 0 0 0 0.1rem rgba(6, 107, 75, 0.10) !important;
-  border-radius: 5px;
-}
-
-.input-group.ig-s1:focus-within .text-icon-search {
-  border-color: #C6C6C6 !important;
-}
-
-.input-s4 {
-  border-radius: 10px !important;
-  border: 1px solid #B8B8B8 !important;
+.fs-s1 {
   font-family: 'Poppins', sans-serif;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 14px;
-  line-height: 200%;
-  vertical-align: middle;
-  height: 45px !important;
 }
 
-.textarea-s1 {
-  border-radius: 10px !important;
-  border: 1px solid #B8B8B8 !important;
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 200%;
-  background: #FCFCFC !important;
-  vertical-align: middle;
-}
-.input-s4:disabled, .textarea-s1:disabled {
-  background: #F6F7F9 !important;
-  border: 1px solid #B8B8B8 !important;
-  color: #90A3BF !important;
-}
 /*****************Buttons********************/
 .button-tp {
   font-family: 'Poppins', sans-serif;
@@ -475,4 +392,3 @@ main .pt65 {
   }
 }
 
-/***********************/

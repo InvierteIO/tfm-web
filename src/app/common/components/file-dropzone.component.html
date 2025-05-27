@@ -1,0 +1,11 @@
+<div class="custom-dropzone text-center d-flex flex-column justify-content-center align-items-center py-2"
+     [ngClass]="dropzoneClass"
+     (dragover)="onDragOver($event)"
+     (dragleave)="onDragLeave($event)"
+     (drop)="handleDrop($event)"
+     (click)="fileInput.click()">
+  <span class="dropzone-label">{{ text }}</span>
+  <span class="dropzone-action">O haz clic para cargar</span>
+</div>
+<input #fileInput type="file" [attr.accept]="accept" hidden
+       (change)="handleFileSelected($event)"/>

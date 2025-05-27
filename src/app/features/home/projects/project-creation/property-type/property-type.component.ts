@@ -54,7 +54,7 @@ export class PropertyTypeComponent  implements OnInit  {
   }
 
   ngOnInit(): void {
-    this.setData();
+    this.loadData();
     this.initLandFeaturesForm();
     this.initHouseFeaturesForm();
     this.initApartmentFeaturesForm();
@@ -214,9 +214,10 @@ export class PropertyTypeComponent  implements OnInit  {
       return;
     }
     console.log(this.form.value);
+    this.router.navigate(['/public/home/project-new/section1']);
   }
 
-  setData(): void {
+  loadData(): void {
     this.landFeatures = [
       {id: 1, name : "Video vigilancia"},
       {id: 2, name : "Control de Acceso"},

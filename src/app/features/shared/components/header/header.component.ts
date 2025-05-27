@@ -24,8 +24,7 @@ export class HeaderComponent {
 
 
   logout(): void {
-    Swal.fire(
-      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Estás seguro de que deseas cerrar sesión?","Sí, salir" ))
+    Swal.fire( DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Estás seguro de que deseas cerrar sesión?","Sí, salir "))
       .then((result) => {
         if (result.isConfirmed) {
           const isOperator : boolean = this.authService.untilOperator();

@@ -44,7 +44,7 @@
                     </div>
 
                   }
-                  <div *ngIf="fieldInfraFeatureDefinedControl(i) | isInvalidField">
+                  <div *ngIf="fieldInfraFeatureDefinedControl(i) | isInvalidField" class="d-flex flex-column">
                     <small *ngFor="let msg of fieldInfraFeatureDefinedControl(i) | formErrorMessages:infra.name"
                            class="text-danger font-italic">{{ msg }}</small>
                   </div>
@@ -56,7 +56,7 @@
               @for (infra of infraInstallationsProjected; track infra.id; let i = $index) {
                 <div class="col-12" [formGroupName]="i">
                   <span class="subtitle-tp-h2 io-green-primary mt-3 mb-1 d-block">{{infra.name}}</span>
-                  <small>{{infra.other}}</small>
+                  <small class="fw-light">{{infra.other}}</small>
 
                   <div class="row">
                     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2 mt-3">
@@ -83,7 +83,7 @@
                       </div>
                     </div>
 
-                    <div  class="col-12" *ngIf="isProjectedStatusInvalid(i)">
+                    <div *ngIf="isProjectedStatusInvalid(i)" class="col-12 d-flex flex-column">
                       <small *ngFor="let msg of projectedStatusControl(i) | formErrorMessages: infra.name"
                              class="text-danger font-italic">{{ msg }}</small>
                     </div>
@@ -91,7 +91,7 @@
 
                   @if (isVisibleTypeFeatureProjected(infra, i)) {
                     <span class="fw-bold  mt-3 mb-1 d-block">{{infra?.catalog?.other}}</span>
-                    <small>Seleccione el tipo</small>
+                    <small class="fw-light">Seleccione el tipo</small>
                     <div class="row">
                       @for (detail of infra?.catalog?.catalogDetails;
                         track detail.id; let j = $index) {
@@ -104,7 +104,7 @@
                           </div>
                         </div>
                       }
-                      <div  class="col-12" *ngIf="isProjectedTypeInvalid(i)">
+                      <div *ngIf="isProjectedTypeInvalid(i)" class="col-12 d-flex flex-column">
                         <small *ngFor="let msg of projectedTypeControl(i) | formErrorMessages: infra.catalog?.other"
                                class="text-danger font-italic">{{ msg }}</small>
                       </div>
@@ -121,7 +121,7 @@
                 <label for="end_date" class="form-label text-tp-h3">Ingrega Fecha de Finalización</label>
                 <input type="date" class="form-control input-s4" id="end_date" formControlName="end_date"
                        placeholder="__/__/__" [maxLength]="10"/>
-                <div *ngIf="form.get('end_date') | isInvalidField">
+                <div *ngIf="form.get('end_date') | isInvalidField" class="d-flex flex-column">
                   <small *ngFor="let msg of form.get('end_date') | formErrorMessages:'Fecha de finalizacion'"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
@@ -132,7 +132,7 @@
                        class="form-control input-s4"
                        id="handover_date" formControlName="handover_date"
                        placeholder="__/__/__" [maxLength]="10"/>
-                <div *ngIf="form.get('handover_date') | isInvalidField">
+                <div *ngIf="form.get('handover_date') | isInvalidField" class="d-flex flex-column">
                   <small *ngFor="let msg of form.get('handover_date') | formErrorMessages:'Fecha de entrega'"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>

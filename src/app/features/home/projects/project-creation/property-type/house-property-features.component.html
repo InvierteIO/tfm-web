@@ -2,7 +2,7 @@
 <section [formGroup]="formGroup">
 
   <h2 class="mb-3 mt-2 subtitle-tp-h2 io-green-primary">Características especiales del inmueble</h2>
-  <small>Seleciona según sea el caso</small>
+  <small class="fw-light">Seleciona según sea el caso</small>
   <div class="row pt-2" formArrayName="house_features">
     @for (feature of houseFeatures; track feature.id; let i = $index) {
       <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3" [formGroupName]="i">
@@ -24,7 +24,7 @@
       <label for="house_total_bathrooms" class="form-label text-tp-h3">N° de baños</label>
       <input type="number" class="form-control input-s4" id="house_total_bathrooms" formControlName="house_total_bathrooms"
              placeholder="Ingrese número" [maxLength]="4" [max]="1000" [min]="0"/>
-      <div *ngIf="formGroup.get('house_total_bathrooms') | isInvalidField">
+      <div *ngIf="formGroup.get('house_total_bathrooms') | isInvalidField" class="d-flex flex-column">
         <small *ngFor="let msg of formGroup.get('house_total_bathrooms') | formErrorMessages:'N° de baños '"
                class="text-danger font-italic">{{ msg }}</small>
       </div>
@@ -34,7 +34,7 @@
       <label for="house_total_rooms" class="form-label text-tp-h3">N° de habitaciones</label>
       <input type="number" class="form-control input-s4" id="house_total_rooms" formControlName="house_total_rooms"
              placeholder="Ingrese número" [maxLength]="4" [max]="1000" [min]="0"/>
-      <div *ngIf="formGroup.get('house_total_rooms') | isInvalidField">
+      <div *ngIf="formGroup.get('house_total_rooms') | isInvalidField" class="d-flex flex-column">
         <small *ngFor="let msg of formGroup.get('house_total_rooms') | formErrorMessages:'N° de habitaciones '"
                class="text-danger font-italic">{{ msg }}</small>
       </div>
@@ -53,7 +53,7 @@
         </select>
         <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
       </div>
-      <div *ngIf="formGroup.get('house_block_location') | isInvalidField">
+      <div *ngIf="formGroup.get('house_block_location') | isInvalidField" class="d-flex flex-column">
         <small *ngFor="let msg of formGroup.get('house_block_location') | formErrorMessages:'ubicación'"
                class="text-danger font-italic">{{ msg }}</small>
       </div>
@@ -70,7 +70,7 @@
         </select>
         <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
       </div>
-      <div *ngIf="formGroup.get('house_road_way') | isInvalidField">
+      <div *ngIf="formGroup.get('house_road_way') | isInvalidField" class="d-flex flex-column">
         <small *ngFor="let msg of formGroup.get('house_road_way') | formErrorMessages:'tipo de via'"
                class="text-danger font-italic">{{ msg }}</small>
       </div>
@@ -83,7 +83,7 @@
       <label for="house_roofed_area" class="form-label text-tp-h3">Area techada (m&#178;)</label>
       <input type="number" class="form-control input-s4" id="house_roofed_area" formControlName="house_roofed_area"
              placeholder="Ingrese area (m²)" [maxLength]="4" [max]="1000" [min]="0"/>
-      <div *ngIf="formGroup.get('house_roofed_area') | isInvalidField">
+      <div *ngIf="formGroup.get('house_roofed_area') | isInvalidField" class="d-flex flex-column">
         <small *ngFor="let msg of formGroup.get('house_roofed_area') | formErrorMessages:'Area techada '"
                class="text-danger font-italic">{{ msg }}</small>
       </div>
@@ -93,7 +93,7 @@
       <label for="house_total_floors" class="form-label text-tp-h3">N° de pisos</label>
       <input type="number" class="form-control input-s4" id="house_total_floors" formControlName="house_total_floors"
              placeholder="Ingrese número" [maxLength]="2" [max]="10" [min]="0"/>
-      <div *ngIf="formGroup.get('house_total_floors') | isInvalidField">
+      <div *ngIf="formGroup.get('house_total_floors') | isInvalidField" class="d-flex flex-column">
         <small *ngFor="let msg of formGroup.get('house_total_floors') | formErrorMessages:'N° de pisos '"
                class="text-danger font-italic">{{ msg }}</small>
       </div>
@@ -115,7 +115,7 @@
                placeholder="Ingrese área (m²)"
                [maxLength]="4" [max]="1000" [min]="0"/>
 
-        <div *ngIf="isFieldFloorHouseNotValid(i)">
+        <div *ngIf="isFieldFloorHouseNotValid(i)" class="d-flex flex-column">
           <small *ngFor="let msg of houseFloorAreas.at(i).get('value') | formErrorMessages:('Área piso ' + (i + 1))"
                  class="text-danger font-italic">
             {{ msg }}
