@@ -16,4 +16,5 @@ export interface ProjectMock {
   supervisor?: string;
   zipCode?: string;
   description?: string;
+  kmlKmzUrl?: string;
 }

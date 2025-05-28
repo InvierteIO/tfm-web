@@ -29,7 +29,7 @@ export class SelectStyleDirective implements OnInit, OnDestroy {
   }
 
   private updateStyles(value: any) {
-    const color = value ? '#1A202C' : '#A0A0A0';
+    const color = value || (value === false)  ? '#1A202C' : '#A0A0A0';
     this.renderer.setStyle(this.el.nativeElement, 'color', color);
     this.renderer.setStyle(this.el.nativeElement, 'background', '#FCFCFC');
     this.renderer.setStyle(this.el.nativeElement, 'border-color', '#D8D8D8');

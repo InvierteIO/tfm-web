@@ -90,76 +90,90 @@
 
             <div class="d-flex align-items-center justify-content-between pt-3 pb-4">
               <span>Crea los tipos de propiedad según la combinación de características de las categorías como casa, departamento o terreno</span>
-              <button class="btn btn-s1 button-tp py-2 br5 text-nowrap" (click)="toPropertyType()" >
+              <button class="btn btn-s1 button-tp py-2 br5 text-nowrap" (click)="toGoPropertyType()" >
                   Agregar tipo inmueble
               </button>
             </div>
+            <div class="table-responsive">
+              <table class="table table-s2 mb-5" *ngIf="!loading">
+                <thead>
+                <tr>
+                  <th class="px-3 ms-3">Tipo</th>
+                  <th class="">Etapa</th>
+                  <th class="">Plano arquitectonico</th>
+                  <th class="">Plantilla formato</th>
+                  <th class=" text-center">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let propertyType of stagesPropertyTypes" >
+                  <td class="px-3 ms-3">{{propertyType.propertyGroup?.name}}</td>
+                  <td>{{propertyType.stage?.stage}}</td>
+                  <td>
+                    @if(propertyType.architecturalBluetprint) {
+                      <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="descargar documentos">
+                        <img src="./assets/svg/document24.svg" alt="documento">
+                      </button>
+                      {{propertyType.architecturalBluetprint.name}}
+                    } @else {
+                      <app-file-dropzone
+                        text="Arratra archivos PDF o imágenes (JPG, PNG)"
+                        accept=".pdf,image/png,image/jpeg"
+                        (dropFile)="onDropFile($event, 'architectural', propertyType)"
+                        (fileSelected)="onFileSelected($event, 'architectural', propertyType)">
+                      </app-file-dropzone>
+                    }
+                  </td>
+                  <td>
+                    @if(propertyType.formatTemplateLoaded) {
 
-            <table class="table table-s2 mb-5" *ngIf="!loading">
-              <thead>
-              <tr>
-                <th class="px-3 ms-3">Tipo</th>
-                <th class="">Etapa</th>
-                <th class="">Plano arquitectonico</th>
-                <th class="">Plantilla formato</th>
-                <th class=" text-center">Acciones</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let propertyType of stagesPropertyTypes" >
-                <td class="px-3 ms-3">{{propertyType.propertyGroup?.name}}</td>
-                <td>{{propertyType.stage?.stage}}</td>
-                <td>
-                  @if(propertyType.architecturalBluetprint) {
-                    <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="documento">
-                      <img src="./assets/svg/document24.svg" alt="editar">
-                    </button>
-                    {{propertyType.architecturalBluetprint.name}}
-                  } @else {
-                    <app-file-dropzone
-                      text="Arratra archivos PDF o imágenes (JPG, PNG)"
-                      accept=".pdf,image/png,image/jpeg"
-                      (dropFile)="onDropFile($event, 'architectural', propertyType)"
-                      (fileSelected)="onFileSelected($event, 'architectural', propertyType)">
-                    </app-file-dropzone>
-                    <input
-                      #fileInputArchitectural
-                      type="file" accept=".pdf,image/png,image/jpeg" hidden
-                      (change)="onFileSelected($event, 'architectural', propertyType)"/>
-                  }
-                </td>
-                <td>
-                  @if(propertyType.formatTemplateLoaded) {
-                    {{propertyType.formatTemplateLoaded.name}}
-                    <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="documento">
-                      <img src="./assets/svg/document24.svg" alt="editar">
-                    </button>
-                  } @else {
-                    <app-file-dropzone
-                      text="Arratra archivos PDF o imágenes (JPG, PNG)"
-                      accept=".pdf,image/png,image/jpeg"
-                      (dropFile)="onDropFile($event, 'template', propertyType)"
-                      (fileSelected)="onFileSelected($event, 'template', propertyType)">
-                    </app-file-dropzone>
-                  }
-                </td>
-                <td class="text-center">
-                  <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="duplicar" (click)="duplicatePropertyType(propertyType)">
-                    <img src="./assets/svg/duplicate19.svg" alt="editar">
-                  </button>
-                  <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
-                    <img src="./assets/svg/view15.svg" alt="ver">
-                  </button>
-                  <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar" (click)="deletePropertyType(propertyType)">
-                    <img src="./assets/svg/delete16.svg" alt="eliminar">
-                  </button>
-                </td>
-              </tr>
-              <tr *ngIf="isShowTable">
-                <td colspan="5" class="text-center">No hay registros</td>
-              </tr>
-              </tbody>
-            </table>
+                      <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="descargar archivo">
+                        <img src="./assets/svg/document24.svg" alt="documento">
+                      </button>
+                      {{propertyType.formatTemplateLoaded.name}}
+                    } @else {
+                      <app-file-dropzone
+                        text="Arratra archivo excel con información válida"
+                        accept=".xls,.xlsx"
+                        (dropFile)="onDropFile($event, 'template', propertyType)"
+                        (fileSelected)="onFileSelected($event, 'template', propertyType)">
+                      </app-file-dropzone>
+                    }
+                  </td>
+                  <td class="align-middle">
+                    <div class="d-flex justify-content-center">
+                      <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="duplicar" (click)="duplicatePropertyType(propertyType)">
+                        <img src="./assets/svg/duplicate19.svg" alt="duplicar">
+                      </button>
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver tipo de inmueble">
+                        <img src="./assets/svg/view15.svg" alt="ver">
+                      </button>
+                      <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary
+                    d-inline-flex align-items-center justify-content-center" title="Editar tipo de inmueble">
+                        <span class="material-symbols-rounded">edit_square</span>
+                      </button>
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar" (click)="deletePropertyType(propertyType)">
+                        <img src="./assets/svg/delete16.svg" alt="eliminar">
+                      </button>
+                    </div>
+                    @if(propertyType.formatTemplateLoaded) {
+                      <div class="d-flex justify-content-center mt-2">
+                        <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary
+                    d-inline-flex align-items-center justify-content-center" title="Inmuebles"
+                                (click)="toGoProperties(propertyType)">
+                          <span class="material-symbols-rounded">other_houses</span>
+                        </button>
+                      </div>
+                    }
+                  </td>
+                </tr>
+                <tr *ngIf="isShowTable">
+                  <td colspan="5" class="text-center">No hay registros</td>
+                </tr>
+                </tbody>
+              </table>
+
+            </div>
 
             <app-button-loading
               type="submit"

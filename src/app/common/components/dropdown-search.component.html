@@ -1,0 +1,19 @@
+<div ngbDropdown class="dropdown mn-1">
+  <button class="btn dropdown-toggle mn-btn-s1" type="button" [attr.id]="dropdownId" ngbDropdownToggle>
+    <img src="./assets/svg/arrowsearch.svg" alt="arrow" />
+    <span class="io-green-primary fw-bolder">  Filtrado por</span>
+  </button>
+  <div ngbDropdownMenu class="dropdown-menu" [attr.aria-labelledby]="dropdownId">
+    @for (option  of options; track i; let i = $index) {
+      <button ngbDropdownItem [class.active]="selectedFilter === option"
+              class="dropdown-item d-flex align-items-center justify-content-between"
+              (click)="setFilterDropdown(option)">
+        <span>{{option}}</span>
+        @if (selectedFilter === option) {
+          <span class="material-symbols-rounded">check</span>
+        }
+      </button>
+    }
+
+  </div>
+</div>

@@ -4,7 +4,7 @@ export interface ProjectStageMock {
   id: number;
   name?: string;
   stage?: string;
-  klmUrl?: string;
+  kmlKmzUrl?: string;
   zipCode?: string;
   address?: string;
   addressReference?: string;
