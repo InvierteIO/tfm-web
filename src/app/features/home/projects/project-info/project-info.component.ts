@@ -26,7 +26,7 @@ export class ProjectInfoComponent implements OnInit {
     const nav = this.router.getCurrentNavigation();
     this.project = nav?.extras.state?.['project'];
 
-    if (!this.project || this.project?.id == 0) {
+    if((this.project?.id ?? 0) === 0) {
       this.router.navigate(['/public/home/projects']);
     }
     this.statusCurrent = this.project?.status;

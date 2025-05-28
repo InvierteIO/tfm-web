@@ -122,11 +122,11 @@ export class SectionOneComponent  implements OnInit  {
     });
   }
 
-  toPropertyType():void {
+  toGoPropertyType():void {
     // Debe validarse que este el campo: stage
     if(!this.form?.get("stages")?.valid) {
-      Swal.fire(
-          DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("Número de etapas sin definir")).then(r => {}) ;
+      Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("Número de etapas sin definir"))
+        .then(r => {}) ;
       return;
     }
     this.router.navigate(['/public/home/project-new/property-type']);
@@ -138,30 +138,17 @@ export class SectionOneComponent  implements OnInit  {
 
   deletePropertyType(propertyType: StagePropertyGroupMock):void {
     Swal.fire(
-        DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Desea eliminar el tipo de inmueble?")).then(r => {
-
-    }) ;
+        DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Desea eliminar el tipo de inmueble?"))
+      .then(r => {}) ;
   }
 
   duplicatePropertyType(propertyType: StagePropertyGroupMock):void {
-    Swal.fire(
-        DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea duplicar el tipo de inmueble?")).then(r => {
-
-    }) ;
+    Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea duplicar el tipo de inmueble?"))
+      .then(r => {}) ;
   }
 
-  onDragOver(event: DragEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    const el = (event.currentTarget as HTMLElement);
-    el.classList.add('dragover');
-  }
-
-  onDragLeave(event: DragEvent): void {
-    event.preventDefault();
-    event.stopPropagation();
-    const el = (event.currentTarget as HTMLElement);
-    el.classList.remove('dragover');
+  toGoProperties(propertyType: StagePropertyGroupMock) : void {
+    this.router.navigate(['/public/home/project-new/properties'], { state:  { property_type: propertyType } });
   }
 
   onDropFile(event: DragEvent, type: 'architectural' | 'template',
@@ -221,7 +208,7 @@ export class SectionOneComponent  implements OnInit  {
     },
       {
         stage : {
-          id: 2, stage: "I"
+          id: 2, stage: "II"
         },
         propertyGroup: {
           name: "Tipo 1 - Casa"
@@ -229,6 +216,22 @@ export class SectionOneComponent  implements OnInit  {
         architecturalBluetprint: {
           id:1,
           name:"Plano 1"
+        }
+      },
+      {
+        stage : {
+          id: 3, stage: "I"
+        },
+        propertyGroup: {
+          name: "Tipo 1 - Casa"
+        },
+        architecturalBluetprint: {
+          id:2,
+          name:"Plano 2"
+        },
+        formatTemplateLoaded: {
+          id:3,
+          name:"Plantilla llenado"
         }
       }];
   }

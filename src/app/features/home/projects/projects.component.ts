@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {NgIf} from '@angular/common';
+import {LowerCasePipe, NgIf} from '@angular/common';
 import {ProjectCardComponent} from './project-card.component';
 import {ProjectStatus} from './shared/models/project-status.model';
 import {PropertyCategory} from '../../shared/models/property-category.model';
 import {ProjectService} from './shared/services/project.service';
 import {ProjectMock} from './shared/models/project.mock.model';
 import {Router} from "@angular/router";
+import {DropdownSearchComponent} from '@common/components/dropdown-search.component';
 
 @Component({
   selector: 'app-projects',
@@ -14,8 +15,9 @@ import {Router} from "@angular/router";
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    NgIf,
-    ProjectCardComponent
+    ProjectCardComponent,
+    LowerCasePipe,
+    DropdownSearchComponent
   ],
   templateUrl: './projects.component.html'
 })
@@ -45,10 +47,6 @@ export class ProjectsComponent implements OnInit {
         this.projects = projects;
         console.log(this.projects);
       });
-  }
-
-  setFilter(filter: string): void {
-    this.selectedFilter = filter;
   }
 
   onStatusTabClick(status: ProjectStatus, event: Event): void {
