@@ -22,6 +22,7 @@ import {LandPropertyFeaturesComponent} from './land-property-features.component'
 import {PropertyCategory} from '../../../../shared/models/property-category.model';
 import {ApartmentPropertyFeaturesComponent} from './apartment-property-features.component';
 import {HousePropertyFeaturesComponent} from './house-property-features.component';
+import {LoadingService} from '@core/services/loading.service';
 
 @Component({
   imports: [
@@ -49,7 +50,8 @@ export class PropertyTypeComponent  implements OnInit  {
   features: FeatureMock[] = [];
   loading:boolean = false;
 
-  constructor(private router: Router, private readonly fb: FormBuilder) {
+  constructor(private router: Router, private readonly fb: FormBuilder,
+              private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
   }
 
@@ -214,7 +216,12 @@ export class PropertyTypeComponent  implements OnInit  {
       return;
     }
     console.log(this.form.value);
-    this.router.navigate(['/public/home/project-new/section1']);
+
+    this.loadingService.show();
+    setTimeout(() => {
+      this.router.navigate(['/public/home/project-new/section1']);
+      this.loadingService.hide();
+      }, 1000);
   }
 
   loadData(): void {

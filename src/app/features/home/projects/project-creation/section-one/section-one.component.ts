@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from "@common/dialogs/dialogs-swal.constants";
 import {IsInvalidFieldPipe} from "@common/pipes/is-invalid-field.pipe";
 import {FileDropzoneComponent} from '@common/components/file-dropzone.component';
+import {LoadingService} from '@core/services/loading.service';
 
 @Component({
   selector: 'app-section-one',
@@ -36,7 +37,9 @@ export class SectionOneComponent  implements OnInit  {
   banks: BankMock[] = [];
   stagesPropertyTypes: StagePropertyGroupMock[]= [];
 
-  constructor(private router: Router, private readonly fb: FormBuilder) {
+  constructor(private readonly  router: Router,
+              private readonly fb: FormBuilder,
+              private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
   }
 
@@ -70,7 +73,12 @@ export class SectionOneComponent  implements OnInit  {
       return;
     }
     console.log(this.form.value);
-    this.router.navigate(['/public/home/project-new/infrastructure-installation']);
+
+    this.loadingService.show();
+    setTimeout(() => {
+      this.router.navigate(['/public/home/project-new/infrastructure-installation']);
+      this.loadingService.hide();
+    }, 50);
   }
 
   private initBonusesForm(): void {
@@ -122,24 +130,37 @@ export class SectionOneComponent  implements OnInit  {
     });
   }
 
-  toGoPropertyType():void {
+  toGoPropertyType(propertyType: StagePropertyGroupMock | undefined):void {
     // Debe validarse que este el campo: stage
     if(!this.form?.get("stages")?.valid) {
       Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("Número de etapas sin definir"))
         .then(r => {}) ;
       return;
     }
-    this.router.navigate(['/public/home/project-new/property-type']);
+    this.loadingService.show();
+    setTimeout(() => {
+      this.router.navigate(['/public/home/project-new/property-type'], { state:  { property_type: propertyType } });
+      this.loadingService.hide();
+      }, 1000);
   }
 
   get isShowTable() {
     return !this.stagesPropertyTypes || this.stagesPropertyTypes.length === 0;
   }
 
+
   deletePropertyType(propertyType: StagePropertyGroupMock):void {
     Swal.fire(
-        DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Desea eliminar el tipo de inmueble?"))
-      .then(r => {}) ;
+      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Desea eliminar el tipo de inmueble?"))
+      .then(result => {
+        if (result.isConfirmed) {
+          this.loadingService.show();
+          setTimeout(() => {
+            this.stagesPropertyTypes.splice(this.stagesPropertyTypes.indexOf(propertyType), 1);
+            this.loadingService.hide();
+            }, 2000);
+        }
+      });
   }
 
   duplicatePropertyType(propertyType: StagePropertyGroupMock):void {
@@ -148,7 +169,11 @@ export class SectionOneComponent  implements OnInit  {
   }
 
   toGoProperties(propertyType: StagePropertyGroupMock) : void {
-    this.router.navigate(['/public/home/project-new/properties'], { state:  { property_type: propertyType } });
+    this.loadingService.show();
+    setTimeout(() => {
+      this.router.navigate(['/public/home/project-new/properties'], { state:  { property_type: propertyType } });
+      this.loadingService.hide();
+    }, 1000);
   }
 
   onDropFile(event: DragEvent, type: 'architectural' | 'template',
@@ -160,6 +185,9 @@ export class SectionOneComponent  implements OnInit  {
       const file = files[0];
       console.log(`Dropped [${type}] en fila ${typesProperty.propertyGroup?.name}:`,
         file.name, file.type);
+
+      this.loadingService.show();
+      setTimeout(() => { this.loadingService.hide(); }, 1000);
     }
   }
 
@@ -171,6 +199,9 @@ export class SectionOneComponent  implements OnInit  {
       const file = input.files[0];
       console.log(`Selected [${type}] en fila ${typesProperty.propertyGroup?.name}:`, file.name, file.type);
       input.value = '';
+
+      this.loadingService.show();
+      setTimeout(() => { this.loadingService.hide(); }, 1000);
     }
   }
 

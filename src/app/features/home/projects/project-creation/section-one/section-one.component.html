@@ -90,7 +90,7 @@
 
             <div class="d-flex align-items-center justify-content-between pt-3 pb-4">
               <span>Crea los tipos de propiedad según la combinación de características de las categorías como casa, departamento o terreno</span>
-              <button class="btn btn-s1 button-tp py-2 br5 text-nowrap" (click)="toGoPropertyType()" >
+              <button class="btn btn-s1 button-tp py-2 br5 text-nowrap" (click)="toGoPropertyType(undefined)" >
                   Agregar tipo inmueble
               </button>
             </div>
@@ -149,7 +149,8 @@
                         <img src="./assets/svg/view15.svg" alt="ver">
                       </button>
                       <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary
-                    d-inline-flex align-items-center justify-content-center" title="Editar tipo de inmueble">
+                    d-inline-flex align-items-center justify-content-center" title="Editar tipo de inmueble"
+                              (click)="toGoPropertyType(propertyType)">
                         <span class="material-symbols-rounded">edit_square</span>
                       </button>
                       <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar" (click)="deletePropertyType(propertyType)">
@@ -188,6 +189,4 @@
 
     </div>
   </div>
-
 </div>
-

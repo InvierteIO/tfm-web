@@ -1,20 +1,25 @@
 <div class="container">
-  <h1 class="title-tp-h1 mt-4 mb-3 d-flex align-items-center io-green-primary">
-    <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
-    <span class="">Crear Proyecto /</span>
-    <span class="fw-light">&nbsp;Inmuebles</span>
-  </h1>
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb title-tp-h1 mt-4 mb-3 d-flex align-items-center">
+      <li class="breadcrumb-item d-flex align-items-center">
+        <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
+        <a class="breadcrumb-link" (click)="back()">Crear Proyecto</a>
+      </li>
+      <li class="breadcrumb-item d-flex align-items-center">
+        <a class="breadcrumb-link" (click)="toGoPropertyType()">{{propertyType?.propertyGroup?.name}}</a>
+      </li>
+      <li class="breadcrumb-item io-green-primary active" aria-current="page">
+        <span class="fw-light">Inmuebles</span>
+      </li>
+    </ol>
+  </nav>
+
   <div class="card p-0 border-0 rounded-0">
     <div class="card-body px-3 my-3">
       <div class="row justify-content-center">
         <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
-          <div class="d-flex align-items-center justify-content-between">
-            <h2 class="subtitle-tp-h2 io-green-primary">Tipo de inmueble</h2>
-            <button class="btn btn-s1 button-tp br5 d-flex justify-content-center align-items-center"
-                    (click)="toGoPropertyType()" >
-              <span class="material-symbols-rounded">manage_search</span> Ver mas
-            </button>
-          </div>
+          <h2 class="subtitle-tp-h2 io-green-primary mb-3">Tipo de inmueble</h2>
 
           <div class="row">
             <div class="col-xl-6 col-lg-6 col-sm-12">

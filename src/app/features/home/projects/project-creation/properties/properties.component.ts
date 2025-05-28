@@ -14,6 +14,7 @@ import {SelectStyleDirective} from '@common/directives/select-style.directive';
 import {FormUtil} from '@common/utils/form.util';
 import {PropertyRow} from './property-row.model';
 import {LowerCasePipe, NgForOf, NgIf} from '@angular/common';
+import {LoadingService} from "@core/services/loading.service";
 
 @Component({
   selector: 'app-properties',
@@ -39,7 +40,8 @@ export class PropertiesComponent  implements OnInit {
   protected readonly CommercializationCycle = CommercializationCycle;
 
   constructor(private router: Router,
-              private readonly fb: FormBuilder) {
+              private readonly fb: FormBuilder,
+              private readonly loadingService: LoadingService) {
     const nav = this.router.getCurrentNavigation();
 
     this.propertyType = nav?.extras.state?.["property_type"];
@@ -117,24 +119,35 @@ export class PropertiesComponent  implements OnInit {
       FormUtil.markAllAsTouched(row.form);
       return;
     }
-    const value = row.form.value;
-    row.property.codeEnterprise = value.codeEnterprise;
-    row.property.name = value.name;
-    row.property.isAvailableSale = value.isAvailableSale;
-    row.property.price = value.price ? Number(value.price) : undefined;
-    row.property.isParkingSpace = value.isParkingSpace;
-    row.property.commercializationCycle = value.commercializationCycle;
-    row.property.address = value.address;
-    row.editing = false;
-    row.isNew = false;
-    row.original = undefined;
+    this.loadingService.show();
+    setTimeout(() => {
+
+      const value = row.form.value;
+      row.property.codeEnterprise = value.codeEnterprise;
+      row.property.name = value.name;
+      row.property.isAvailableSale = value.isAvailableSale;
+      row.property.price = value.price ? Number(value.price) : undefined;
+      row.property.isParkingSpace = value.isParkingSpace;
+      row.property.commercializationCycle = value.commercializationCycle;
+      row.property.address = value.address;
+      row.editing = false;
+      row.isNew = false;
+      row.original = undefined;
+
+      this.loadingService.hide();
+      }, 3000);
+
   }
 
   delete(row: PropertyRow): void {
     Swal.fire(
       DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Desea eliminar el inmueble?"))
       .then(r => {
-        this.rows.splice(this.rows.indexOf(row), 1);
+        this.loadingService.show();
+        setTimeout(() => {
+          this.rows.splice(this.rows.indexOf(row), 1);
+          this.loadingService.hide();
+          }, 3000);
       }) ;
   }
 

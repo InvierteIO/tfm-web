@@ -10,6 +10,7 @@ import {InstallationType} from '../../shared/models/installation-data.type';
 import {InstallationDataType} from '../../shared/models/installation-type.model';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
 import {FormUtil} from '@common/utils/form.util';
+import {LoadingService} from '@core/services/loading.service';
 
 @Component({
   selector: 'app-infrastructure-installation',
@@ -31,7 +32,8 @@ export class InfrastructureInstallationComponent implements OnInit {
   protected infraInstallations: InfraestructureInstallationMock[] = [];
 
   constructor(private readonly router: Router,
-              private readonly fb: FormBuilder) {
+              private readonly fb: FormBuilder,
+              private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
   }
 
@@ -149,7 +151,8 @@ export class InfrastructureInstallationComponent implements OnInit {
     return !!ctrl && ctrl.invalid && (ctrl.touched || ctrl.dirty);
   }
 
-  back(): void {
+
+  toGoSection1(): void {
     this.router.navigate(['/public/home/project-new/section1']);
   }
 
@@ -161,7 +164,12 @@ export class InfrastructureInstallationComponent implements OnInit {
       console.log("Form invalid!!");
       return;
     }
-    this.router.navigate(['/public/home/project-new/complementary']);
+
+    this.loadingService.show();
+    setTimeout(() => {
+      this.router.navigate(['/public/home/project-new/complementary']);
+      this.loadingService.hide();
+      }, 500);
   }
 
   isListForInfra(infra: InfraestructureInstallationMock): boolean {
