@@ -1,0 +1,11 @@
+.qr-section {
+  border: none;
+  border-radius: 10px;
+  background-color: #F6F6F6;
+  width: 100%;
+  min-height: 150px;
+}
+
+.camera-qr-view {
+  width: 200px; height: 120px; background-color: #fff
+}

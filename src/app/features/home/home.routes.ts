@@ -9,7 +9,10 @@ import {
   InfrastructureInstallationComponent
 } from './projects/project-creation/infrastructure-installation/infrastructure-installation.component';
 import {ComplementaryComponent} from './projects/project-creation/complementary/complementary.component';
-import {PropertiesComponent} from './projects/project-creation/properties/properties.component';
+import {PropertiesComponent} from "./projects/project-creation/properties/properties.component";
+import {
+  LegalScopeHabilitationComponent
+} from './projects/project-creation/legal-scope-habilitation/legal-scope-habilitation.component';
 
 export const homeRoutes: Routes = [
   {
@@ -41,6 +44,9 @@ export const homeRoutes: Routes = [
       },
       {
         path: 'properties', component: PropertiesComponent
+      },
+      {
+        path: 'legal-scope', component: LegalScopeHabilitationComponent
       }
     ]
   },

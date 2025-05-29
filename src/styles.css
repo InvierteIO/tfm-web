@@ -1,8 +1,39 @@
+@import "@fontsource/poppins/300.css";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+@import "@fontsource/material-symbols-rounded";
+@import "@fontsource/material-symbols-outlined";
+
 @import 'assets/styles/custom-checkbox.css';
 @import 'assets/styles/custom-radiobutton.scss';
 @import 'assets/styles/custom-select.css';
 @import 'assets/styles/custom-input.css';
 @import 'assets/styles/custom-tables.css';
+
+.material-symbols-rounded,
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  display: inline-block;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded', sans-serif;
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined', sans-serif;
+}
 
 body {
   font-family: 'Poppins', sans-serif;
@@ -280,6 +311,22 @@ body {
 
 .tab-s3.disable-active-nav .nav-underline .nav-link.active {
   border-bottom: none !important;
+}
+
+/*****************Breadcrumbs********************/
+.breadcrumb-link {
+  color: #066B4B;
+  text-decoration: underline;
+  text-decoration-color: #066B4B;
+  cursor: pointer;
+}
+
+.breadcrumb-link:hover {
+  color: #066B4B;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  color: #066B4B !important;
 }
 
 /*****************Cards********************/

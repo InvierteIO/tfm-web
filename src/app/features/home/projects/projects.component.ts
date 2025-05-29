@@ -8,6 +8,9 @@ import {ProjectService} from './shared/services/project.service';
 import {ProjectMock} from './shared/models/project.mock.model';
 import {Router} from "@angular/router";
 import {DropdownSearchComponent} from '@common/components/dropdown-search.component';
+import {LoadingService} from '@core/services/loading.service';
+import Swal from 'sweetalert2';
+import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 
 @Component({
   selector: 'app-projects',
@@ -30,7 +33,8 @@ export class ProjectsComponent implements OnInit {
   statusCurrent: ProjectStatus = ProjectStatus.ACTIVE;
   projects: ProjectMock[] = [];
 
-  constructor(private router: Router, private readonly projectService: ProjectService) { }
+  constructor(private readonly router: Router,
+              private readonly projectService: ProjectService) { }
 
   create(): void {
     this.router.navigate(['/public/home/project-new/section1']);
@@ -62,4 +66,5 @@ export class ProjectsComponent implements OnInit {
     console.log('Categoría seleccionada:', category);
     this.search();
   }
+
 }

@@ -5,6 +5,7 @@ export interface ProjectDocumentMock {
   name?: string;
   filename?: string;
   path?: string;
+  description?: string;
   createdAt?: Date;
   catalogDetail?: CatalogDetailMock;
 }

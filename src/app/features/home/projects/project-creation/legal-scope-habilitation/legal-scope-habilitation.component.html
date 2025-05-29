@@ -1,0 +1,316 @@
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb title-tp-h1 mt-4 mb-3 d-flex align-items-center">
+      <li class="breadcrumb-item d-flex align-items-center">
+        <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
+        <a class="breadcrumb-link" (click)="toGoSection1()">Crear Proyecto</a>
+      </li>
+      <li class="breadcrumb-item io-green-primary active" aria-current="page">
+        <span class="fw-light">Ambito legal de habilitación</span>
+      </li>
+    </ol>
+  </nav>
+  <div class="card p-0 border-0 rounded-0">
+    <div class="card-body px-3 my-4">
+      <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
+
+          <form  [formGroup]="form" (ngSubmit)="save()" >
+            <h2 class="mb-1 subtitle-tp-h2 io-green-primary">Ambito Legal</h2>
+            <span class="fs-s1">Sube la documentación según la fase que corresponda</span>
+
+            <div class="row mt-3">
+              <div class="col-12">
+                <span class="fw-bold  mt-2 mb-1 d-block">PASO 1 (Obligatorio)</span>
+                <span class="fs-s1">Terreno matriz, Registrado en SUNARP</span>
+                <app-file-dropzone class="mt-2"
+                                   dropzoneClass="dz-s1"
+                                   text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                                   accept=".pdf,image/png,image/jpeg"
+                                   (dropFile)="onDropFile($event, 'parent_parcel')"
+                                   (fileSelected)="onFileSelected($event, 'parent_parcel')" />
+              </div>
+              <div class="col-12" *ngIf="parentParcelDocs.length>0">
+                <table class="table table-s3 mt-3 mb-0">
+                  <tbody>
+                  <tr *ngFor="let file of parentParcelDocs" >
+                    <td  class="px-2 ms-1  d-flex justify-content-start align-items-center">
+                      <span class="material-symbols-rounded">{{file!.filename | typeFileIconGoogleFonts}}</span>
+                    </td>
+                    <td class="">{{file.name}}</td>
+                    <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+                    <td  class="text-center">
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                        <img src="./assets/svg/view15.svg" alt="ver">
+                      </button>
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                              (click)="deleteParentParcel(file)">
+                        <img src="./assets/svg/delete16.svg" alt="eliminar">
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="row my-3">
+              <div class="col-12">
+                <span class="fw-bold mb-1 d-block">PASO 2 (Obligatorio)</span>
+                <span class="fs-s1">Contar con la copia literal, que es el documento emitido por la SUNARP con código QR, donde se encuentra registrada la información de la empresa.</span>
+                <section class="qr-section mt-2 mb-3 d-flex align-items-center px-3">
+                  <div class="camera-qr-view d-flex justify-content-center align-items-center">
+                    <zxing-scanner *ngIf="scanning" (scanSuccess)="onScanSuccess($event)"
+                                   [style.width.px]="200" [style.height.px]="120"></zxing-scanner>
+
+                    <img *ngIf="!scanning && qrDataUrl" [src]="qrDataUrl" width="120" height="120" alt="QR"/>
+                  </div>
+                  <div class="mb-2 d-flex flex-column justify-content-center flex-grow-1 ms-3 h-100">
+                    <span  *ngIf="codeQr"  class="fs-s1 io-yellow-primary lh-1">Codigo reconocido</span>
+                    <div class="d-flex align-items-center justify-content-start my-2">
+                      <button type="button" class="btn h37 btn-s4 button-tp br5 px-4 d-flex justify-content-between align-items-center"
+                              (click)="startScanning()" [disabled]="scanning">
+                        @if (scanning) {
+                          <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                          Escaneando...
+                        } @else {
+                          <span class="me-2">Escanear QR</span>
+                          <span class="material-symbols-rounded">qr_code_scanner</span>
+                        }
+                      </button>
+                    </div>
+                    <input type="text" class="form-control input-s4 h37 w-100" id="qr-scanner" formControlName="qr"
+                           placeholder="Valor del QR escaneado" [maxLength]="200" readonly/>
+                  </div>
+                </section>
+
+                <app-file-dropzone class="mt-2"
+                                   dropzoneClass="dz-s1"
+                                   text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                                   accept=".pdf,image/png,image/jpeg"
+                                   (dropFile)="onDropFile($event, 'official_copy')"
+                                   (fileSelected)="onFileSelected($event, 'official_copy')" />
+              </div>
+              <div class="col-12" *ngIf="officialCopyDocs.length>0">
+                <table class="table table-s3 mt-3 mb-0">
+                  <tbody>
+                  <tr *ngFor="let file of officialCopyDocs" >
+                    <td class="px-2 ms-1  d-flex justify-content-start align-items-center">
+                      <span class="material-symbols-rounded">{{file!.filename | typeFileIconGoogleFonts}}</span>
+                    </td>
+                    <td class="">{{file.name}}</td>
+                    <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+                    <td  class="text-center">
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                        <img src="./assets/svg/view15.svg" alt="ver">
+                      </button>
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                              (click)="deleteOfficialCopy(file)">
+                        <img src="./assets/svg/delete16.svg" alt="eliminar">
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="row my-3">
+              <div class="col-12">
+                <span class="fw-bold mb-1 d-block">PASO 3 (Obligatorio)</span>
+                <span class="fs-s1">En caso de no contar con la copia literal, se debe presentar la escritura pública de una compraventa futura. La copia literal debe permanecer a nombre del propietario original.</span>
+                <app-file-dropzone class="mt-2"
+                                   dropzoneClass="dz-s1"
+                                   text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                                   accept=".pdf,image/png,image/jpeg"
+                                   (dropFile)="onDropFile($event, 'public_deed')"
+                                   (fileSelected)="onFileSelected($event, 'public_deed')" />
+              </div>
+              <div class="col-12" *ngIf="publicDeedDocs.length>0">
+                <table class="table table-s3 mt-3 mb-0">
+                  <tbody>
+                  <tr *ngFor="let file of publicDeedDocs" >
+                    <td class="px-2 ms-1 d-flex justify-content-start align-items-center">
+                      <span class="material-symbols-rounded">{{file!.filename | typeFileIconGoogleFonts}}</span>
+                    </td>
+                    <td class="">{{file.name}}</td>
+                    <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+                    <td  class="text-center">
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                        <img src="./assets/svg/view15.svg" alt="ver">
+                      </button>
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                              (click)="deletePublicDeed(file)">
+                        <img src="./assets/svg/delete16.svg" alt="eliminar">
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <h2 class="mb-1 mt-4 subtitle-tp-h2 io-green-primary">Pasar Terreno a eriazo / a urbano </h2>
+            <span class="fs-s1">Sube la documentación que corresponda</span>
+
+            <div class="row mt-3">
+              <div class="col-12">
+                <span class="fw-bold mb-1 d-block">PASO 4</span>
+                <span class="fs-s1">Adjuntar Cambio de uso en Municipalidd</span>
+                <app-file-dropzone class="mt-2"
+                                   dropzoneClass="dz-s1"
+                                   text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                                   accept=".pdf,image/png,image/jpeg"
+                                   (dropFile)="onDropFile($event, 'municipal_licence')"
+                                   (fileSelected)="onFileSelected($event, 'municipal_licence')" />
+              </div>
+              <div class="col-12" *ngIf="municipalLicenceDocs.length>0">
+                <table class="table table-s3 mt-3 mb-0">
+                  <tbody>
+                  <tr *ngFor="let file of municipalLicenceDocs" >
+                    <td  class="px-2 ms-1  d-flex justify-content-start align-items-center">
+                      <span class="material-symbols-rounded">{{file!.filename | typeFileIconGoogleFonts}}</span>
+                    </td>
+                    <td class="">{{file.name}}</td>
+                    <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+                    <td  class="text-center">
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                        <img src="./assets/svg/view15.svg" alt="ver">
+                      </button>
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                              (click)="deleteMunicipalLicence(file)">
+                        <img src="./assets/svg/delete16.svg" alt="eliminar">
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="row my-3">
+              <div class="col-12">
+                <span class="fw-bold  mb-1 d-block">PASO 5</span>
+                <span class="fs-s1">Adjuntar Certificados de Luz , Agua , desague , accesos.</span>
+                <app-file-dropzone class="mt-2"
+                                   dropzoneClass="dz-s1"
+                                   text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                                   accept=".pdf,image/png,image/jpeg"
+                                   (dropFile)="onDropFile($event, 'feasibility_certificate')"
+                                   (fileSelected)="onFileSelected($event, 'feasibility_certificate')" />
+              </div>
+              <div class="col-12" *ngIf="feasibilityCertificateDocs.length>0">
+                <table class="table table-s3 mt-3 mb-0">
+                  <tbody>
+                  <tr *ngFor="let file of feasibilityCertificateDocs" >
+                    <td class="px-2 ms-1  d-flex justify-content-start align-items-center">
+                      <span class="material-symbols-rounded">{{file!.filename | typeFileIconGoogleFonts}}</span>
+                    </td>
+                    <td class="">{{file.name}}</td>
+                    <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+                    <td  class="text-center">
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                        <img src="./assets/svg/view15.svg" alt="ver">
+                      </button>
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                              (click)="deleteFeasibilityCertificate(file)">
+                        <img src="./assets/svg/delete16.svg" alt="eliminar">
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="row my-3">
+              <div class="col-12">
+                <span class="fw-bold mb-1 d-block">PASO 6</span>
+                <span class="fs-s1">Adjuntar certificacion de habilitacion</span>
+                <app-file-dropzone class="mt-2"
+                                   dropzoneClass="dz-s1"
+                                   text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                                   accept=".pdf,image/png,image/jpeg"
+                                   (dropFile)="onDropFile($event, 'certificate_development_approval')"
+                                   (fileSelected)="onFileSelected($event, 'certificate_development_approval')" />
+              </div>
+              <div class="col-12" *ngIf="certificateDevelopmentApprovalDocs.length>0">
+                <table class="table table-s3 mt-3 mb-0">
+                  <tbody>
+                  <tr *ngFor="let file of certificateDevelopmentApprovalDocs" >
+                    <td class="px-2 ms-1  d-flex justify-content-start align-items-center">
+                      <span class="material-symbols-rounded">{{file!.filename | typeFileIconGoogleFonts}}</span>
+                    </td>
+                    <td class="">{{file.name}}</td>
+                    <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+                    <td  class="text-center">
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                        <img src="./assets/svg/view15.svg" alt="ver">
+                      </button>
+                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                              (click)="deleteCertificateDevelopmentApproval(file)">
+                        <img src="./assets/svg/delete16.svg" alt="eliminar">
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <h2 class="mb-1 mt-4 subtitle-tp-h2 io-green-primary">Partidas de registro publicos - Independizacion </h2>
+
+            <div class="mb-2 d-flex flex-column justify-content-start">
+              <span class="fs-s1">Sube la documentación que respalda tu propiedad o emprendimiento.</span>
+              <div class="d-flex align-items-center justify-content-start">
+                <button type="button" class="btn mt-2 h37 btn-s4 button-tp br5 px-4 d-flex justify-content-center align-items-center">
+                  Inmuebles<span class="material-symbols-rounded me-2">chevron_right</span>
+                </button>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-12 mb-2 d-flex flex-column justify-content-start">
+                <span class="fw-bold mt-3 mb-1 d-block">PASO 7</span>
+                <span class="fs-s1">Adjuntar independizacion de cada lote / Terreno con u codigo unico de registro publico</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 mb-2 d-flex flex-column justify-content-start">
+                <span class="fw-bold my-1 d-block">PASO 8 (Opcional)</span>
+                <span class="fs-s1">Código de bono TECHO PROPIO , BONO VERDE O BOO DE VIVIENDA</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 mb-2 d-flex flex-column justify-content-start">
+                <span class="fw-bold my-1 d-block">PASO 8.1</span>
+                <span class="fs-s1">Adjuntar asignacion de Bono al cliente</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 mb-2 d-flex flex-column justify-content-start">
+                <span class="fw-bold my-1 d-block">PASO 9</span>
+                <span class="fs-s1">Adjuntar entrega de Casa / Terrena / Casa</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 mb-2 d-flex flex-column justify-content-start">
+                <span class="fw-bold my-1 d-block">PASO 10</span>
+                <span class="fs-s1">Adjuntar Registro lote/ Terreno / Casa a nombre de cliente</span>
+              </div>
+            </div>
+
+            <app-button-loading
+              type="submit"
+              [btnClasses]="'btn d-block mx-auto mt-5 btn-width300 h37  btn-s4 button-tp br5'"
+              [loading]="loading"
+              msgLoading="Cargando..."
+              msgButton="Guardar proyecto"/>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

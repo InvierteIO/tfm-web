@@ -15,6 +15,8 @@ import Swal from "sweetalert2";
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from "@common/dialogs/dialogs-swal.constants";
 import {ProjectDocumentMock} from "../../shared/models/project-document.mock.model";
 import {TypeFileIconGoogleFontsPipe} from "@common/pipes/typefile-icon-googlefonts.pipe";
+import {LoadingService} from "@core/services/loading.service";
+import {FormUtil} from '@common/utils/form.util';
 
 @Component({
   selector: 'app-complementary',
@@ -49,13 +51,15 @@ export class ComplementaryComponent implements OnInit {
   brochures: ProjectDocumentMock[] = [];
   blueprints: ProjectDocumentMock[] = [];
   blueprintName: string = '';
+  multimediaDescription: string = '';
   blueprintNameError: boolean = false;
-
+  multimediaDescriptionError: boolean = false;
   urlKmlKmz: string| undefined;
 
   constructor(private readonly router: Router,
               private readonly fb: FormBuilder,
-              private readonly locationsSvc: GeographicalLocationService) {
+              private readonly locationsSvc: GeographicalLocationService,
+              private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
   }
 
@@ -115,8 +119,8 @@ export class ComplementaryComponent implements OnInit {
     });
   }
 
-  onDropFile(event: DragEvent, type: 'kml_kmz' | 'blueprint'| 'photographic_record' |
-  'brochure'): void {
+  onDropFile(event: DragEvent, type: 'kml_kmz' | 'blueprint'
+      | 'photographic_record' | 'brochure'): void {
     event.preventDefault();
     event.stopPropagation();
     const files = event.dataTransfer?.files;
@@ -139,14 +143,12 @@ export class ComplementaryComponent implements OnInit {
   }
 
   loadFile(type: string, file: File) {
-    console.log(file);
     switch (type) {
       case 'kml_kmz': this.loadFileKmlKmz(file); break;
       case 'photographic_record': this.loadPhotographicRecord(file); break;
       case 'brochure': this.loadBrochure(file); break;
       case 'blueprint': this.loadBlueprint(file); break;
     }
-
   }
 
   loadFileKmlKmz(file: File) {
@@ -163,11 +165,22 @@ export class ComplementaryComponent implements OnInit {
       'https://invierteio-klm.s3.eu-west-1.amazonaws.com/example.kml',
       'https://invierteio-klm.s3.eu-west-1.amazonaws.com/example2.kmz'
     ];
-    this.urlKmlKmz = pathsKmlKmz[(Math.floor(Math.random() * 10) % 2 === 0) ? 0 : 1];
-    console.log("Path: "+this.urlKmlKmz);
+    this.loadingService.show();
+    setTimeout(() => {
+      this.urlKmlKmz = pathsKmlKmz[(Math.floor(Math.random() * 10) % 2 === 0) ? 0 : 1];
+      console.log("Path: "+this.urlKmlKmz);
+
+      this.loadingService.hide();
+      }, 1000);
+
   }
 
   loadPhotographicRecord(file: File) {
+    this.multimediaDescriptionError = false;
+    if(this.multimediaDescription && this.multimediaDescription.trim().length > 200) {
+      this.multimediaDescriptionError = true;
+      return;
+    }
     const lowerName = file.name.toLowerCase();
     const isMultimedia =
         lowerName.endsWith('.png') || lowerName.endsWith('.jpg')
@@ -177,9 +190,19 @@ export class ComplementaryComponent implements OnInit {
           DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR]("Debes seleccionar imagenes PNG o JPG")).then(r => {}) ;
       return;
     }
-    this.photographicRecords.push({ name: file.name , filename: file.name ,
-      path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-      createdAt: new Date(), });
+    this.loadingService.show();
+    setTimeout(() => {
+      this.photographicRecords.push({ name: file.name , filename: file.name ,
+        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
+        description: this.multimediaDescription,
+        createdAt: new Date(), });
+
+      this.loadingService.hide();
+      }, 1000);
+  }
+
+  toGoSection1(): void {
+    this.router.navigate(['/public/home/project-new/section1']);
   }
 
   loadBrochure(file: File) {
@@ -192,9 +215,15 @@ export class ComplementaryComponent implements OnInit {
           DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR]("Debes seleccionar archivos PDF o imagenes (PNG o JPG)")).then(r => {}) ;
       return;
     }
-    this.brochures.push({ name: file.name , filename: file.name ,
-      path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-      createdAt: new Date(), });
+
+    this.loadingService.show();
+    setTimeout(() => {
+      this.brochures.push({ name: file.name , filename: file.name ,
+        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
+        createdAt: new Date(), });
+      this.loadingService.hide();
+      }, 1000);
+
   }
 
   loadBlueprint(file: File) {
@@ -214,15 +243,26 @@ export class ComplementaryComponent implements OnInit {
           DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR]("Debes seleccionar archivos PDF o imagenes (PNG o JPG)")).then(r => {}) ;
       return;
     }
-    this.blueprints.push({ name: this.blueprintName , filename: file.name ,
-      path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-      createdAt: new Date(), });
-    this.blueprintName = '';
+    this.loadingService.show();
+    setTimeout(() => {
+      this.blueprints.push({ name: this.blueprintName , filename: file.name ,
+        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
+        createdAt: new Date(), });
+      this.blueprintName = '';
+
+      this.loadingService.hide();
+      }, 1000);
   }
 
   onBlueprintNameChange(name: string): void {
     if (name && name.trim().length > 0) {
       this.blueprintNameError = false;
+    }
+  }
+
+  onMultimediaDescriptionChange(name: string): void {
+    if (name && (name.trim().length > 0 && name.trim().length <= 200)) {
+      this.multimediaDescriptionError = false;
     }
   }
 
@@ -235,7 +275,12 @@ export class ComplementaryComponent implements OnInit {
         DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar la referencia geográfica?"))
         .then((result) => {
           if (result.isConfirmed) {
-            this.urlKmlKmz = undefined;
+            this.loadingService.show();
+            setTimeout(() => {
+              this.urlKmlKmz = undefined;
+              this.loadingService.hide();
+              }, 1000);
+
           }
     });
   }
@@ -245,7 +290,11 @@ export class ComplementaryComponent implements OnInit {
         DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el registro fotográfico?"))
         .then((result) => {
           if (result.isConfirmed) {
-            this.photographicRecords.splice(this.photographicRecords.indexOf(file), 1);
+            this.loadingService.show();
+            setTimeout(() => {
+              this.photographicRecords.splice(this.photographicRecords.indexOf(file), 1);
+              this.loadingService.hide();
+              }, 1000);
           }
         });
   }
@@ -255,7 +304,11 @@ export class ComplementaryComponent implements OnInit {
         DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el archivo brochure?"))
         .then((result) => {
           if (result.isConfirmed) {
-            this.brochures.splice(this.brochures.indexOf(file), 1);
+            this.loadingService.show();
+            setTimeout(() => {
+              this.brochures.splice(this.brochures.indexOf(file), 1);
+              this.loadingService.hide();
+              }, 1000);
           }
         });
   }
@@ -265,8 +318,13 @@ export class ComplementaryComponent implements OnInit {
         DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el plano?"))
         .then((result) => {
           if (result.isConfirmed) {
-            this.blueprints.splice(this.blueprints.indexOf(file), 1);
-            this.blueprintNameError = false;
+
+            this.loadingService.show();
+            setTimeout(() => {
+              this.blueprints.splice(this.blueprints.indexOf(file), 1);
+              this.blueprintNameError = false;
+              this.loadingService.hide();
+              }, 1000);
           }
         });
   }
@@ -276,7 +334,16 @@ export class ComplementaryComponent implements OnInit {
   }
 
   next(): void {
-    //this.router.navigate(['/public/home/project-new/']);
+    if (this.form?.invalid) {
+      FormUtil.markAllAsTouched(this.form);
+      console.log("Form invalid!!");
+      return;
+    }
+    this.loadingService.show();
+    setTimeout(() => {
+      this.router.navigate(['public/home/project-new/legal-scope']);
+      this.loadingService.hide();
+    }, 50);
   }
 
   loadData(): void {

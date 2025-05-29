@@ -9,11 +9,11 @@ import {SidebarService} from '../shared/services/siderbar.service';
   standalone: true,
   selector: 'app-home',
   templateUrl: './home.component.html',
-  imports: [
-    RouterOutlet,
-    HeaderComponent,
-    SidebarComponent
-  ],
+    imports: [
+        RouterOutlet,
+        HeaderComponent,
+        SidebarComponent
+    ],
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {

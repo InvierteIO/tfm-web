@@ -3,6 +3,9 @@ import {ProjectStatus} from '../shared/models/project-status.model';
 import {ProjectStageMock} from '../shared/models/project-stage.mock.model';
 import {Router} from '@angular/router';
 import {ProjectStageStatus} from '../shared/models/project-stage-status.model';
+import Swal from 'sweetalert2';
+import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
+import {LoadingService} from '@core/services/loading.service';
 
 @Component({
   selector: 'app-project-stage-card',
@@ -19,7 +22,19 @@ export class ProjectStageCardComponent{
     this.router.navigate(['/public/home/project-stage'], { state: { stage: this.stage } });
   }
 
-  constructor(private readonly router: Router) {
+  constructor(private readonly router: Router,
+              private readonly loadingService: LoadingService) {
+  }
+
+  deleteProjectStage() {
+    Swal.fire(
+      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Desea eliminar la etapa de proyecto?"))
+      .then(result => {
+        if (result.isConfirmed) {
+          this.loadingService.show();
+          setTimeout(() => { this.loadingService.hide(); }, 1000);
+        }
+      });
   }
 
   get isShowNumberApartments() {
