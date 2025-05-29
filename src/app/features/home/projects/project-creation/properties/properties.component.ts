@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {StagePropertyGroupMock} from '../../shared/models/stage-property-group.mock.model';
+import {StagePropertyGroupDtoMock} from '../../shared/models/stage-property-group.dto.mock.model';
 import {Router} from '@angular/router';
 import {DropdownSearchComponent} from '@common/components/dropdown-search.component';
 import {PropertyMock} from '../../../shared/models/property.mock.model';
@@ -32,10 +32,10 @@ import {LoadingService} from "@core/services/loading.service";
   templateUrl: './properties.component.html',
   styleUrl: './properties.component.css'
 })
-export class PropertiesComponent  implements OnInit {
+export class PropertiesComponent implements OnInit {
   rows: PropertyRow[] = [];
   loading:boolean = false;
-  propertyType?: StagePropertyGroupMock;
+  propertyType?: StagePropertyGroupDtoMock;
   selectedFilter: string = 'Nombre';
   protected readonly CommercializationCycle = CommercializationCycle;
 
@@ -52,7 +52,7 @@ export class PropertiesComponent  implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData();
+    this.search();
   }
 
   toGoPropertyType():void {
@@ -63,9 +63,6 @@ export class PropertiesComponent  implements OnInit {
     this.router.navigate(['/public/home/project-new/section1']);
   }
 
-  search(): void {
-
-  }
 
   get isShowTable() {
     return !this.rows || this.rows.length === 0;
@@ -135,7 +132,7 @@ export class PropertiesComponent  implements OnInit {
       row.original = undefined;
 
       this.loadingService.hide();
-      }, 3000);
+      }, 1000);
 
   }
 
@@ -171,7 +168,7 @@ export class PropertiesComponent  implements OnInit {
     return String(max + 1).padStart(8, '0');
   }
 
-  loadData(): void {
+  search(): void {
     const data: PropertyMock[] = [
       {
         id: 1,
@@ -192,4 +189,5 @@ export class PropertiesComponent  implements OnInit {
       isNew: false
     }));
   }
+
 }

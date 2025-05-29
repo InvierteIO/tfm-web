@@ -8,7 +8,7 @@ import {FinancialBonusMockModel} from '../../shared/models/financial-bonus.mock.
 import {DataType} from '../../shared/models/data-type.model';
 import {AdditionalInformationComponent} from './additional-information.component';
 import {BankMock} from '../../shared/models/bank.mock.model';
-import {StagePropertyGroupMock} from '../../shared/models/stage-property-group.mock.model';
+import {StagePropertyGroupDtoMock} from '../../shared/models/stage-property-group.dto.mock.model';
 import {Router} from "@angular/router";
 import Swal from "sweetalert2";
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from "@common/dialogs/dialogs-swal.constants";
@@ -35,7 +35,7 @@ export class SectionOneComponent  implements OnInit  {
   loading:boolean = false;
   financialsBonus: FinancialBonusMockModel[] = [];
   banks: BankMock[] = [];
-  stagesPropertyTypes: StagePropertyGroupMock[]= [];
+  stagesPropertyTypes: StagePropertyGroupDtoMock[]= [];
 
   constructor(private readonly  router: Router,
               private readonly fb: FormBuilder,
@@ -130,7 +130,7 @@ export class SectionOneComponent  implements OnInit  {
     });
   }
 
-  toGoPropertyType(propertyType: StagePropertyGroupMock | undefined):void {
+  toGoPropertyType(propertyType: StagePropertyGroupDtoMock | undefined):void {
     // Debe validarse que este el campo: stage
     if(!this.form?.get("stages")?.valid) {
       Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("Número de etapas sin definir"))
@@ -149,7 +149,7 @@ export class SectionOneComponent  implements OnInit  {
   }
 
 
-  deletePropertyType(propertyType: StagePropertyGroupMock):void {
+  deletePropertyType(propertyType: StagePropertyGroupDtoMock):void {
     Swal.fire(
       DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Desea eliminar el tipo de inmueble?"))
       .then(result => {
@@ -163,12 +163,12 @@ export class SectionOneComponent  implements OnInit  {
       });
   }
 
-  duplicatePropertyType(propertyType: StagePropertyGroupMock):void {
+  duplicatePropertyType(propertyType: StagePropertyGroupDtoMock):void {
     Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea duplicar el tipo de inmueble?"))
       .then(r => {}) ;
   }
 
-  toGoProperties(propertyType: StagePropertyGroupMock) : void {
+  toGoProperties(propertyType: StagePropertyGroupDtoMock) : void {
     this.loadingService.show();
     setTimeout(() => {
       this.router.navigate(['/public/home/project-new/properties'], { state:  { property_type: propertyType } });
@@ -177,7 +177,7 @@ export class SectionOneComponent  implements OnInit  {
   }
 
   onDropFile(event: DragEvent, type: 'architectural' | 'template',
-             typesProperty: StagePropertyGroupMock): void {
+             typesProperty: StagePropertyGroupDtoMock): void {
     event.preventDefault();
     event.stopPropagation();
     const files = event.dataTransfer?.files;
@@ -193,7 +193,7 @@ export class SectionOneComponent  implements OnInit  {
 
 
   onFileSelected(event: Event, type: 'architectural' | 'template',
-                 typesProperty: StagePropertyGroupMock): void {
+                 typesProperty: StagePropertyGroupDtoMock): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
