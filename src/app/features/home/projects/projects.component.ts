@@ -8,9 +8,6 @@ import {ProjectService} from './shared/services/project.service';
 import {ProjectMock} from './shared/models/project.mock.model';
 import {Router} from "@angular/router";
 import {DropdownSearchComponent} from '@common/components/dropdown-search.component';
-import {LoadingService} from '@core/services/loading.service';
-import Swal from 'sweetalert2';
-import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 
 @Component({
   selector: 'app-projects',

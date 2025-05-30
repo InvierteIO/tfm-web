@@ -34,7 +34,6 @@ import {LoadingService} from "@core/services/loading.service";
 })
 export class PropertiesComponent implements OnInit {
   rows: PropertyRow[] = [];
-  loading:boolean = false;
   propertyType?: StagePropertyGroupDtoMock;
   selectedFilter: string = 'Nombre';
   protected readonly CommercializationCycle = CommercializationCycle;
@@ -169,25 +168,29 @@ export class PropertiesComponent implements OnInit {
   }
 
   search(): void {
-    const data: PropertyMock[] = [
-      {
-        id: 1,
-        codeSystem: '00000001',
-        codeEnterprise: 'T1000001',
-        name: 'Casa 1',
-        isParkingSpace: false,
-        isAvailableSale: true,
-        price: 120000,
-        address: 'Calle ABC',
-        commercializationCycle: CommercializationCycle.PRE_SALES
-      }
-    ];
-    this.rows = data.map(p => ({
-      property: { ...p },
-      form: this.buildForm(p),
-      editing: false,
-      isNew: false
-    }));
+    this.loadingService.show();
+    setTimeout(() => {
+      const data: PropertyMock[] = [
+        {
+          id: 1,
+          codeSystem: '00000001',
+          codeEnterprise: 'T1000001',
+          name: 'Casa 1',
+          isParkingSpace: false,
+          isAvailableSale: true,
+          price: 120000,
+          address: 'Calle ABC',
+          commercializationCycle: CommercializationCycle.PRE_SALES
+        }
+      ];
+      this.rows = data.map(p => ({
+        property: { ...p },
+        form: this.buildForm(p),
+        editing: false,
+        isNew: false
+      }));
+      this.loadingService.hide();
+    }, 1000);
   }
 
 }

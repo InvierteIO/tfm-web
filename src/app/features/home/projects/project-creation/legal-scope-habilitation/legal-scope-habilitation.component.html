@@ -40,10 +40,10 @@
                     <td class="">{{file.name}}</td>
                     <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
                     <td  class="text-center">
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                       <button type="button" class="btn p-0 border-0 bg-transparent mx-2"  title="Ver" (click)="viewDocument(file, 'parent_parcel')">
                         <img src="./assets/svg/view15.svg" alt="ver">
                       </button>
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                       <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
                               (click)="deleteParentParcel(file)">
                         <img src="./assets/svg/delete16.svg" alt="eliminar">
                       </button>
@@ -101,10 +101,10 @@
                     <td class="">{{file.name}}</td>
                     <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
                     <td  class="text-center">
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                       <button type="button" class="btn p-0 border-0 bg-transparent mx-2"  title="Ver" (click)="viewDocument(file, 'official_copy')">
                         <img src="./assets/svg/view15.svg" alt="ver">
                       </button>
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                       <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
                               (click)="deleteOfficialCopy(file)">
                         <img src="./assets/svg/delete16.svg" alt="eliminar">
                       </button>
@@ -136,10 +136,10 @@
                     <td class="">{{file.name}}</td>
                     <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
                     <td  class="text-center">
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                       <button type="button" class="btn p-0 border-0 bg-transparent mx-2"  title="Ver" (click)="viewDocument(file, 'public_deed')">
                         <img src="./assets/svg/view15.svg" alt="ver">
                       </button>
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                       <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
                               (click)="deletePublicDeed(file)">
                         <img src="./assets/svg/delete16.svg" alt="eliminar">
                       </button>
@@ -174,10 +174,10 @@
                     <td class="">{{file.name}}</td>
                     <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
                     <td  class="text-center">
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                       <button type="button" class="btn p-0 border-0 bg-transparent mx-2"  title="Ver" (click)="viewDocument(file, 'municipal_licence')">
                         <img src="./assets/svg/view15.svg" alt="ver">
                       </button>
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                       <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
                               (click)="deleteMunicipalLicence(file)">
                         <img src="./assets/svg/delete16.svg" alt="eliminar">
                       </button>
@@ -209,10 +209,10 @@
                     <td class="">{{file.name}}</td>
                     <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
                     <td  class="text-center">
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                       <button type="button" class="btn p-0 border-0 bg-transparent mx-2"  title="Ver" (click)="viewDocument(file, 'feasibility_certificate')" >
                         <img src="./assets/svg/view15.svg" alt="ver">
                       </button>
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                       <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
                               (click)="deleteFeasibilityCertificate(file)">
                         <img src="./assets/svg/delete16.svg" alt="eliminar">
                       </button>
@@ -244,10 +244,10 @@
                     <td class="">{{file.name}}</td>
                     <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
                     <td  class="text-center">
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                       <button type="button" class="btn p-0 border-0 bg-transparent mx-2"  title="Ver" (click)="viewDocument(file, 'certificate_development_approval')" >
                         <img src="./assets/svg/view15.svg" alt="ver">
                       </button>
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                       <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
                               (click)="deleteCertificateDevelopmentApproval(file)">
                         <img src="./assets/svg/delete16.svg" alt="eliminar">
                       </button>

@@ -4,6 +4,7 @@
 @import "@fontsource/poppins/700.css";
 @import "@fontsource/material-symbols-rounded";
 @import "@fontsource/material-symbols-outlined";
+@import "@angular/cdk/overlay-prebuilt.css";
 
 @import 'assets/styles/custom-checkbox.css';
 @import 'assets/styles/custom-radiobutton.scss';
@@ -41,6 +42,24 @@ body {
   padding: 0;
 }
 
+/************modal************/
+.ks-modal-gallery-backdrop {
+  background: #000 !important;;
+  opacity: 0.85 !important;;
+}
+.ks-modal-gallery-panel {
+  z-index: 1060 !important;
+}
+
+.cdk-overlay-container {
+  z-index: 1060;
+}
+
+.pdf-viewer-modal {
+  z-index: 1060;
+}
+
+/************Colors************/
 .io-green-primary {
   color: #066B4B !important;
 }
@@ -365,38 +384,6 @@ body {
 }
 .br5 {
   border-radius: 5px !important;
-}
-.main-header {
-  height: 65px;
-  background-color: #fff;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1030;
-}
-
-.main-header .btn {
-  background: transparent;
-  border: none;
-  padding: 0.5rem;
-  color: #066B4B;
-  transition: color 0.3s;
-}
-
-.main-header .btn:hover,
-.main-header .btn:focus {
-  color: #03704D;
-}
-
-
-.main-header svg path {
-  fill: #066B4B;
-  transition: fill 0.3s;
-}
-
-.main-header .btn:hover svg path,
-.main-header .btn:focus svg path {
-  fill: #03704D;
 }
 
 main {

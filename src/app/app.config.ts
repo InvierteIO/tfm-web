@@ -1,13 +1,15 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import {ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
 import { provideRouter } from '@angular/router';
-
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {GalleryModule} from '@ks89/angular-modal-gallery';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),     
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    importProvidersFrom(BrowserAnimationsModule, GalleryModule ),
     provideHttpClient(),
-    provideRouter(routes)    
+    provideRouter(routes),
   ]
 };

@@ -8,6 +8,9 @@ import {LowerCasePipe, NgForOf, NgIf} from '@angular/common';
 import {CommercializationCycle} from '../../../shared/models/commercialization-cycle.mock.model';
 import {PropertyDocumentDtoMock} from '../../shared/models/property-document.dto.model.mock';
 import {PropertyCategory} from '../../../../shared/models/property-category.model';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {PropertyDocumentModalComponent} from './property-document-modal.component';
+import {DocumentPropertyStep} from './document-property-step.model';
 
 @Component({
   selector: 'app-title-splits',
@@ -20,24 +23,31 @@ import {PropertyCategory} from '../../../../shared/models/property-category.mode
     NgIf,
     ReactiveFormsModule,
   ],
-  templateUrl: './title-splits.component.html',
-  styleUrl: './title-splits.component.css'
+  templateUrl: './title-splits.component.html'
 })
 export class TitleSplitsComponent  implements OnInit {
-  protected readonly COMMERCIALIZATION_CYCLE = CommercializationCycle;
-  loading:boolean = false;
+  protected  readonly DOCUMENT_PROPERTY_STEP = DocumentPropertyStep;
   properties: PropertyDocumentDtoMock[] = [];
   selectedFilter: string = 'Nombre';
 
   constructor(private readonly  router: Router,
+              private readonly modalService: NgbModal,
               private readonly loadingService: LoadingService) {
 
   }
 
+  openModalDocumentsModal(event:Event, property: PropertyDocumentDtoMock, step: DocumentPropertyStep): void {
+    const button = event.currentTarget as HTMLButtonElement;
+    const title = button?.title ?? '';
+    const modalRef = this.modalService.open(PropertyDocumentModalComponent, { size: 'lg'
+      , backdrop: 'static' });
+    modalRef.componentInstance.subtitle = title;
+    modalRef.componentInstance.property = property;
+    modalRef.componentInstance.step = step;
+  }
+
   ngOnInit(): void {
-    setTimeout(() => {
-      this.search();
-    }, 1000);
+    this.search();
   }
 
   search(): void {

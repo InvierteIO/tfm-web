@@ -13,8 +13,7 @@ import JSZip from 'jszip';
 
 @Component({
   selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css']
+  templateUrl: './map.component.html'
 })
 export class MapComponent implements AfterViewInit {
   private map!: Map;
