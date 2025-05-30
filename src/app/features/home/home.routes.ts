@@ -13,6 +13,7 @@ import {PropertiesComponent} from "./projects/project-creation/properties/proper
 import {
   LegalScopeHabilitationComponent
 } from './projects/project-creation/legal-scope-habilitation/legal-scope-habilitation.component';
+import {TitleSplitsComponent} from './projects/project-creation/title-splits/title-splits.component';
 
 export const homeRoutes: Routes = [
   {
@@ -47,6 +48,9 @@ export const homeRoutes: Routes = [
       },
       {
         path: 'legal-scope', component: LegalScopeHabilitationComponent
+      },
+      {
+        path: 'title-splits', component: TitleSplitsComponent
       }
     ]
   },

@@ -1,3 +1,5 @@
+import {PropertyCategory} from '../../../../shared/models/property-category.model';
+
 export interface PropertyGroupMock {
   id?: number;
   name?: string;
@@ -7,4 +9,5 @@ export interface PropertyGroupMock {
   frontPark?: boolean;
   price?: number;
   annualInterestRate?: number;
+  propertyCategory?: PropertyCategory;
 }

@@ -280,6 +280,10 @@ export class LegalScopeHabilitationComponent implements OnInit {
     this.router.navigate(['/public/home/project-new/section1']);
   }
 
+  toGoTitleSplits(): void {
+    this.router.navigate(['/public/home/project-new/title-splits']);
+  }
+
   save(): void {
     if (this.form?.invalid) {
       FormUtil.markAllAsTouched(this.form);
