@@ -12,6 +12,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/cdk": "^19.2.18",
     "@angular/common": "^19.2.4",
     "@angular/compiler": "^19.2.4",
     "@angular/core": "^19.2.4",
@@ -23,6 +24,7 @@
     "@fontsource/material-symbols-outlined": "^5.2.10",
     "@fontsource/material-symbols-rounded": "^5.2.10",
     "@fontsource/poppins": "^5.2.6",
+    "@ks89/angular-modal-gallery": "^13.0.0",
     "@ng-bootstrap/ng-bootstrap": "^18.0.0",
     "@ng-select/ng-select": "^14.8.1",
     "@popperjs/core": "^2.11.8",

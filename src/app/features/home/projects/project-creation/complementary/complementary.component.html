@@ -149,7 +149,7 @@
                                     </td>
                                     <td class="">{{this.urlKmlKmz}}</td>
                                     <td  class="text-center">
-                                        <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                                         <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
                                             <img src="./assets/svg/view15.svg" alt="ver"  (click)="refreshMap()">
                                         </button>
                                         <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar">
@@ -182,7 +182,7 @@
                                 <app-file-dropzone class="mt-2"
                                                    dropzoneClass="dz-s1"
                                                    text="Arrastra archivos PDF o imágenes (JPG, PNG)"
-                                                   accept="image/png,image/jpeg"
+                                                   accept=".pdf,image/png,image/jpeg"
                                                    (dropFile)="onDropFile($event, 'blueprint')"
                                                    (fileSelected)="onFileSelected($event, 'blueprint')" />
                             </div>
@@ -196,10 +196,10 @@
                                         <td class="">{{file.name}}</td>
                                         <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
                                         <td  class="text-center">
-                                            <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                                             <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver" (click)="viewDocument(file, 'blueprint')">
                                                 <img src="./assets/svg/view15.svg" alt="ver">
                                             </button>
-                                            <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                                             <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
                                                     (click)="deleteBlueprint(file)">
                                                 <img src="./assets/svg/delete16.svg" alt="eliminar">
                                             </button>
@@ -227,7 +227,7 @@
                                 <span class="fs-s1">Sube imagen, proyeccion, 3D o VIDEO</span>
                                 <app-file-dropzone class="mt-2"
                                                    dropzoneClass="dz-s1"
-                                                   text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                                                   text="Arrastra archivos imágenes (JPG, PNG)"
                                                    accept="image/png,image/jpeg"
                                                    (dropFile)="onDropFile($event, 'photographic_record')"
                                                    (fileSelected)="onFileSelected($event, 'photographic_record')" />
@@ -242,10 +242,11 @@
                                             <td class="">{{file.name}}</td>
                                             <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
                                             <td  class="text-center">
-                                                <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
+                                                 <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver"
+                                                         (click)="viewDocument(file, 'photographic_record')">
                                                     <img src="./assets/svg/view15.svg" alt="ver">
                                                 </button>
-                                                <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                                                 <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
                                                 (click)="deletePhotographicRecord(file)">
                                                     <img src="./assets/svg/delete16.svg" alt="eliminar">
                                                 </button>
@@ -277,10 +278,10 @@
                                         <td class="">{{file.name}}</td>
                                         <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
                                         <td  class="text-center">
-                                            <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
-                                                <img src="./assets/svg/view15.svg" alt="ver">
+                                             <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver" (click)="viewDocument(file, 'brochure')">
+                                                <img src="./assets/svg/view15.svg" alt="ver" >
                                             </button>
-                                            <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                                             <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
                                                     (click)="deleteBrochure(file)">
                                                 <img src="./assets/svg/delete16.svg" alt="eliminar">
                                             </button>

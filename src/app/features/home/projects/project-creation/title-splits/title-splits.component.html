@@ -28,69 +28,75 @@
         dropdownId="mn-search-property" />
     </div>
   </div>
-  <table class="table table-s4" *ngIf="!loading">
-    <thead>
-    <tr>
-      <th class="py-3 px-3 ms-3">Código único inmueble</th>
-      <th class="py-3">Inmueble</th>
-      <th class="py-3">Dirección</th>
-      <th class="py-3">¿Disponible a venta?</th>
-      <th class="py-3">Ciclo de comercialización</th>
-      <th class="py-3">Tipo inmueble</th>
-      <th class="py-3">Categoria</th>
-      <th class="py-3">Etapa</th>
-      <th class="py-3 text-center">Paso 7</th>
-      <th class="py-3 text-center">Paso 8</th>
-      <th class="py-3 text-center">Paso 8.1</th>
-      <th class="py-3 text-center">Paso 9</th>
-      <th class="py-3 text-center">Paso 10</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let property of properties; index as i" >
-      <td class="text-center">{{property.codeSystem}}</td>
-      <td>{{property.name}}</td>
-      <td>{{property.address}}</td>
-      <td class="text-center">{{ property.isAvailableSale | booleanLabel }}</td>
-      <td>{{property.commercializationCycle}}</td>
-      <td>{{property.stagePropertyGroup?.propertyGroup?.name}}</td>
-      <td>{{property.stagePropertyGroup?.propertyGroup?.propertyCategory}}</td>
-      <td>{{property.stagePropertyGroup?.stage?.stage}}</td>
-      <td class="text-center align-middle">
-        <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center"
-                title="Adjuntar independizacion de cada lote / Terreno con u codigo unico de registro publico">
-          <span class="material-symbols-rounded">folder_open</span>
-        </button>
-      </td>
-      <td class="text-center align-middle">
-        <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center"
-                title="Código de bono TECHO PROPIO , BONO VERDE O BOO DE VIVIENDA">
-          <span class="material-symbols-rounded">folder_open</span>
-        </button>
-      </td>
-      <td class="text-center align-middle">
-        <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center"
-                title="Adjuntar asignacion de Bono al cliente">
-          <span class="material-symbols-rounded">folder_open</span>
-        </button>
-      </td>
-      <td class="text-center align-middle">
-        <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center"
-                title="Adjuntar entrega de Casa / Terreno / Casa">
-          <span class="material-symbols-rounded">folder_open</span>
-        </button>
-      </td>
-      <td class="text-center align-middle">
-        <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center"
-                title="Adjuntar Registro lote/ Terreno / Casa a nombre de cliente">
-          <span class="material-symbols-rounded">folder_open</span>
-        </button>
-      </td>
-    </tr>
-    <tr *ngIf="isShowTable">
-      <td colspan="13" class="text-center">No hay registros</td>
-    </tr>
-    </tbody>
-  </table>
-
+  <div class="table-responsive">
+    <table class="table table-s4">
+      <thead>
+      <tr>
+        <th class="py-3 px-3 ms-3">Código único inmueble</th>
+        <th class="py-3">Inmueble</th>
+        <th class="py-3">Dirección</th>
+        <th class="py-3">¿Disponible a venta?</th>
+        <th class="py-3">Ciclo de comercialización</th>
+        <th class="py-3">Tipo inmueble</th>
+        <th class="py-3">Categoria</th>
+        <th class="py-3">Etapa</th>
+        <th class="py-3 text-center">Paso 7</th>
+        <th class="py-3 text-center">Paso 8</th>
+        <th class="py-3 text-center">Paso 8.1</th>
+        <th class="py-3 text-center">Paso 9</th>
+        <th class="py-3 text-center">Paso 10</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let property of properties; index as i" >
+        <td class="text-center">{{property.codeSystem}}</td>
+        <td>{{property.name}}</td>
+        <td>{{property.address}}</td>
+        <td class="text-center">{{ property.isAvailableSale | booleanLabel }}</td>
+        <td>{{property.commercializationCycle}}</td>
+        <td>{{property.stagePropertyGroup?.propertyGroup?.name}}</td>
+        <td>{{property.stagePropertyGroup?.propertyGroup?.propertyCategory}}</td>
+        <td>{{property.stagePropertyGroup?.stage?.stage}}</td>
+        <td class="text-center align-middle">
+          <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center"
+                  title="Adjuntar independizacion de cada lote / Terreno con u codigo unico de registro publico"
+                  (click)="openModalDocumentsModal($event, property, DOCUMENT_PROPERTY_STEP.STEP_7)">
+            <span class="material-symbols-rounded">folder_open</span>
+          </button>
+        </td>
+        <td class="text-center align-middle">
+          <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center"
+                  title="Código de bono TECHO PROPIO , BONO VERDE O BOO DE VIVIENDA"
+                  (click)="openModalDocumentsModal($event, property, DOCUMENT_PROPERTY_STEP.STEP_8)">
+            <span class="material-symbols-rounded">folder_open</span>
+          </button>
+        </td>
+        <td class="text-center align-middle">
+          <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center"
+                  title="Adjuntar asignacion de Bono al cliente"
+                  (click)="openModalDocumentsModal($event, property, DOCUMENT_PROPERTY_STEP.STEP_8_1)">
+            <span class="material-symbols-rounded">folder_open</span>
+          </button>
+        </td>
+        <td class="text-center align-middle">
+          <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center"
+                  title="Adjuntar entrega de Casa / Terreno / Casa"
+                  (click)="openModalDocumentsModal($event, property, DOCUMENT_PROPERTY_STEP.STEP_9)">
+            <span class="material-symbols-rounded">folder_open</span>
+          </button>
+        </td>
+        <td class="text-center align-middle">
+          <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center"
+                  title="Adjuntar Registro lote/ Terreno / Casa a nombre de cliente"
+                  (click)="openModalDocumentsModal($event, property, DOCUMENT_PROPERTY_STEP.STEP_10)">
+            <span class="material-symbols-rounded">folder_open</span>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="isShowTable">
+        <td colspan="13" class="text-center">No hay registros</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

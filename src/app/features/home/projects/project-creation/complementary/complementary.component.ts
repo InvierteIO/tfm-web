@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
@@ -17,6 +17,12 @@ import {ProjectDocumentMock} from "../../shared/models/project-document.mock.mod
 import {TypeFileIconGoogleFontsPipe} from "@common/pipes/typefile-icon-googlefonts.pipe";
 import {LoadingService} from "@core/services/loading.service";
 import {FormUtil} from '@common/utils/form.util';
+import {FileUtil} from '@common/utils/file.util';
+import {GalleryModule} from '@ks89/angular-modal-gallery';
+import {KsModalGalleryService} from '@core/services/ks-modal-gallery.service';
+import {Document} from '@core/models/document.model';
+import {PdfViewerModalComponent} from '@common/components/pdf-viewer-modal.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-complementary',
@@ -33,10 +39,10 @@ import {FormUtil} from '@common/utils/form.util';
     MapComponent,
     FileDropzoneComponent,
     DatePipe,
-    TypeFileIconGoogleFontsPipe
+    TypeFileIconGoogleFontsPipe,
+    GalleryModule
   ],
-  templateUrl: './complementary.component.html',
-  styleUrl: './complementary.component.css'
+  templateUrl: './complementary.component.html'
 })
 export class ComplementaryComponent implements OnInit {
   @ViewChild(MapComponent)
@@ -59,6 +65,8 @@ export class ComplementaryComponent implements OnInit {
   constructor(private readonly router: Router,
               private readonly fb: FormBuilder,
               private readonly locationsSvc: GeographicalLocationService,
+              private readonly ksModalGallerySvc: KsModalGalleryService,
+              private readonly modalService: NgbModal,
               private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
   }
@@ -152,15 +160,9 @@ export class ComplementaryComponent implements OnInit {
   }
 
   loadFileKmlKmz(file: File) {
-    const lowerName = file.name.toLowerCase();
-    const isKmlKmz =
-        lowerName.endsWith('.kml') || lowerName.endsWith('.kmz') ||
-        file.type.toLowerCase().includes('kml');
-    if(!isKmlKmz) {
-      Swal.fire(
-          DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR]("Debes seleccionar archivos KML o KMZ")).then(r => {}) ;
-      return;
-    }
+    if(!FileUtil.validateFileExtensionMessage(file, ['.kml', 'kmz'],
+      'Debes seleccionar archivos KML o KMZ')) return;
+
     const pathsKmlKmz = [
       'https://invierteio-klm.s3.eu-west-1.amazonaws.com/example.kml',
       'https://invierteio-klm.s3.eu-west-1.amazonaws.com/example2.kmz'
@@ -181,24 +183,44 @@ export class ComplementaryComponent implements OnInit {
       this.multimediaDescriptionError = true;
       return;
     }
-    const lowerName = file.name.toLowerCase();
-    const isMultimedia =
-        lowerName.endsWith('.png') || lowerName.endsWith('.jpg')
-        || lowerName.endsWith('.jpeg');
-    if(!isMultimedia) {
-      Swal.fire(
-          DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR]("Debes seleccionar imagenes PNG o JPG")).then(r => {}) ;
-      return;
-    }
+    if(!FileUtil.validateFileExtensionMessage(file, ['.png','.jpg','.jpeg'],
+      'Debes seleccionar imagenes PNG o JPG')) return;
+
     this.loadingService.show();
     setTimeout(() => {
-      this.photographicRecords.push({ name: file.name , filename: file.name ,
-        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-        description: this.multimediaDescription,
-        createdAt: new Date(), });
-
+      const document = this.createDocumentMock(file, this.photographicRecords);//mock
+      document.description = this.multimediaDescription;
+      this.photographicRecords.push(document);
+      this.checkImageInDocument(this.photographicRecords, 'photographic_record');
       this.loadingService.hide();
+      this.multimediaDescription = '';
       }, 1000);
+  }
+
+  checkImageInDocument(documents: ProjectDocumentMock[],type: string): void {
+    this.ksModalGallerySvc.removeAllImages(type);
+    documents.forEach(document => {
+      const extension = document.filename?.toLowerCase().split('.').pop();
+      if (extension !== 'pdf') {
+        this.ksModalGallerySvc.addImage(type, { ...document } as Document);
+      }
+    })
+  }
+
+  createDocumentMock(file: File, documents: ProjectDocumentMock[]): ProjectDocumentMock {
+    const extension = file.name?.toLowerCase().split('.').pop();
+    let path :string = "";
+    if (extension === 'pdf') path = 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/keyboard-shortcuts-windows.pdf';
+    else {
+      path= (documents.length + 1) % 2 == 0 ? 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/Calendario09-10.PNG' :
+        (documents.length + 1) % 3 == 0 ? 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/FondoLideres.png'
+          :'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg';
+    }
+    return {
+      id: documents.length + 1, filename: file.name, name: file.name,
+      path,
+      createdAt: new Date(),
+    } as ProjectDocumentMock;
   }
 
   toGoSection1(): void {
@@ -206,21 +228,13 @@ export class ComplementaryComponent implements OnInit {
   }
 
   loadBrochure(file: File) {
-    const lowerName = file.name.toLowerCase();
-    const isFileBrochure =
-        lowerName.endsWith('.png') || lowerName.endsWith('.jpg')
-        || lowerName.endsWith('.jpeg')|| lowerName.endsWith('.pdf');
-    if(!isFileBrochure) {
-      Swal.fire(
-          DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR]("Debes seleccionar archivos PDF o imagenes (PNG o JPG)")).then(r => {}) ;
-      return;
-    }
+    if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
     setTimeout(() => {
-      this.brochures.push({ name: file.name , filename: file.name ,
-        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-        createdAt: new Date(), });
+      const document = this.createDocumentMock(file, this.brochures);//mock
+      this.brochures.push(document);
+      this.checkImageInDocument(this.brochures, 'parent_parcel');
       this.loadingService.hide();
       }, 1000);
 
@@ -234,23 +248,16 @@ export class ComplementaryComponent implements OnInit {
           DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR]("Debe definir el nombre del plano")).then(r => {}) ;
       return;
     }
-    const lowerName = file.name.toLowerCase();
-    const isFileBlueprint =
-        lowerName.endsWith('.png') || lowerName.endsWith('.jpg')
-        || lowerName.endsWith('.jpeg')|| lowerName.endsWith('.pdf');
-    if(!isFileBlueprint) {
-      Swal.fire(
-          DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR]("Debes seleccionar archivos PDF o imagenes (PNG o JPG)")).then(r => {}) ;
-      return;
-    }
+    if(!FileUtil.validateFileExtensionMessage(file)) return;
+
     this.loadingService.show();
     setTimeout(() => {
-      this.blueprints.push({ name: this.blueprintName , filename: file.name ,
-        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-        createdAt: new Date(), });
-      this.blueprintName = '';
-
+      const document = this.createDocumentMock(file, this.blueprints);//mock
+      document.name = this.blueprintName;
+      this.blueprints.push(document);
+      this.checkImageInDocument(this.blueprints, 'blueprint');
       this.loadingService.hide();
+      this.blueprintName = '';
       }, 1000);
   }
 
@@ -285,6 +292,28 @@ export class ComplementaryComponent implements OnInit {
     });
   }
 
+  viewDocument(file: ProjectDocumentMock, type: 'blueprint'
+    | 'photographic_record' | 'brochure'): void {
+    const extension = file.filename?.toLowerCase().split('.').pop();
+    if (extension === 'pdf') {
+      this.viewPdf(file);
+    } else {
+      this.ksModalGallerySvc.viewImage(type, { ...file } as Document);
+    }
+  }
+
+  viewPdf(file: ProjectDocumentMock): void {
+    const modalRef = this.modalService.open(PdfViewerModalComponent, {
+      size: 'xl',
+      backdrop: 'static',
+      windowClass: 'pdf-viewer-modal'
+    });
+
+    modalRef.componentInstance.title = file.filename ?? '';
+    modalRef.componentInstance.pdfUrl = file.path ?? '';
+    return;
+  }
+
   deletePhotographicRecord(file: ProjectDocumentMock) {
     Swal.fire(
         DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el registro fotográfico?"))
@@ -292,6 +321,7 @@ export class ComplementaryComponent implements OnInit {
           if (result.isConfirmed) {
             this.loadingService.show();
             setTimeout(() => {
+              this.ksModalGallerySvc.removeImage('photographic_record', { ...file } as Document);
               this.photographicRecords.splice(this.photographicRecords.indexOf(file), 1);
               this.loadingService.hide();
               }, 1000);
@@ -306,6 +336,7 @@ export class ComplementaryComponent implements OnInit {
           if (result.isConfirmed) {
             this.loadingService.show();
             setTimeout(() => {
+              this.ksModalGallerySvc.removeImage('brochure', { ...file } as Document);
               this.brochures.splice(this.brochures.indexOf(file), 1);
               this.loadingService.hide();
               }, 1000);
@@ -321,6 +352,7 @@ export class ComplementaryComponent implements OnInit {
 
             this.loadingService.show();
             setTimeout(() => {
+              this.ksModalGallerySvc.removeImage('blueprint', { ...file } as Document);
               this.blueprints.splice(this.blueprints.indexOf(file), 1);
               this.blueprintNameError = false;
               this.loadingService.hide();

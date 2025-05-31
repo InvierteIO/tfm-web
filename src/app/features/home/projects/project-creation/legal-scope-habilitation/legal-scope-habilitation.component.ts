@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LoadingService} from '@core/services/loading.service';
 import {ProjectDocumentMock} from '../../shared/models/project-document.mock.model';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
@@ -12,6 +12,12 @@ import {ButtonLoadingComponent} from '@common/components/button-loading.componen
 import {FormUtil} from '@common/utils/form.util';
 import {ZXingScannerModule} from '@zxing/ngx-scanner';
 import {BrowserQRCodeSvgWriter} from '@zxing/browser';
+import {FileUtil} from '@common/utils/file.util';
+import { GalleryModule } from '@ks89/angular-modal-gallery';
+import {PdfViewerModalComponent} from '@common/components/pdf-viewer-modal.component';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {KsModalGalleryService} from '@core/services/ks-modal-gallery.service';
+import { Document } from '@core/models/document.model';
 
 @Component({
   selector: 'app-legal-scope-habilitation',
@@ -24,7 +30,8 @@ import {BrowserQRCodeSvgWriter} from '@zxing/browser';
     NgIf,
     TypeFileIconGoogleFontsPipe,
     ButtonLoadingComponent,
-    ZXingScannerModule
+    ZXingScannerModule,
+    GalleryModule
   ],
   templateUrl: './legal-scope-habilitation.component.html',
   styleUrl: './legal-scope-habilitation.component.css'
@@ -44,7 +51,9 @@ export class LegalScopeHabilitationComponent implements OnInit {
 
   constructor(private readonly router: Router,
               private readonly fb: FormBuilder,
-              private readonly loadingService: LoadingService) {
+              private readonly loadingService: LoadingService,
+              private readonly ksModalGallerySvc: KsModalGalleryService,
+              private readonly modalService: NgbModal) {
     this.form = this.buildForm();
   }
 
@@ -109,89 +118,124 @@ export class LegalScopeHabilitationComponent implements OnInit {
   }
 
   loadFileParentParcel(file: File): void {
-    if(!this.validateFileExtension(file)) return;
+    if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
     setTimeout(() => {
-      this.parentParcelDocs.push({ name: file.name , filename: file.name ,
-        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-        createdAt: new Date(), });
+      const document = this.createDocumentMock(file, this.parentParcelDocs);//mock
+      this.parentParcelDocs.push(document);
+      this.checkImageInDocument(this.parentParcelDocs, 'parent_parcel');
       this.loadingService.hide();
     }, 1000);
   }
 
+  createDocumentMock(file: File, documents: ProjectDocumentMock[]): ProjectDocumentMock {
+    const extension = file.name?.toLowerCase().split('.').pop();
+    let path :string = "";
+    if (extension === 'pdf') path = 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/keyboard-shortcuts-windows.pdf';
+    else {
+      path= (documents.length + 1) % 2 == 0 ? 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/Calendario09-10.PNG' :
+        (documents.length + 1) % 3 == 0 ? 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/FondoLideres.png'
+          :'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg';
+    }
+    return {
+      id: documents.length + 1, filename: file.name, name: file.name,
+      path,
+      createdAt: new Date(),
+    } as ProjectDocumentMock;
+  }
+
+  checkImageInDocument(documents: ProjectDocumentMock[],type: string): void {
+    this.ksModalGallerySvc.removeAllImages(type);
+    documents.forEach(document => {
+      const extension = document.filename?.toLowerCase().split('.').pop();
+      if (extension !== 'pdf') {
+        this.ksModalGallerySvc.addImage(type, { ...document } as Document);
+      }
+    })
+  }
+
   loadFileOfficialCopy(file: File): void {
-    if(!this.validateFileExtension(file)) return;
+    if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
     setTimeout(() => {
-      this.officialCopyDocs.push({ name: file.name , filename: file.name ,
-        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-        createdAt: new Date(), });
+      const document = this.createDocumentMock(file, this.officialCopyDocs);//mock
+      this.officialCopyDocs.push(document);
+      this.checkImageInDocument(this.officialCopyDocs, 'official_copy');
       this.loadingService.hide();
     }, 1000);
   }
 
   loadFilePublicDeed(file: File): void {
-    if(!this.validateFileExtension(file)) return;
+    if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
     setTimeout(() => {
-      this.publicDeedDocs.push({ name: file.name , filename: file.name ,
-        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-        createdAt: new Date(), });
+      const document = this.createDocumentMock(file, this.publicDeedDocs);//mock
+      this.publicDeedDocs.push(document);
+      this.checkImageInDocument(this.publicDeedDocs, 'public_deed');
       this.loadingService.hide();
     }, 1000);
   }
 
   loadFileMunicipalLicence(file: File): void {
-    if(!this.validateFileExtension(file)) return;
+    if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
     setTimeout(() => {
-      this.municipalLicenceDocs.push({ name: file.name , filename: file.name ,
-        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-        createdAt: new Date(), });
+      const document = this.createDocumentMock(file, this.municipalLicenceDocs);//mock
+      this.municipalLicenceDocs.push(document);
+      this.checkImageInDocument(this.municipalLicenceDocs, 'municipal_licence');
       this.loadingService.hide();
     }, 1000);
   }
 
   loadFileFeasibilityCertificate(file: File): void {
-    if(!this.validateFileExtension(file)) return;
+    if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
     setTimeout(() => {
-      this.feasibilityCertificateDocs.push({ name: file.name , filename: file.name ,
-        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-        createdAt: new Date(), });
+      const document = this.createDocumentMock(file, this.feasibilityCertificateDocs);//mock
+      this.feasibilityCertificateDocs.push(document);
+      this.checkImageInDocument(this.feasibilityCertificateDocs, 'feasibility_certificate');
       this.loadingService.hide();
     }, 1000);
   }
 
   loadCertificateDevelopmentApproval(file: File): void {
-    if(!this.validateFileExtension(file)) return;
+    if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
     setTimeout(() => {
-      this.certificateDevelopmentApprovalDocs.push({ name: file.name , filename: file.name ,
-        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-        createdAt: new Date(), });
+      const document = this.createDocumentMock(file, this.certificateDevelopmentApprovalDocs);//mock
+      this.certificateDevelopmentApprovalDocs.push(document);
+      this.checkImageInDocument(this.certificateDevelopmentApprovalDocs, 'certificate_development_approval');
       this.loadingService.hide();
     }, 1000);
   }
 
-  validateFileExtension(file: File):boolean {
-    const lowerName = file.name.toLowerCase();
-    const isFileBlueprint =
-      lowerName.endsWith('.png') || lowerName.endsWith('.jpg')
-      || lowerName.endsWith('.jpeg')|| lowerName.endsWith('.pdf');
-    if(isFileBlueprint) {
-      return true;
+  viewDocument(file: ProjectDocumentMock, type : 'parent_parcel' | 'official_copy'
+    | 'public_deed' | 'municipal_licence' | 'feasibility_certificate'
+    | 'certificate_development_approval'): void {
+    const extension = file.filename?.toLowerCase().split('.').pop();
+    if (extension === 'pdf') {
+      this.viewPdf(file);
+    } else {
+      this.ksModalGallerySvc.viewImage(type, { ...file } as Document);
     }
+  }
 
-    Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR]("Debes seleccionar archivos PDF o imagenes (PNG o JPG)"))
-      .then(r => {}) ;
-    return false;
+  viewPdf(file: ProjectDocumentMock): void {
+    const modalRef = this.modalService.open(PdfViewerModalComponent, {
+      size: 'xl',
+      backdrop: 'static',
+      windowClass: 'pdf-viewer-modal'
+    });
+
+    modalRef.componentInstance.title = file.filename ?? '';
+    modalRef.componentInstance.pdfUrl = file.path ?? '';
+    return;
   }
 
   deleteParentParcel(file: ProjectDocumentMock) {
@@ -200,7 +244,8 @@ export class LegalScopeHabilitationComponent implements OnInit {
         if (result.isConfirmed) {
           this.loadingService.show();
           setTimeout(() => {
-            this.parentParcelDocs.splice(this.parentParcelDocs.indexOf(file), 1);
+            this.ksModalGallerySvc.removeImage('parent_parcel', { ...file } as Document);
+            this.parentParcelDocs.splice(this.parentParcelDocs.indexOf(file), 1); // backend
             this.loadingService.hide();
           }, 1000);
         }
@@ -213,6 +258,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
         if (result.isConfirmed) {
           this.loadingService.show();
           setTimeout(() => {
+            this.ksModalGallerySvc.removeImage('official_copy', { ...file } as Document);
             this.officialCopyDocs.splice(this.officialCopyDocs.indexOf(file), 1);
             this.loadingService.hide();
           }, 1000);
@@ -226,6 +272,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
         if (result.isConfirmed) {
           this.loadingService.show();
           setTimeout(() => {
+            this.ksModalGallerySvc.removeImage('public_deed', { ...file } as Document);
             this.publicDeedDocs.splice(this.publicDeedDocs.indexOf(file), 1);
             this.loadingService.hide();
           }, 1000);
@@ -239,7 +286,9 @@ export class LegalScopeHabilitationComponent implements OnInit {
         if (result.isConfirmed) {
           this.loadingService.show();
           setTimeout(() => {
+            this.ksModalGallerySvc.removeImage('municipal_licence', { ...file } as Document);
             this.municipalLicenceDocs.splice(this.municipalLicenceDocs.indexOf(file), 1);
+
             this.loadingService.hide();
           }, 1000);
         }
@@ -252,6 +301,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
         if (result.isConfirmed) {
           this.loadingService.show();
           setTimeout(() => {
+            this.ksModalGallerySvc.removeImage('feasibility_certificate', { ...file } as Document);
             this.feasibilityCertificateDocs.splice(this.feasibilityCertificateDocs.indexOf(file), 1);
             this.loadingService.hide();
           }, 1000);
@@ -265,6 +315,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
         if (result.isConfirmed) {
           this.loadingService.show();
           setTimeout(() => {
+            this.ksModalGallerySvc.removeImage('certificate_development_approval', { ...file } as Document);
             this.certificateDevelopmentApprovalDocs.splice(this.certificateDevelopmentApprovalDocs.indexOf(file), 1);
             this.loadingService.hide();
           }, 1000);
