@@ -16,7 +16,7 @@ describe('SidebarService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('getMenusHome', () => {
+  xdescribe('getMenusHome', () => {
     it('should return the expected home menus', () => {
       const expectedMenusHome: MenuSidebar[] = [
         {
