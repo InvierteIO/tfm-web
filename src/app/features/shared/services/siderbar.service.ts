@@ -48,6 +48,12 @@ export class SidebarService {
       icon_svg: 'messages.svg',
       url: '/public/home/messages',
       id: 'messages'
+    },
+    {
+      title: 'Usuarios',
+      icon_svg: 'person_shield.svg',
+      url: '/public/home/users',
+      id: 'person_shield'
     }
   ];
 

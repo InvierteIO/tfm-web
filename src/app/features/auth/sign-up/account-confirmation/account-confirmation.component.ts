@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AccountConfirmationService } from './account-confirmation.service'
 import {AuthLayoutComponent} from '../../shared/components/auth-layout.component';
 import {NgIf} from "@angular/common";
+import { AccountConfirmationDto } from '../models/account-confirmation-info.model';
 
 @Component({
   selector: 'app-account-confirmation',
@@ -18,6 +19,7 @@ export class AccountConfirmationComponent implements OnInit {
   activationToken: string = '';
   activationSuccess: boolean | null = null;
   loading: boolean = false;
+  activationSuccessPendingPassReset: boolean = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -35,11 +37,18 @@ export class AccountConfirmationComponent implements OnInit {
   activateAccount(): void {
     this.loading = true;
     this.accountConfirmationService.activateStaffUser(this.activationToken).subscribe({
-      next: () => {
-        this.activationSuccess = true;
-        setTimeout(() => {
-          this.router.navigate(['/public/auth/login']);
-        }, 3000);
+      next: (response: AccountConfirmationDto) => {        
+        if(response.passwordSet){
+          this.activationSuccess = true;
+          setTimeout(() => {
+            this.goToLogin();
+          }, 3000);
+        }else {
+          this.activationSuccessPendingPassReset = true;
+          setTimeout(() => {
+            this.goToResetPassword();
+          }, 3000);          
+        }
       },
       error: () => {
         this.activationSuccess = false;
@@ -51,5 +60,9 @@ export class AccountConfirmationComponent implements OnInit {
   goToLogin() {
     this.router.navigate(['/public/auth/login']);
   }
+
+  goToResetPassword() {
+    this.router.navigate(['/public/auth/reset-password']);
+  }  
 
 }

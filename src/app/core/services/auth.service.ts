@@ -81,7 +81,7 @@ export class AuthService {
     }
 
     untilStaff(): boolean {
-        return this.hasCompanyRoles([Role.OWNER, Role.AGENT]);
+        return this.hasCompanyRoles([Role.OWNER, Role.REALTOR, Role.ADMINISTRATIVE_ASSISTANT]);
     }
 
     hasRoles(roles: Role[]): boolean {
