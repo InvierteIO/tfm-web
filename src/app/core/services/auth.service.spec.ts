@@ -171,10 +171,10 @@ describe('AuthService', () => {
       expect(service.untilOperator()).toBeFalse();
     });
 
-    it('untilStaff should return true if user has at least a companyRole in [OWNER, AGENT]', () => {
+    it('untilStaff should return true if user has at least a companyRole in [OWNER, REALTOR]', () => {
       (service as any).user = {
         token: 'token',
-        companyRoles: [{ taxIdentificationNumber: '123', role: Role.AGENT }]
+        companyRoles: [{ taxIdentificationNumber: '123', role: Role.REALTOR }]
       };
       spyOn(JwtHelperService.prototype, 'isTokenExpired').and.returnValue(Promise.resolve(false));
       expect(service.untilStaff()).toBeFalse();

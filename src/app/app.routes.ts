@@ -56,7 +56,7 @@ export const routes: Routes = [
           {
             path: 'home', component: HomeComponent,
             canActivate: [RoleGuardService],
-            data: { roles: [Role.AGENT, Role.OWNER] },
+            data: { roles: [Role.REALTOR, Role.OWNER, Role.ADMINISTRATIVE_ASSISTANT] },
             loadChildren: () =>
               import('./features/home/home.routes')
                 .then((m) => m.homeRoutes),
