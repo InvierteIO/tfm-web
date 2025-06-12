@@ -47,7 +47,7 @@ export const routes: Routes = [
                   },
                   {
                     path: 'account-confirmation/:token', component: AccountConfirmationComponent,
-                    canActivate: [AuthRedirectGuard]
+                    //canActivate: [AuthRedirectGuard]
                   }
                 ]
               }
@@ -55,7 +55,7 @@ export const routes: Routes = [
           },
           {
             path: 'home', component: HomeComponent,
-            canActivate: [RoleGuardService],
+            //canActivate: [RoleGuardService],
             data: { roles: [Role.REALTOR, Role.OWNER, Role.ADMINISTRATIVE_ASSISTANT] },
             loadChildren: () =>
               import('./features/home/home.routes')

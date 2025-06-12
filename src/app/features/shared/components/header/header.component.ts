@@ -7,7 +7,8 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-header',
   imports: [],
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.css'
 })
 export class HeaderComponent {
   constructor(private readonly router: Router, private readonly authService: AuthService) {
