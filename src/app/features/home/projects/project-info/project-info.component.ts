@@ -6,14 +6,16 @@ import {ProjectStageMock} from '../shared/models/project-stage.mock.model';
 import {ProjectStageService} from '../shared/services/project-stage.service';
 import {ProjectStageCardComponent} from './project-stage-card.component';
 import {ProjectInfoGeneralComponent} from "./project-info-general.component";
+import {ProjectDocumentsComponent} from './project-documents.component';
 
 @Component({
   selector: 'app-project-info',
   standalone: true,
-    imports: [
-        ProjectStageCardComponent,
-        ProjectInfoGeneralComponent
-    ],
+  imports: [
+    ProjectStageCardComponent,
+    ProjectInfoGeneralComponent,
+    ProjectDocumentsComponent
+  ],
   templateUrl: './project-info.component.html'
 })
 export class ProjectInfoComponent implements OnInit {

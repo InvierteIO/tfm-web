@@ -17,20 +17,18 @@ import {Staff} from "@core/models/staff.model";
   selector: 'app-user-management',
   templateUrl: './user-management.component.html',
   standalone: true,
-  imports: [    
-    ButtonLoadingComponent,
+  imports: [
     NgIf,
-    NgFor,
     ReactiveFormsModule,
     LoadingComponent
-  ],  
+  ],
   styleUrls: ['./user-management.component.css']
 })
 export class UserManagementComponent {
   userForm: FormGroup;
   loading:boolean = false;
 
-  constructor(private fb: FormBuilder, 
+  constructor(private fb: FormBuilder,
     private readonly authService: AuthService,
     private readonly userManagementService: UserManagementService
   ) {
@@ -61,7 +59,7 @@ export class UserManagementComponent {
     Swal.fire(
       DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea crear el nuevo usuario?"))
       .then((result) => {
-        if (result.isConfirmed) {      
+        if (result.isConfirmed) {
           this.loading = true;
           this.createUser().subscribe();
           this.userForm.reset();
@@ -69,10 +67,10 @@ export class UserManagementComponent {
         }
       });
 
-    
+
   }
 
-  
+
   createUser(): Observable<void> {
 
     const firstName = this.userForm.get('fullname')?.value;
@@ -84,7 +82,7 @@ export class UserManagementComponent {
     const birthDate = this.userForm.get('birthday')?.value;
     const phone = this.userForm.get('numbercontact')?.value;
     const jobTitle = this.userForm.get('jobtitle')?.value;
-    const address = this.userForm.get('address')?.value;    
+    const address = this.userForm.get('address')?.value;
     const taxIdentificationNumber = '10449080004';
 
     const staffDto: Staff = {
@@ -98,7 +96,7 @@ export class UserManagementComponent {
       address: address,
       phone: phone,
       taxIdentificationNumber: taxIdentificationNumber,
-      gender: gender            
+      gender: gender
     };
 
     return this.userManagementService.createStaffUser(staffDto).pipe(
@@ -108,7 +106,7 @@ export class UserManagementComponent {
         console.error('Error during account creation:', error);
         return of();
       })
-    );                      
+    );
 
   }
 
