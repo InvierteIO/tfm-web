@@ -1,16 +1,14 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ProjectMock} from '../shared/models/project.mock.model';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {FileDropzoneComponent} from '@common/components/file-dropzone.component';
-import {FormBuilder, FormsModule} from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {TypeFileIconGoogleFontsPipe} from '@common/pipes/typefile-icon-googlefonts.pipe';
 import {ProjectDocumentMock} from '../shared/models/project-document.mock.model';
 import {FileUtil} from '@common/utils/file.util';
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 import {Document} from '@core/models/document.model';
-import {Router} from '@angular/router';
-import {GeographicalLocationService} from '../shared/services/geographical-location.service';
 import {KsModalGalleryService} from '@core/services/ks-modal-gallery.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {LoadingService} from '@core/services/loading.service';
@@ -28,7 +26,7 @@ import {PdfViewerModalComponent} from '@common/components/pdf-viewer-modal.compo
   ],
   templateUrl: './project-documents.component.html'
 })
-export class ProjectDocumentsComponent {
+export class ProjectDocumentsComponent implements OnInit {
   @Input()
   public project: ProjectMock = { id : 0 };
 
@@ -191,7 +189,6 @@ export class ProjectDocumentsComponent {
 
     modalRef.componentInstance.title = file.filename ?? '';
     modalRef.componentInstance.pdfUrl = file.path ?? '';
-    return;
   }
 
   deletePhotographicRecord(file: ProjectDocumentMock) {

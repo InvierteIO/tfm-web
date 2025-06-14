@@ -7,6 +7,7 @@ import {ProjectStageService} from '../shared/services/project-stage.service';
 import {ProjectStageCardComponent} from './project-stage-card.component';
 import {ProjectInfoGeneralComponent} from "./project-info-general.component";
 import {ProjectDocumentsComponent} from './project-documents.component';
+import {ProjectPropertyTypesComponent} from '../shared/components/project-property-types/project-property-types.component';
 
 @Component({
   selector: 'app-project-info',
@@ -14,7 +15,8 @@ import {ProjectDocumentsComponent} from './project-documents.component';
   imports: [
     ProjectStageCardComponent,
     ProjectInfoGeneralComponent,
-    ProjectDocumentsComponent
+    ProjectDocumentsComponent,
+    ProjectPropertyTypesComponent
   ],
   templateUrl: './project-info.component.html'
 })
@@ -33,7 +35,6 @@ export class ProjectInfoComponent implements OnInit {
     }
     this.statusCurrent = this.project?.status;
   }
-
 
   ngOnInit(): void {
     this.search();

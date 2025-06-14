@@ -16,7 +16,6 @@ GalleryModule
 import {FileUtil} from '@common/utils/file.util';
 import {PdfViewerModalComponent} from '@common/components/pdf-viewer-modal.component';
 import {KsModalGalleryService} from '@core/services/ks-modal-gallery.service';
-import {ProjectDocumentMock} from '../../shared/models/project-document.mock.model';
 import {Document} from '@core/models/document.model';
 
 @Component({

@@ -45,10 +45,16 @@
         </div>
 
         <div class="tab-pane fade" id="tabDocuments" role="tabpanel" aria-labelledby="documents-tab">
-            <app-project-documents  [project]="project!" />
+            <app-project-documents [project]="project!" />
         </div>
 
         <div class="tab-pane fade" id="tabTypesProperty" role="tabpanel" aria-labelledby="typesproperty-tab">
+
+          <div class="row justify-content-center">
+            <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12 my-3">
+              <app-project-property-types [project]="project!" class="mt-4" />
+            </div>
+          </div>
 
         </div>
       </div>

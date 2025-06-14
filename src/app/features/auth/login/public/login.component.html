@@ -1,9 +1,8 @@
-<app-auth-layout [subtitleWelcome]="'Ingresa usuario y contraseña'">  
-  <app-login-form 
-    [userType]="UserType.STAFF" 
+<app-auth-layout [subtitleWelcome]="'Ingresa usuario y contraseña'">
+  <app-login-form
+    [userType]="USER_TYPE.STAFF"
     [showAdditionalActions]="true"
     (loginSuccess)="onLoginSuccess()"
     (signUpSuccess)="onSignUp()"
-    (forgotPasswordSuccess)="onForgotPassword()">
-  </app-login-form>
+    (forgotPasswordSuccess)="onForgotPassword()"/>
 </app-auth-layout>

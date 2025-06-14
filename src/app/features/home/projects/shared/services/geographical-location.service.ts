@@ -12,7 +12,7 @@ export class GeographicalLocationService {
   }
 
   readAll(): Observable<LocationCode[]> {
-    return this.httpService.get('assets/mocks/locations.json');
+    return this.httpService.get('assets/mock/locations.json');
   }
 
   listRegions(): Observable<LocationCode[]> {

@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {
-  AbstractControl,
   FormArray,
   FormBuilder,
   FormGroup,
@@ -53,7 +52,7 @@ export class PropertyTypeComponent  implements OnInit  {
   loading:boolean = false;
   stages: string[] = ['I','II','III','IV','V'];
 
-  constructor(private router: Router, private readonly fb: FormBuilder,
+  constructor(private readonly router: Router, private readonly fb: FormBuilder,
               private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
   }

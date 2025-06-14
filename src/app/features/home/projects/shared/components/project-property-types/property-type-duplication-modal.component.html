@@ -1,0 +1,59 @@
+<form [formGroup]="form" (ngSubmit)="duplicate()" >
+  <div class="modal-header">
+    <h1 class="modal-title title-tp-h1 io-green-primary" id="staticBackdropLabel">Duplicar tipo inmueble: "{{propertyGroup.name}}"</h1>
+    <button type="button" class="btn-close custom-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <img src="./assets/svg/close24.svg" alt="cerrar">
+    </button>
+  </div>
+
+  <div class="modal-body my-3">
+    <div class="row justify-content-center">
+      <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12 mb-2">
+        <div class="d-flex flex-column justify-content-start">
+          <label for="name" class="form-label mb-0">Nombre</label>
+          <small class="fw-light mb-1">(Nombre nuevo del tipo de inmueble duplicado)</small>
+        </div>
+        <input type="text" class="form-control input-s4" id="name" formControlName="name"
+               placeholder="Ingrese nombre" [maxLength]="100"/>
+        <div *ngIf="form.get('name') | isInvalidField" class="d-flex flex-column">
+          <small *ngFor="let msg of form.get('name') | formErrorMessages:'Nombre '"
+                 class="text-danger font-italic">{{ msg }}</small>
+        </div>
+      </div>
+      <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
+        <div class="d-flex flex-column">
+          <label for="stage" class="form-label mb-0">Etapa(s) del proyecto</label>
+          <small class="fw-light mb-1">(Debes asignar por lo menos uno)</small>
+        </div>
+        <ng-select
+          id="stage"
+          [items]="stages"
+          [multiple]="true"
+          [searchable]="true"
+          placeholder="Selecciona"
+          formControlName="stages"
+          notFoundText="No encontrado">
+        </ng-select>
+        <div *ngIf="form.get('stages') | isInvalidField" class="d-flex flex-column">
+          <small *ngFor="let msg of form.get('stages') | formErrorMessages:'Etapa del proyecto'"
+                 class="text-danger font-italic">{{ msg }}</small>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-s3 button-tp d-flex justify-content-center align-items-center" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
+    <app-button-loading
+      class=""
+      type="submit"
+      [btnClasses]="'btn btn-s4 h45 button-tp d-flex justify-content-center align-items-center'"
+      [loading]="loading"
+      [iconGoogle]="'control_point_duplicate'"
+      msgLoading="Cargando..."
+      msgButton="Asignar">
+    </app-button-loading>
+
+  </div>
+</form>
