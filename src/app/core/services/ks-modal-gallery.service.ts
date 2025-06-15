@@ -63,7 +63,6 @@ export class KsModalGalleryService {
       title: file.filename,
       description: file.description ? `[${name}] - ${file.description}` : `[${name}]`
     });
-
     if (this.images.length <= 1) {
       this.withSingleImageConfig();
     }

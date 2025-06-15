@@ -1,4 +1,4 @@
-export interface Document {
+export interface DocumentMock {
   id?: number;
   filename?: string;
   path?: string;

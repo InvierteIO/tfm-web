@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {
-  AbstractControl,
   FormArray,
   FormBuilder,
   FormGroup,
@@ -23,21 +22,23 @@ import {PropertyCategory} from '../../../../shared/models/property-category.mode
 import {ApartmentPropertyFeaturesComponent} from './apartment-property-features.component';
 import {HousePropertyFeaturesComponent} from './house-property-features.component';
 import {LoadingService} from '@core/services/loading.service';
+import {NgSelectComponent} from "@ng-select/ng-select";
 
 @Component({
-  imports: [
-    FormErrorMessagesPipe,
-    FormsModule,
-    NgForOf,
-    NgIf,
-    ReactiveFormsModule,
-    SelectStyleDirective,
-    IsInvalidFieldPipe,
-    ButtonLoadingComponent,
-    LandPropertyFeaturesComponent,
-    ApartmentPropertyFeaturesComponent,
-    HousePropertyFeaturesComponent
-  ],
+    imports: [
+        FormErrorMessagesPipe,
+        FormsModule,
+        NgForOf,
+        NgIf,
+        ReactiveFormsModule,
+        SelectStyleDirective,
+        IsInvalidFieldPipe,
+        ButtonLoadingComponent,
+        LandPropertyFeaturesComponent,
+        ApartmentPropertyFeaturesComponent,
+        HousePropertyFeaturesComponent,
+        NgSelectComponent
+    ],
   selector: 'app-property-type',
   templateUrl: './property-type.component.html'
 })
@@ -49,8 +50,9 @@ export class PropertyTypeComponent  implements OnInit  {
   houseFeatures: FeatureMock[] = [];
   features: FeatureMock[] = [];
   loading:boolean = false;
+  stages: string[] = ['I','II','III','IV','V'];
 
-  constructor(private router: Router, private readonly fb: FormBuilder,
+  constructor(private readonly router: Router, private readonly fb: FormBuilder,
               private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
   }
@@ -110,7 +112,7 @@ export class PropertyTypeComponent  implements OnInit  {
   private buildForm(): FormGroup {
     return this.fb.group({
       name: ['', [Validators.required]],
-      stage: ['', [Validators.required, stageRomanValidator]],
+      stages: ['', [Validators.required, stageRomanValidator]],
       category: ['', [Validators.required]],
       perimeter: ['', [Validators.required, positiveNumberValidator(false)]],
       area: ['', [Validators.required, positiveNumberValidator(false)]],

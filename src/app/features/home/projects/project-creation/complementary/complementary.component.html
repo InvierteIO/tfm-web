@@ -23,7 +23,7 @@
                                 <input type="text" class="form-control input-s4" id="address" formControlName="address"
                                        placeholder="Ingresa dirección" [maxLength]="200"/>
                                 <div *ngIf="form.get('address') | isInvalidField" class="d-flex flex-column">
-                                    <small *ngFor="let msg of form.get('address') | formErrorMessages:'Número'"
+                                    <small *ngFor="let msg of form.get('address') | formErrorMessages:'Dirección'"
                                            class="text-danger font-italic">{{ msg }}</small>
                                 </div>
                             </div>

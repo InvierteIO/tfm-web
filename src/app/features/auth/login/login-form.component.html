@@ -48,15 +48,15 @@
       msgButton="Iniciar sesión">
     </app-button-loading>
 
-    <ng-container *ngIf="showAdditionalActions">
-        <div class="text-center mb-3">
-          <span class="text-question-account">¿Aún no tiene una cuenta?</span>
-        </div>
-        <div class="mb-5">
-          <button type="button" class="btn w-100 btn-s2 button-tp py-2" (click)="goSignUp()">
-            Regístrate
-          </button>
-        </div>
-    </ng-container>
+  @if (showAdditionalActions) {
+    <div class="text-center mb-3">
+      <span class="text-question-account">¿Aún no tiene una cuenta?</span>
+    </div>
+    <div class="mb-5">
+      <button type="button" class="btn w-100 btn-s2 button-tp py-2" (click)="goSignUp()">
+        Regístrate
+      </button>
+    </div>
+  }
   </form>
 

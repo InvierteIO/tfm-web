@@ -20,21 +20,17 @@
             <div class="row">
               <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
                 <label for="stage" class="form-label text-tp-h3">Etapa del proyecto</label>
-                <div class="custom-select-wrapper" >
-                  <select
-                    class="input-s4 form-select form-control custom-select-arrow" id="stage"
-                    formControlName="stage" appSelectStyle>
-                    <option value="" disabled hidden>Selecciona etapa</option>
-                    <option value="I">I</option>
-                    <option value="II">II</option>
-                    <option value="III">III</option>
-                    <option value="IV">IV</option>
-                    <option value="V">V</option>
-                  </select>
-                  <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
-                </div>
-                <div *ngIf="form.get('stage') | isInvalidField" class="d-flex flex-column">
-                  <small *ngFor="let msg of form.get('stage') | formErrorMessages:'Etapa del proyecto'"
+                <ng-select
+                  id="stage"
+                  [items]="stages"
+                  [multiple]="true"
+                  [searchable]="true"
+                  placeholder="Selecciona"
+                  formControlName="stages"
+                  notFoundText="No encontrado">
+                </ng-select>
+                <div *ngIf="form.get('stages') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('stages') | formErrorMessages:'Etapa del proyecto'"
                          class="text-danger font-italic">{{ msg }}</small>
                 </div>
               </div>

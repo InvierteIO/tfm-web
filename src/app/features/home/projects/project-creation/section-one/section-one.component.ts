@@ -8,13 +8,15 @@ import {FinancialBonusMockModel} from '../../shared/models/financial-bonus.mock.
 import {DataType} from '../../shared/models/data-type.model';
 import {AdditionalInformationComponent} from './additional-information.component';
 import {BankMock} from '../../shared/models/bank.mock.model';
-import {StagePropertyGroupDtoMock} from '../../shared/models/stage-property-group.dto.mock.model';
 import {Router} from "@angular/router";
 import Swal from "sweetalert2";
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from "@common/dialogs/dialogs-swal.constants";
 import {IsInvalidFieldPipe} from "@common/pipes/is-invalid-field.pipe";
-import {FileDropzoneComponent} from '@common/components/file-dropzone.component';
 import {LoadingService} from '@core/services/loading.service';
+import {ProjectPropertyTypesComponent} from '../../shared/components/project-property-types/project-property-types.component';
+import {ProjectMock} from '../../shared/models/project.mock.model';
+import {StagePropertyGroupDtoMock} from '../../shared/models/stage-property-group.dto.mock.model';
+import {PropertyGroupMock} from '../../shared/models/property-group.mock.model';
 
 @Component({
   selector: 'app-section-one',
@@ -26,7 +28,7 @@ import {LoadingService} from '@core/services/loading.service';
     NgIf,
     AdditionalInformationComponent,
     IsInvalidFieldPipe,
-    FileDropzoneComponent
+    ProjectPropertyTypesComponent
   ],
   templateUrl: './section-one.component.html'
 })
@@ -35,7 +37,7 @@ export class SectionOneComponent  implements OnInit  {
   loading:boolean = false;
   financialsBonus: FinancialBonusMockModel[] = [];
   banks: BankMock[] = [];
-  stagesPropertyTypes: StagePropertyGroupDtoMock[]= [];
+  public project: ProjectMock = { id : 0 };
 
   constructor(private readonly  router: Router,
               private readonly fb: FormBuilder,
@@ -130,81 +132,6 @@ export class SectionOneComponent  implements OnInit  {
     });
   }
 
-  toGoPropertyType(propertyType: StagePropertyGroupDtoMock | undefined):void {
-    // Debe validarse que este el campo: stage
-    if(!this.form?.get("stages")?.valid) {
-      Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("Número de etapas sin definir"))
-        .then(r => {}) ;
-      return;
-    }
-    this.loadingService.show();
-    setTimeout(() => {
-      this.router.navigate(['/public/home/project-new/property-type'], { state:  { property_type: propertyType } });
-      this.loadingService.hide();
-      }, 1000);
-  }
-
-  get isShowTable() {
-    return !this.stagesPropertyTypes || this.stagesPropertyTypes.length === 0;
-  }
-
-
-  deletePropertyType(propertyType: StagePropertyGroupDtoMock):void {
-    Swal.fire(
-      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Desea eliminar el tipo de inmueble?"))
-      .then(result => {
-        if (result.isConfirmed) {
-          this.loadingService.show();
-          setTimeout(() => {
-            this.stagesPropertyTypes.splice(this.stagesPropertyTypes.indexOf(propertyType), 1);
-            this.loadingService.hide();
-            }, 2000);
-        }
-      });
-  }
-
-  duplicatePropertyType(propertyType: StagePropertyGroupDtoMock):void {
-    Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea duplicar el tipo de inmueble?"))
-      .then(r => {}) ;
-  }
-
-  toGoProperties(propertyType: StagePropertyGroupDtoMock) : void {
-    this.loadingService.show();
-    setTimeout(() => {
-      this.router.navigate(['/public/home/project-new/properties'], { state:  { property_type: propertyType } });
-      this.loadingService.hide();
-    }, 1000);
-  }
-
-  onDropFile(event: DragEvent, type: 'architectural' | 'template',
-             typesProperty: StagePropertyGroupDtoMock): void {
-    event.preventDefault();
-    event.stopPropagation();
-    const files = event.dataTransfer?.files;
-    if (files && files.length > 0) {
-      const file = files[0];
-      console.log(`Dropped [${type}] en fila ${typesProperty.propertyGroup?.name}:`,
-        file.name, file.type);
-
-      this.loadingService.show();
-      setTimeout(() => { this.loadingService.hide(); }, 1000);
-    }
-  }
-
-
-  onFileSelected(event: Event, type: 'architectural' | 'template',
-                 typesProperty: StagePropertyGroupDtoMock): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
-      console.log(`Selected [${type}] en fila ${typesProperty.propertyGroup?.name}:`, file.name, file.type);
-      input.value = '';
-
-      this.loadingService.show();
-      setTimeout(() => { this.loadingService.hide(); }, 1000);
-    }
-  }
-
   loadData(): void {
     this.financialsBonus = [ {
       id: 1, name : "Techo Propio",
@@ -228,42 +155,20 @@ export class SectionOneComponent  implements OnInit  {
       { id: 3, name : "INTERBANK"},
       { id: 4, name : "MI BANCO"}
     ];
+  }
 
-    this.stagesPropertyTypes = [{
-     stage : {
-       id: 1, stage: "I"
-     },
-      propertyGroup: {
-       name: "Tipo 1 - Departamento"
-      }
-    },
-      {
-        stage : {
-          id: 2, stage: "II"
-        },
-        propertyGroup: {
-          name: "Tipo 1 - Casa"
-        },
-        architecturalBluetprint: {
-          id:1,
-          name:"Plano 1"
-        }
-      },
-      {
-        stage : {
-          id: 3, stage: "I"
-        },
-        propertyGroup: {
-          name: "Tipo 1 - Casa"
-        },
-        architecturalBluetprint: {
-          id:2,
-          name:"Plano 2"
-        },
-        formatTemplateLoaded: {
-          id:3,
-          name:"Plantilla llenado"
-        }
-      }];
+  toGoPropertyType(propertyType?: PropertyGroupMock): void {
+    // Debe validarse que este el campo: stage
+    if(!this.form?.get("stages")?.valid) {
+      Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("Número de etapas sin definir"))
+        .then(r => {}) ;
+      return;
+    }
+
+    this.loadingService.show();
+    setTimeout(() => {
+      this.router.navigate(['/public/home/project-new/property-type'], { state: { property_type: propertyType } });
+      this.loadingService.hide();
+    }, 1000);
   }
 }

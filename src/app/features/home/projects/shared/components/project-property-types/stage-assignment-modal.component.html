@@ -1,0 +1,43 @@
+<form [formGroup]="form" (ngSubmit)="assignment()" >
+<div class="modal-header">
+  <h1 class="modal-title title-tp-h1 io-green-primary" id="staticBackdropLabel">Asignación de Etapa(s) al tipo inmueble</h1>
+  <button type="button" class="btn-close custom-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <img src="./assets/svg/close24.svg" alt="cerrar">
+  </button>
+</div>
+
+<div class="modal-body my-3">
+  <div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
+      <label for="stage" class="form-label text-tp-h3">Etapa(s) del proyecto</label>
+      <ng-select
+        id="stage"
+        [items]="stages"
+        [multiple]="true"
+        [searchable]="true"
+        placeholder="Selecciona"
+        formControlName="stages"
+        notFoundText="No encontrado">
+      </ng-select>
+      <div *ngIf="form.get('stages') | isInvalidField" class="d-flex flex-column">
+        <small *ngFor="let msg of form.get('stages') | formErrorMessages:'Etapa del proyecto'"
+               class="text-danger font-italic">{{ msg }}</small>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-s3 button-tp d-flex justify-content-center align-items-center" (click)="activeModal.dismiss('Cross click')">Cancelar</button>
+  <app-button-loading
+    class=""
+    type="submit"
+    [btnClasses]="'btn btn-s4 h45 button-tp d-flex justify-content-center align-items-center'"
+    [loading]="loading"
+    [iconGoogle]="'assignment_turned_in'"
+    msgLoading="Cargando..."
+    msgButton="Asignar">
+  </app-button-loading>
+</div>
+</form>
