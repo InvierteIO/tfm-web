@@ -25,6 +25,8 @@ import {finalize} from 'rxjs/operators';
 import {FileUtil} from '@common/utils/file.util';
 import {StageAssignmentModalComponent} from './stage-assignment-modal.component';
 import {PropertyTypeDuplicationModalComponent} from './property-type-duplication-modal.component';
+import {ProjectStageMock} from '../../models/project-stage.mock.model';
+import {ProjectStageDtoMock} from '../../models/project-stage.mock.dto.model';
 
 @Component({
   selector: 'app-project-property-types',
@@ -44,7 +46,6 @@ import {PropertyTypeDuplicationModalComponent} from './property-type-duplication
 export class ProjectPropertyTypesComponent implements OnInit {
   @Input()
   public project: ProjectMock = { id : 0 };
-  @Output() goPropertyTypeProcess = new EventEmitter<PropertyGroupMock | undefined>();
   stagesPropertyTypes: StagePropertyGroupDtoMock[]= [];
 
   constructor(private readonly router: Router,
@@ -59,22 +60,23 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   toGoPropertyType(propertyType: PropertyGroupMock | undefined):void {
-    this.goPropertyTypeProcess.emit(propertyType);
+    this.loadingService.show();
+    setTimeout(() => {
+      this.router.navigate(['/public/home/project-new/property-type'],
+        { state: { property_type: propertyType, project_stages: this.project.projectStages ?? []} });
+      this.loadingService.hide();
+    }, 500);
   }
 
   get isShowTable() {
     return !this.stagesPropertyTypes || this.stagesPropertyTypes.length === 0;
   }
 
-  duplicatePropertyType(propertyType: PropertyGroupMock):void {
-    Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea duplicar el tipo de inmueble?"))
-      .then(r => {}) ;
-  }
 
   editPropertyType(propertyType: PropertyGroupMock):void {
     Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea ir a editar el tipo de inmueble?"))
       .then(r => {
-        this.goPropertyTypeProcess.emit(propertyType);
+        this.toGoPropertyType(propertyType);
       });
   }
 
@@ -252,19 +254,17 @@ export class ProjectPropertyTypesComponent implements OnInit {
   openStageAssigmentModal(propertyGroup: PropertyGroupMock):void {
     const modalRef = this.modalService.open(StageAssignmentModalComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.stagesCurrent = this.readStagePropertyTypes(propertyGroup)
-      .map(stagePropertyGroup => stagePropertyGroup.stage)
+      .map(stagePropertyGroup => stagePropertyGroup.stage!)
       .filter((stage, index, stages) =>
-        stages.findIndex(g => g && g.stage=== stage?.stage) === index
+        stages.findIndex(g => g && g.id=== stage?.id) === index
       );
-
+    modalRef.componentInstance.projectStages = this.project.projectStages;
     modalRef.componentInstance.propertyGroup = propertyGroup;
     modalRef.result.then((result) => {
       if (result) {
-        let stagesSelected = result as string[];
-        stagesSelected.forEach(stage => {
-          this.stagesPropertyTypes.push({
-            stage: { stage, id: (this.propertyTypes.length + 1) }, propertyGroup
-          });
+        let projectStageSelected = result as ProjectStageMock[];
+        projectStageSelected.forEach(stage => {
+          this.stagesPropertyTypes.push({ stage, propertyGroup});
         });
       }
     });
@@ -272,7 +272,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
 
   openDuplicationPropertyTypeModal(propertyGroup: PropertyGroupMock):void {
     const modalRef = this.modalService.open(PropertyTypeDuplicationModalComponent, { size: 'lg', backdrop: 'static' });
-
+    modalRef.componentInstance.projectStages = this.project.projectStages;
     modalRef.componentInstance.propertyGroup = propertyGroup;
     modalRef.result.then((result) => {
       if (result) {

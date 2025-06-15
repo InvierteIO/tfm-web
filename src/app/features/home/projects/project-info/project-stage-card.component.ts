@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ProjectStatus} from '../shared/models/project-status.model';
-import {ProjectStageMock} from '../shared/models/project-stage.mock.model';
+import {ProjectStageDtoMock} from '../shared/models/project-stage.mock.dto.model';
 import {Router} from '@angular/router';
 import {ProjectStageStatus} from '../shared/models/project-stage-status.model';
 import Swal from 'sweetalert2';
@@ -16,7 +16,7 @@ import {LoadingService} from '@core/services/loading.service';
 })
 export class ProjectStageCardComponent{
   @Input() projectStatus?: ProjectStatus;
-  @Input() stage?: ProjectStageMock;
+  @Input() stage?: ProjectStageDtoMock;
 
   edit(): void {
     this.router.navigate(['/public/home/project-stage'], { state: { stage: this.stage } });

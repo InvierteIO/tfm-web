@@ -1,7 +1,6 @@
 import {ProjectStageStatus} from './project-stage-status.model';
-import {CommercializationCycle} from '../../../shared/models/commercialization-cycle.mock.model';
 
-export interface ProjectStageMock {
+export interface ProjectStageDtoMock {
   id: number;
   name?: string;
   stage?: string;
@@ -13,5 +12,13 @@ export interface ProjectStageMock {
   status?: ProjectStageStatus;
   endDate?: Date;
   handOverDate?: Date;
-  commercializationCycle?: CommercializationCycle;
+  commercializationCycle?: string;
+
+  /*********Datos sumarizados************/
+  numberApartments?: number;
+  numberLands?: number;
+  numberHouses?: number;
+
+  typesProperty?: number;
+  areaTotal?: number;
 }

@@ -75,12 +75,6 @@
                      class="text-danger font-italic">{{ msg }}</small>
             </div>
 
-            <app-additional-information [form]="form"
-              [financialsBonus]="financialsBonus" [banks]="banks"  />
-
-            <app-project-property-types [project]="project"
-                                        (goPropertyTypeProcess)="toGoPropertyType()"/>
-
             <app-button-loading
               type="submit"
               [btnClasses]="'btn d-block mx-auto mt-5 btn-width300 h37  btn-s4 button-tp br5'"

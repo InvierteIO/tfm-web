@@ -23,6 +23,7 @@ import {ApartmentPropertyFeaturesComponent} from './apartment-property-features.
 import {HousePropertyFeaturesComponent} from './house-property-features.component';
 import {LoadingService} from '@core/services/loading.service';
 import {NgSelectComponent} from "@ng-select/ng-select";
+import {ProjectStageMock} from '../../shared/models/project-stage.mock.model';
 
 @Component({
     imports: [
@@ -50,11 +51,12 @@ export class PropertyTypeComponent  implements OnInit  {
   houseFeatures: FeatureMock[] = [];
   features: FeatureMock[] = [];
   loading:boolean = false;
-  stages: string[] = ['I','II','III','IV','V'];
+  projectStages: ProjectStageMock[] = [];
 
   constructor(private readonly router: Router, private readonly fb: FormBuilder,
               private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
+    this.loadStagesAndSelect();
   }
 
   ngOnInit(): void {
@@ -206,7 +208,7 @@ export class PropertyTypeComponent  implements OnInit  {
   }
 
   back(): void {
-    this.router.navigate(['/public/home/project-new/section1']);
+    this.router.navigate(['/public/home/project-new/section2']);
   }
 
   save(): void {
@@ -221,12 +223,13 @@ export class PropertyTypeComponent  implements OnInit  {
 
     this.loadingService.show();
     setTimeout(() => {
-      this.router.navigate(['/public/home/project-new/section1']);
+      this.router.navigate(['/public/home/project-new/section2']);
       this.loadingService.hide();
       }, 1000);
   }
 
-  loadData(): void {
+  private loadData(): void {
+
     this.landFeatures = [
       {id: 1, name : "Video vigilancia"},
       {id: 2, name : "Control de Acceso"},
@@ -274,5 +277,12 @@ export class PropertyTypeComponent  implements OnInit  {
       {id: 13, name : "Calefaccion"},
       {id: 14, name : "Agua Caliente"}
     ];
+  }
+
+  private loadStagesAndSelect(): void {
+    const nav = this.router.getCurrentNavigation();
+
+    this.projectStages = nav?.extras.state?.['project_stages'] ?? [];
+
   }
 }

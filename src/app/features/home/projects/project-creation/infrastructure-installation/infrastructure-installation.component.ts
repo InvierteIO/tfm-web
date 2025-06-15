@@ -156,6 +156,10 @@ export class InfrastructureInstallationComponent implements OnInit {
     this.router.navigate(['/public/home/project-new/section1']);
   }
 
+  back():void {
+    this.router.navigate(['/public/home/project-new/section2']);
+  }
+
   next(): void {
     console.log(this.form);
     console.log(this.form.value);
