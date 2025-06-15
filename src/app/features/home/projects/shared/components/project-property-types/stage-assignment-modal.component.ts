@@ -10,9 +10,11 @@ import {ButtonLoadingComponent} from '@common/components/button-loading.componen
 import {FormUtil} from '@common/utils/form.util';
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
-import {ProjectStageDtoMock} from '../../models/project-stage.mock.dto.model';
 import {PropertyGroupMock} from '../../models/property-group.mock.model';
 import {ProjectStageMock} from '../../models/project-stage.mock.model';
+import {ProjectPropertyTypesService} from '../../services/project-property-types.service';
+import {StagePropertyGroupMock} from '../../models/stage-property-group.mock.model';
+import {finalize} from 'rxjs/operators';
 
 @Component({
   selector: 'app-stage-assignment-modal',
@@ -41,7 +43,8 @@ export class StageAssignmentModalComponent implements OnInit{
 
 
   constructor(public readonly activeModal: NgbActiveModal,
-              private readonly fb: FormBuilder) {
+              private readonly fb: FormBuilder,
+              private readonly projectPropertyTypeSvc: ProjectPropertyTypesService,) {
     this.form = this.buildForm();
   }
 
@@ -62,12 +65,20 @@ export class StageAssignmentModalComponent implements OnInit{
     }
     this.loading= true;
     Swal.fire(
-      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION](`¿Desea asignar las etapas '${this.form.get('stages')?.value}'
+      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION](`¿Desea asignar las etapas
+       '${(this.form.get('stages')?.value as ProjectStageMock[]).map(projectStage => projectStage.stage).join()}'
        al tipo del inmueble '${this.propertyGroup.name}'?`))
       .then((result) => {
         this.loading= false;
         if (result.isConfirmed) {
-          this.activeModal.close(this.form.get('stages')?.value as ProjectStageMock[]);
+          let stageProjectStages: StagePropertyGroupMock[] = [];
+          (this.form.get('stages')?.value as ProjectStageMock[]).forEach(sgp => {
+              stageProjectStages.push({propertyGroup: this.propertyGroup, stage: sgp});
+          });
+          ;
+          this.projectPropertyTypeSvc.assigment(stageProjectStages)
+            .pipe(finalize(()=> this.activeModal.close(stageProjectStages)))
+            .subscribe();
         }
       });
   }

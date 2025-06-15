@@ -19,7 +19,6 @@ export const DIALOG_SWAL_OPTIONS: { [key: string]: (title?: string, confirmText?
     cancelButtonColor: "#F9B234",
     confirmButtonText: confirmText,
     cancelButtonText: cancelText,
-    reverseButtons: true,
     allowOutsideClick: false,
     customClass: {
       title: 'title-tp-h1 io-green-primary mt-4 mb-1'

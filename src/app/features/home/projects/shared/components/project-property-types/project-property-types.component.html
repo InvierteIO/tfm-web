@@ -22,7 +22,7 @@
     <h2 ngbAccordionHeader class="d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center">
         <button type="button" class="btn border-0 bg-transparent" title="Ver tipo de inmueble">
-          <img src="./assets/svg/view15.svg" alt="ver" (click)="toGoPropertyType(propertyType)">
+          <img src="./assets/svg/view15.svg" alt="ver" (click)="viewPropertyType(propertyType)">
         </button>
         <button type="button" class="btn border-0 bg-transparent io-yellow-primary d-inline-flex align-items-center justify-content-center"
                 title="Editar tipo inmueble" (click)="editPropertyType(propertyType)">
@@ -57,7 +57,6 @@
               </thead>
               <tbody>
               <tr *ngFor="let stagePropertyGroup of readStagePropertyTypes(propertyType)" >
-                <!--<td class="px-3 ms-3">{{propertyType.propertyGroup?.name}}</td>-->
                 <td class="align-middle text-center">{{stagePropertyGroup.stage?.stage}}</td>
                 <td class="align-middle">
                   @if(stagePropertyGroup.architecturalBluetprint) {

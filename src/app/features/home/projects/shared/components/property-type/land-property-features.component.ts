@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {FeatureMock} from '../../shared/models/feature.mock.model';
+import {FeatureMock} from '../../models/feature.mock.model';
 import {IsInvalidFieldPipe} from '@common/pipes/is-invalid-field.pipe';
 import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
 import {SelectStyleDirective} from '@common/directives/select-style.directive';

@@ -11,6 +11,13 @@ import {InstallationDataType} from '../../shared/models/installation-type.model'
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
 import {FormUtil} from '@common/utils/form.util';
 import {LoadingService} from '@core/services/loading.service';
+import {ProjectMock} from '../../shared/models/project.mock.model';
+import {finalize} from 'rxjs/operators';
+import {ProjectService} from '../../shared/services/project.service';
+import {StageInfrastructureInstallationMock} from '../../shared/models/stage-infrastructure-installation.mock.model';
+import {ProjectStageMock} from '../../shared/models/project-stage.mock.model';
+import {StageCatalogDetail} from '../../shared/models/stage-catalog-detail';
+import {CatalogDetailMock} from '../../../shared/models/catalog-detail.mock.model';
 
 @Component({
   selector: 'app-infrastructure-installation',
@@ -29,10 +36,14 @@ import {LoadingService} from '@core/services/loading.service';
 export class InfrastructureInstallationComponent implements OnInit {
   protected form: FormGroup;
   loading:boolean = false;
+  private project: ProjectMock = { id : 0 };
   protected infraInstallations: InfraestructureInstallationMock[] = [];
+  private stageInfraInstallationsCurrent?: StageInfrastructureInstallationMock[];
+  private stageCatalogDetailsCurrent?: StageCatalogDetail[];
 
   constructor(private readonly router: Router,
               private readonly fb: FormBuilder,
+              private readonly projectService: ProjectService,
               private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
   }
@@ -52,16 +63,24 @@ export class InfrastructureInstallationComponent implements OnInit {
     });
   }
 
+  private resetForm(): void {
+    this.form.reset({
+      end_date: this.project.projectStages?.at(0)?.endDate,
+      handover_date: this.project.projectStages?.at(0)?.handOverDate
+    })
+  }
+
   private initFeaturesDefinedFormGroup(): void {
     const infraFeaturesFormArray = this.infraFeaturesDefinedFormArray;
     infraFeaturesFormArray.clear();
 
-    this.infraInstallationsDefined.forEach(features => {
+    this.infraInstallationsDefined.forEach(feature => {
+      const stageInfraFeature =
+        this.stageInfraInstallationsCurrent?.find(sii => sii?.infraInstallation?.id === feature.id);
       infraFeaturesFormArray.push(
         this.fb.group({
-          id:      [features.id],
-          data_type: features.dataType,
-          value:    [{ value: '', disabled: false }, Validators.required],
+          reference: feature,
+          value: [{ value: stageInfraFeature?.fieldValue ?? '' , disabled: false }, Validators.required],
         })
       );
     });
@@ -70,12 +89,14 @@ export class InfrastructureInstallationComponent implements OnInit {
   private initFeaturesProjectedFormGroup(): void {
     const infraFeaturesFormArray = this.infraFeaturesProjectedFormArray;
     infraFeaturesFormArray.clear();
+    this.infraInstallationsProjected.forEach(feature => {
+      const stageCatalogDetail = this.stageCatalogDetailsCurrent?.
+      find(scd => feature?.id === scd.infraInstallation?.id);
 
-    this.infraInstallationsProjected.forEach(features => {
       const formGroup = this.fb.group({
-        id:      [features.id],
-        status:  ['', Validators.required],
-        type:    [undefined, Validators.required]
+        reference: feature,
+        status:  [stageCatalogDetail?.situation ?? '', Validators.required],
+        type:    [ stageCatalogDetail?.catalogDetail?.id ?? undefined, Validators.required]
       });
       this.changesValueStatusProjectedFormGroup(formGroup);
       infraFeaturesFormArray.push(formGroup);
@@ -83,8 +104,10 @@ export class InfrastructureInstallationComponent implements OnInit {
   }
 
   changesValueStatusProjectedFormGroup(formGroup: FormGroup): void {
-    formGroup.get('status')!.valueChanges.subscribe(selected => {
-      const typeControl = formGroup.get('type');
+    const statusControl = formGroup.get('status');
+    const typeControl = formGroup.get('type');
+
+    const updateTypeState = (selected: any) => {
       if (selected === 'MISSING') {
         typeControl!.disable({ emitEvent: false });
         typeControl!.setValue(undefined, { emitEvent: false });
@@ -96,7 +119,10 @@ export class InfrastructureInstallationComponent implements OnInit {
         typeControl!.setValidators(Validators.required);
       }
       typeControl!.updateValueAndValidity({ emitEvent: false });
-    });
+    };
+
+    statusControl!.valueChanges.subscribe(updateTypeState);
+    updateTypeState(statusControl!.value);
   }
 
   isVisibleTypeFeatureProjected(infra: InfraestructureInstallationMock, idx: number): boolean | undefined {
@@ -161,19 +187,21 @@ export class InfrastructureInstallationComponent implements OnInit {
   }
 
   next(): void {
-    console.log(this.form);
     console.log(this.form.value);
     if (this.form?.invalid) {
       FormUtil.markAllAsTouched(this.form);
-      console.log("Form invalid!!");
+      console.log("Form Invalid", this.form);
       return;
     }
-
-    this.loadingService.show();
     setTimeout(() => {
-      this.router.navigate(['/public/home/project-new/complementary']);
-      this.loadingService.hide();
-      }, 500);
+      this.captureData();
+      this.projectService.save(this.project)
+        .pipe(finalize(() => this.loadingService.hide()))
+        .subscribe(project => {
+          this.router.navigate(['/public/home/project-new/complementary']);
+          this.project = project;
+        });
+    }, 200);
   }
 
   isListForInfra(infra: InfraestructureInstallationMock): boolean {
@@ -194,7 +222,43 @@ export class InfrastructureInstallationComponent implements OnInit {
       .filter(infra => infra.installationType == InstallationType.PROJECTED) ;
   }
 
-  loadData(): void {
+  private captureData(): void {
+    const stageInfrastructureInstallations: StageInfrastructureInstallationMock[] = [];
+    const stageCatalogDetails: StageCatalogDetail[] = [];
+    this.form.get('infra_features_defined')?.value.forEach((stageInfra: any) =>
+      stageInfrastructureInstallations.push({
+        infraInstallation: stageInfra.reference,
+        fieldValue: stageInfra.value
+      }));
+    this.form.get('infra_features_projected')?.value.forEach((stageCatalogDetail: any) =>
+      stageCatalogDetails.push({
+        situation: stageCatalogDetail.status,
+        catalogDetail: stageCatalogDetail.reference.catalog.catalogDetails
+          .find((catalogDetail: CatalogDetailMock) => catalogDetail.id === stageCatalogDetail.type),
+        infraInstallation: stageCatalogDetail.reference
+      })
+    );
+    this.project.projectStages?.forEach((stage: ProjectStageMock) => {
+      stage.stageInfraInstallations = stageInfrastructureInstallations;
+      stage.stageCatalogDetails = stageCatalogDetails;
+      stage.endDate = this.form.get('end_date')?.value;
+      stage.handOverDate = this.form.get('handover_date')?.value;
+    });
+  }
+
+  private loadData(): void {
+    this.loadingService.show();
+    this.projectService.readDraft()
+      .pipe(finalize(() => this.loadingService.hide()))
+      .subscribe((project ) => {
+        this.project = project as ProjectMock;
+        if(this.project && this.project.projectStages && this.project.projectStages.length > 0) {
+          this.stageInfraInstallationsCurrent = this.project.projectStages?.at(0)!.stageInfraInstallations;
+          this.stageCatalogDetailsCurrent = this.project.projectStages?.at(0)!.stageCatalogDetails;
+          this.resetForm();
+        }
+      });
+
     this.infraInstallations = [
       {
         id : 1,

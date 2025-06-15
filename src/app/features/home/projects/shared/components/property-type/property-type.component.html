@@ -7,7 +7,7 @@
         <a class="breadcrumb-link" (click)="back()">Crear Proyecto</a>
       </li>
       <li class="breadcrumb-item io-green-primary active" aria-current="page">
-        <span class="fw-light">Agregar tipo de inmueble</span>
+        <span class="fw-light">{{this.titleBreadcrumbPage}}</span>
       </li>
     </ol>
   </nav>
@@ -25,7 +25,6 @@
                   [items]="projectStages"
                   [multiple]="true"
                   bindLabel="stage"
-                  bindValue="id"
                   placeholder="Selecciona"
                   formControlName="stages"
                   notFoundText="No encontrado">
@@ -135,7 +134,11 @@
                 <app-apartment-property-features [formGroup]="apartmentFormGroup" [apartmentFeatures]="apartmentFeatures" />
               }
               @case (PROPERTY_CATEGORY.HOUSE) {
-                <app-house-property-features [formGroup]="houseFormGroup" [houseFeatures]="houseFeatures" />
+                <app-house-property-features
+                  [formGroup]="houseFormGroup"
+                  [houseFeatures]="houseFeatures"
+                  [houseFloorAreasValues]="getHouseFloorAreas(propertyGroupCurrent)"
+                  [isView]="isView"/>
               }
             }
 
@@ -179,12 +182,12 @@
                 </div>
               </div>
             </div>
-            <app-button-loading
+            <app-button-loading *ngIf="!isView"
               type="submit"
               [btnClasses]="'btn d-block mx-auto mt-3 btn-width300 h37 btn-s4 button-tp br5'"
               [loading]="loading"
               msgLoading="Cargando..."
-              msgButton="Agregar inmueble"/>
+              msgButton="{{!propertyGroupCurrent ? 'Agregar inmueble': 'Actualizar inmueble'}}"/>
 
           </form>
         </div>

@@ -4,7 +4,7 @@ import {StaffProfileComponent} from './staff-profile/staff-profile.component';
 import {ProjectsComponent} from './projects/projects.component';
 import {ProjectInfoComponent} from "./projects/project-info/project-info.component";
 import {SectionOneComponent} from './projects/project-creation/section-one/section-one.component';
-import {PropertyTypeComponent} from './projects/project-creation/property-type/property-type.component';
+import {PropertyTypeComponent} from './projects/shared/components/property-type/property-type.component';
 import {
   InfrastructureInstallationComponent
 } from './projects/project-creation/infrastructure-installation/infrastructure-installation.component';

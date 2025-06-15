@@ -8,7 +8,7 @@ import {NgForOf, NgIf} from '@angular/common';
 import {
   ProjectPropertyTypesComponent
 } from '../../shared/components/project-property-types/project-property-types.component';
-import {FinancialBonusMockModel} from '../../shared/models/financial-bonus.mock.model';
+import {FinancialBonusMock} from '../../shared/models/financial-bonus.mock';
 import {BankMock} from '../../shared/models/bank.mock.model';
 import {ProjectMock} from '../../shared/models/project.mock.model';
 import {Router} from '@angular/router';
@@ -18,6 +18,10 @@ import {DataType} from '../../shared/models/data-type.model';
 import {PropertyGroupMock} from '../../shared/models/property-group.mock.model';
 import {ProjectService} from '../../shared/services/project.service';
 import {finalize} from 'rxjs/operators';
+import {StageBankMock} from '../../shared/models/stage-bank.mock.model';
+import {StageBonusTypeMock} from '../../shared/models/stage-bonus-type.mock.model';
+import {ProjectStageMock} from '../../shared/models/project-stage.mock.model';
+import {FinancialBonusTypeMock} from '../../shared/models/financial-bonus-type.mock';
 
 @Component({
   selector: 'app-section-two',
@@ -32,10 +36,12 @@ import {finalize} from 'rxjs/operators';
 })
 export class SectionTwoComponent implements OnInit  {
   public form: FormGroup;
-  loading:boolean = false;
-  financialsBonus: FinancialBonusMockModel[] = [];
-  banks: BankMock[] = [];
   public project: ProjectMock = { id : 0 };
+  loading:boolean = false;
+  financialsBonus: FinancialBonusMock[] = [];
+  banks: BankMock[] = [];
+  stageBanksCurrent?: StageBankMock[];
+  stageBonusTypesCurrent?: StageBonusTypeMock[];
 
   constructor(private readonly  router: Router,
               private readonly fb: FormBuilder,
@@ -67,15 +73,19 @@ export class SectionTwoComponent implements OnInit  {
     console.log(this.form);
     if (this.form?.invalid) {
       FormUtil.markAllAsTouched(this.form);
-      console.log("Form invalid!!");
       return;
     }
     console.log(this.form.value);
 
     this.loadingService.show();
     setTimeout(() => {
-      this.router.navigate(['/public/home/project-new/infrastructure-installation']);
-      this.loadingService.hide();
+      this.captureData();
+      this.projectService.save(this.project)
+        .pipe(finalize(() => this.loadingService.hide()))
+        .subscribe(project => {
+          this.router.navigate(['/public/home/project-new/infrastructure-installation']);
+          this.project = project;
+        });
     }, 50);
   }
 
@@ -85,21 +95,24 @@ export class SectionTwoComponent implements OnInit  {
 
     this.financialsBonus.forEach(bonus => {
       const typesFormArray = this.fb.array(
-        bonus.types.map(t =>
-          this.fb.group({
-            id:    [t.id],
-            name:  [`bonustype_${t.id}`],
-            value: [{ value: '', disabled: true },
+        bonus.types.map(t => {
+          const stageType = this.stageBonusTypesCurrent?.find(sbt => sbt.financialBonusType?.id === t.id);
+          return this.fb.group({
+            reference: t,
+            value: [{ value: stageType?.typeValue ?? '', disabled: !stageType },
               t.required ? Validators.required : []
             ]
-          })
-        ));
+          });
+        }));
+
+      const checked = bonus.types.some(t =>
+        this.stageBonusTypesCurrent?.some(sbt => sbt.financialBonusType?.id === t.id)
+      );
 
       bonusesFormArray.push(
         this.fb.group({
-          id:      [bonus.id],
-          name:    [`bonus_${bonus.id}`],
-          checked: [false],
+          reference: bonus,
+          checked: [checked],
           types:   typesFormArray
         }));
     });
@@ -109,30 +122,65 @@ export class SectionTwoComponent implements OnInit  {
     const banksFormArray = this.form.get('banks') as FormArray;
     banksFormArray.clear();
 
-    this.banks.forEach(bonus => {
+    this.banks.forEach(bank => {
+      const stageBank = this.stageBanksCurrent?.find(sb => sb.bank?.id === bank.id);
+
       banksFormArray.push(
         this.fb.group({
-          id:      [bonus.id],
-          name:    [`bank_${bonus.id}`],
-          checked: [false],
+          reference: bank,
+          checked: [!!stageBank],
           account:   this.fb.group({
-            name:  [`account_${bonus.id}`],
-            value: [{ value: '', disabled: true }, Validators.required]
+            value: [{ value: stageBank?.accountNumber ?? '', disabled: !stageBank }, Validators.required]
           }),
           cci:   this.fb.group({
-            name:  [`cci_${bonus.id}`],
-            value: [{ value: '', disabled: true }, Validators.required]
+            value: [{ value: stageBank?.interbankAccountNumber ?? '', disabled: !stageBank }, Validators.required]
           })
         })
       );
     });
   }
 
-  loadData(): void {
+  private captureData():void {
+    let stagesBanks: StageBankMock[] = [];
+    let stageBonuseTypes: StageBonusTypeMock[] = [];
+    this.form.get('banks')?.value.forEach((stageBank: any) => {
+      if(stageBank.checked === true) {
+        stagesBanks.push({
+          bank : stageBank.reference,
+          accountNumber: stageBank.account.value,
+          interbankAccountNumber: stageBank.cci.value,
+          currency: "PEN"
+        });
+      }
+    });
+    this.form.get('bonuses')?.value.forEach((stageBonus: any) => {
+      if(stageBonus.checked === true) {
+        stageBonus.types.forEach((bonusType: any) => {
+          stageBonuseTypes.push({
+              financialBonusType: bonusType.reference,
+              typeValue: bonusType.value,
+          });
+        })
+      }
+    });
+
+    this.project.projectStages?.forEach((stage: ProjectStageMock) => {
+      stage.stageBanks = stagesBanks;
+      stage.stageBonusTypes = stageBonuseTypes;
+    });
+  }
+
+  private loadData(): void {
     this.loadingService.show();
     this.projectService.readDraft()
       .pipe(finalize(() => this.loadingService.hide()))
-      .subscribe((project ) => this.project = project as ProjectMock);
+      .subscribe((project ) => {
+        this.project = project as ProjectMock;
+        if(this.project && this.project.projectStages && this.project.projectStages.length > 0) {
+          this.stageBonusTypesCurrent = this.project.projectStages?.at(0)!.stageBonusTypes;
+          this.stageBanksCurrent = this.project.projectStages?.at(0)!.stageBanks;
+        }
+      });
 
     this.financialsBonus = [ {
       id: 1, name : "Techo Propio",

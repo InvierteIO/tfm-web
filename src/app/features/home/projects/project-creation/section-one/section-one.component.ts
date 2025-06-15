@@ -80,7 +80,8 @@ export class SectionOneComponent  implements OnInit  {
       description: this.form.get('description')!.value,
       officeNumber: this.form.get('office_number')!.value,
       supervisor: this.form.get('supervisor')!.value,
-      stages: this.form.get('stages')!.value
+      stages: this.form.get('stages')!.value,
+      ...this.project
     } as ProjectMock;
   }
 

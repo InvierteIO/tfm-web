@@ -149,3 +149,7 @@
   -webkit-animation: dothatopcheck-19 0.4s ease 0s forwards;
   animation: dothatopcheck-19 0.4s ease 0s forwards;
 }
+
+.checkbox-wrapper-19 input[type=checkbox]:disabled + .check-box {
+  background: #F6F7F9;
+}

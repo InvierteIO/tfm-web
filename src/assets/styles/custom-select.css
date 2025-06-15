@@ -110,7 +110,12 @@
   font-weight: 400;
   font-size: 14px;
   line-height: normal;
-  background-color: #FCFCFC !important;
+  background-color: #FCFCFC;
+}
+
+.ng-select.ng-select-disabled > .ng-select-container {
+  color: #90A3BF !important;
+  background: #F6F7F9 !important;
 }
 
 .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
