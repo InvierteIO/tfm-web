@@ -45,7 +45,7 @@ describe('PropertyTypeComponent', () => {
 
     it('should contain all required form controls after buildForm', () => {
       expect(component.form.get('name')).toBeTruthy();
-      expect(component.form.get('stage')).toBeTruthy();
+      expect(component.form.get('stages')).toBeTruthy();
       expect(component.form.get('category')).toBeTruthy();
       expect(component.form.get('perimeter')).toBeTruthy();
       expect(component.form.get('price')).toBeTruthy();
@@ -194,7 +194,7 @@ describe('PropertyTypeComponent', () => {
 
     it('should log form value and not call markAllAsTouched if form is valid', () => {
       component.form.get('name')!.setValue('Test Name');
-      component.form.get('stage')!.setValue('I');
+      component.form.get('stages')!.setValue('I');
       component.form.get('category')!.setValue(PropertyCategory.LAND);
       component.form.get('perimeter')!.setValue('100');
       component.form.get('area')!.setValue('200');
