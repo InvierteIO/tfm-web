@@ -12,9 +12,10 @@
       <label for="stage" class="form-label text-tp-h3">Etapa(s) del proyecto</label>
       <ng-select
         id="stage"
-        [items]="stages"
+        [items]="projectStagesSelected"
         [multiple]="true"
         [searchable]="true"
+        bindLabel="stage"
         placeholder="Selecciona"
         formControlName="stages"
         notFoundText="No encontrado">

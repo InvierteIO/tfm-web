@@ -10,8 +10,9 @@ import {ButtonLoadingComponent} from '@common/components/button-loading.componen
 import {FormUtil} from '@common/utils/form.util';
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
-import {ProjectStageMock} from '../../models/project-stage.mock.model';
+import {ProjectStageDtoMock} from '../../models/project-stage.mock.dto.model';
 import {PropertyGroupMock} from '../../models/property-group.mock.model';
+import {ProjectStageMock} from '../../models/project-stage.mock.model';
 
 @Component({
   selector: 'app-stage-assignment-modal',
@@ -32,9 +33,12 @@ export class StageAssignmentModalComponent implements OnInit{
   propertyGroup!: PropertyGroupMock;
   @Input()
   stagesCurrent: ProjectStageMock[] = [];
+  @Input()
+  projectStages: ProjectStageMock[] = [];
   form: FormGroup;
+  projectStagesSelected: ProjectStageMock[] = [];
   loading:boolean = false;
-  stages: string[] = ['I','II','III','IV','V'];
+
 
   constructor(public readonly activeModal: NgbActiveModal,
               private readonly fb: FormBuilder) {
@@ -42,9 +46,7 @@ export class StageAssignmentModalComponent implements OnInit{
   }
 
   ngOnInit() {
-    this.stages =  this.stages.filter(stage => !this.stagesCurrent
-      .map(projectStage => projectStage.stage)
-      .includes(stage));
+    this.loadData();
   }
 
   private buildForm(): FormGroup  {
@@ -65,8 +67,13 @@ export class StageAssignmentModalComponent implements OnInit{
       .then((result) => {
         this.loading= false;
         if (result.isConfirmed) {
-          this.activeModal.close(this.form.get('stages')?.value);
+          this.activeModal.close(this.form.get('stages')?.value as ProjectStageMock[]);
         }
       });
+  }
+
+  private loadData(): void {
+    this.projectStagesSelected = this.projectStages
+      .filter(stage => !this.stagesCurrent.some(current => current.stage === stage.stage));
   }
 }

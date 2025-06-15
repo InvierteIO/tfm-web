@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ProjectMock} from '../shared/models/project.mock.model';
 import {Router} from '@angular/router';
 import {ProjectStatus} from '../shared/models/project-status.model';
-import {ProjectStageMock} from '../shared/models/project-stage.mock.model';
+import {ProjectStageDtoMock} from '../shared/models/project-stage.mock.dto.model';
 import {ProjectStageService} from '../shared/services/project-stage.service';
 import {ProjectStageCardComponent} from './project-stage-card.component';
 import {ProjectInfoGeneralComponent} from "./project-info-general.component";
@@ -23,7 +23,7 @@ import {ProjectPropertyTypesComponent} from '../shared/components/project-proper
 export class ProjectInfoComponent implements OnInit {
   project?: ProjectMock;
   statusCurrent?: ProjectStatus;
-  stages: ProjectStageMock[] = [];
+  stages: ProjectStageDtoMock[] = [];
 
   constructor(private router: Router,
               private readonly projectStageSvc: ProjectStageService) {

@@ -15,6 +15,7 @@ import {
 } from './projects/project-creation/legal-scope-habilitation/legal-scope-habilitation.component';
 import {TitleSplitsComponent} from './projects/project-creation/title-splits/title-splits.component';
 import {UserManagementComponent} from "./user-management/user-management.component";
+import {SectionTwoComponent} from './projects/project-creation/section-two/section-two.component';
 
 export const homeRoutes: Routes = [
   {
@@ -37,6 +38,9 @@ export const homeRoutes: Routes = [
     children : [
       {
         path: 'section1', component: SectionOneComponent
+      },
+      {
+        path: 'section2', component: SectionTwoComponent
       },
       {
         path: 'property-type', component: PropertyTypeComponent

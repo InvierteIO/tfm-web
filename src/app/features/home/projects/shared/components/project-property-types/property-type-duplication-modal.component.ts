@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {PropertyGroupMock} from '../../models/property-group.mock.model';
-import {ProjectStageMock} from '../../models/project-stage.mock.model';
+import {ProjectStageDtoMock} from '../../models/project-stage.mock.dto.model';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
 import {stageRomanValidator} from '@common/validators/stage.validator';
@@ -13,6 +13,7 @@ import {NgSelectComponent} from '@ng-select/ng-select';
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 import {StagePropertyGroupDtoMock} from '../../models/stage-property-group.dto.mock.model';
+import {ProjectStageMock} from '../../models/project-stage.mock.model';
 
 @Component({
   selector: 'app-property-type-duplication-modal',
@@ -31,10 +32,10 @@ import {StagePropertyGroupDtoMock} from '../../models/stage-property-group.dto.m
 export class PropertyTypeDuplicationModalComponent {
   @Input()
   propertyGroup!: PropertyGroupMock;
+  @Input()
+  projectStages: ProjectStageMock[] = [];
   form: FormGroup;
   loading:boolean = false;
-  stages: string[] = ['I','II','III','IV','V'];
-  //Son el listado de Project stage que se muestra el stage (n° romano)
 
   constructor(public readonly activeModal: NgbActiveModal,
               private readonly fb: FormBuilder) {
@@ -69,12 +70,9 @@ export class PropertyTypeDuplicationModalComponent {
   private captureData(): StagePropertyGroupDtoMock[] {
     let stagePropertyGroups: StagePropertyGroupDtoMock[] = [];
     let name = this.form.get('name')?.value;
-    this.form.get('stages')?.value.forEach((stageRoman: string, index: number) =>
+    this.form.get('stages')?.value.forEach((stage: any, index: number) =>
       stagePropertyGroups.push({
-        stage : {
-          id: (this.form.get('stages')?.value as string[]).length + index,
-          stage: stageRoman
-        },
+        stage ,
         propertyGroup: {
           id: 10+index,
            name

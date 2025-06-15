@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpService} from '@core/services/http.service';
 import {Observable, of} from 'rxjs';
 import {ProjectMock} from '../models/project.mock.model';
-import {ProjectStageMock} from '../models/project-stage.mock.model';
+import {ProjectStageDtoMock} from '../models/project-stage.mock.dto.model';
 import {ProjectStageStatus} from '../models/project-stage-status.model';
 
 @Injectable({
@@ -13,7 +13,7 @@ export class ProjectStageService {
   constructor(private readonly httpService: HttpService) {
   }
 
-  listStage(project?: ProjectMock): Observable<ProjectStageMock[]> {
+  listStage(project?: ProjectMock): Observable<ProjectStageDtoMock[]> {
     return of([{
       id: 1,
       name: "Etapa Inicial",

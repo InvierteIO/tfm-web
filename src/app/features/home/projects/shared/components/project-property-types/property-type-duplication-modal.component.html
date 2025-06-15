@@ -22,14 +22,14 @@
       </div>
       <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
         <div class="d-flex flex-column">
-          <label for="stage" class="form-label mb-0">Etapa(s) del proyecto</label>
+          <label for="stages" class="form-label mb-0">Etapa(s) del proyecto</label>
           <small class="fw-light mb-1">(Debes asignar por lo menos uno)</small>
         </div>
         <ng-select
-          id="stage"
-          [items]="stages"
+          id="stages"
+          [items]="projectStages"
           [multiple]="true"
-          [searchable]="true"
+          bindLabel="stage"
           placeholder="Selecciona"
           formControlName="stages"
           notFoundText="No encontrado">
@@ -52,7 +52,7 @@
       [loading]="loading"
       [iconGoogle]="'control_point_duplicate'"
       msgLoading="Cargando..."
-      msgButton="Asignar">
+      msgButton="Duplicar">
     </app-button-loading>
 
   </div>
