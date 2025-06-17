@@ -59,10 +59,6 @@ export class ProjectPropertyTypesComponent implements OnInit {
     this.loadData();
   }
 
-  get isShowTable() {
-    return !this.stagesPropertyTypes || this.stagesPropertyTypes.length === 0;
-  }
-
   toGoPropertyType(propertyType: PropertyGroupMock |
     undefined, view: boolean | undefined = undefined):void {
     this.loadingService.show();
@@ -223,15 +219,6 @@ export class ProjectPropertyTypesComponent implements OnInit {
     } as DocumentMock;
   }
 
-  get propertyTypes(): PropertyGroupMock [] {
-    return this.stagesPropertyTypes
-      .map(stage => stage.propertyGroup)
-      .filter((group): group is PropertyGroupMock => !!group)
-      .filter((group, index, groups) =>
-        groups.findIndex(g => g && g.id === group.id) === index
-      );
-  }
-
   downloadFile(file: DocumentMock | undefined): void {
     if (!file || !file.path) {
       return;
@@ -304,4 +291,16 @@ export class ProjectPropertyTypesComponent implements OnInit {
       .subscribe(spg => this.stagesPropertyTypes = spg);
   }
 
+  get propertyTypes(): PropertyGroupMock [] {
+    return this.stagesPropertyTypes
+      .map(stage => stage.propertyGroup)
+      .filter((group): group is PropertyGroupMock => !!group)
+      .filter((group, index, groups) =>
+        groups.findIndex(g => g && g.id === group.id) === index
+      );
+  }
+
+  get isShowTableEmpty() {
+    return !this.stagesPropertyTypes || this.stagesPropertyTypes.length === 0;
+  }
 }

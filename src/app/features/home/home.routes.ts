@@ -16,6 +16,7 @@ import {
 import {TitleSplitsComponent} from './projects/project-creation/title-splits/title-splits.component';
 import {UserManagementComponent} from "./user-management/user-management.component";
 import {SectionTwoComponent} from './projects/project-creation/section-two/section-two.component';
+import {ProjectStageComponent} from './projects/project-info/project-stage/project-stage.component';
 
 export const homeRoutes: Routes = [
   {
@@ -31,7 +32,12 @@ export const homeRoutes: Routes = [
     path: 'projects', component: ProjectsComponent
   },
   {
-    path: 'project-info', component: ProjectInfoComponent
+    path: 'project-info/stage',
+    component: ProjectStageComponent
+  },
+  {
+    path: 'project-info',
+    component: ProjectInfoComponent
   },
   {
     path: 'project-new',

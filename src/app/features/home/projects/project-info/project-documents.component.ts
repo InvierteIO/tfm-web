@@ -28,7 +28,7 @@ import {PdfViewerModalComponent} from '@common/components/pdf-viewer-modal.compo
 })
 export class ProjectDocumentsComponent implements OnInit {
   @Input()
-  public project: ProjectMock = { id : 0 };
+  public project?: ProjectMock;
 
   photographicRecords: ProjectDocumentMock[] = [];
   brochures: ProjectDocumentMock[] = [];

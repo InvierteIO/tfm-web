@@ -1,11 +1,12 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ProjectStatus} from '../shared/models/project-status.model';
 import {ProjectStageDtoMock} from '../shared/models/project-stage.mock.dto.model';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ProjectStageStatus} from '../shared/models/project-stage-status.model';
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 import {LoadingService} from '@core/services/loading.service';
+import {ProjectMock} from '../shared/models/project.mock.model';
 
 @Component({
   selector: 'app-project-stage-card',
@@ -14,16 +15,24 @@ import {LoadingService} from '@core/services/loading.service';
   templateUrl: './project-stage-card.component.html',
   styleUrl: './project-stage-card.component.css'
 })
-export class ProjectStageCardComponent{
-  @Input() projectStatus?: ProjectStatus;
+export class ProjectStageCardComponent implements OnInit {
+  @Input()
+  project?: ProjectMock;
+  projectStatus?: ProjectStatus;
   @Input() stage?: ProjectStageDtoMock;
-
-  edit(): void {
-    this.router.navigate(['/public/home/project-stage'], { state: { stage: this.stage } });
-  }
 
   constructor(private readonly router: Router,
               private readonly loadingService: LoadingService) {
+  }
+
+  edit(): void {
+    this.router.navigate(['/public/home/project-info/stage'], {
+      state: { project: this.project, stage: this.stage }
+    });
+  }
+
+  ngOnInit(): void {
+    this.projectStatus = this.project?.status;
   }
 
   deleteProjectStage() {
@@ -63,4 +72,5 @@ export class ProjectStageCardComponent{
     return this.projectStatus === ProjectStatus.NOPUBLISHED
       && this.stage?.status === ProjectStageStatus.DRAFT;
   }
+
 }
