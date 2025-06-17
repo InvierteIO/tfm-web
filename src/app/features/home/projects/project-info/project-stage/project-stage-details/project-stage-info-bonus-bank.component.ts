@@ -1,42 +1,36 @@
-import {Component, OnInit} from '@angular/core';
-import {AdditionalInformationComponent} from '../../shared/components/additional-information/additional-information.component';
-import {ButtonLoadingComponent} from '@common/components/button-loading.component';
-import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
+import { Component } from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {IsInvalidFieldPipe} from '@common/pipes/is-invalid-field.pipe';
-import {NgForOf, NgIf} from '@angular/common';
-import {
-  ProjectPropertyTypesComponent
-} from '../../shared/components/project-property-types/project-property-types.component';
-import {FinancialBonusMock} from '../../shared/models/financial-bonus.mock';
-import {BankMock} from '../../shared/models/bank.mock.model';
-import {ProjectMock} from '../../shared/models/project.mock.model';
+import {ProjectMock} from '../../../shared/models/project.mock.model';
+import {FinancialBonusMock} from '../../../shared/models/financial-bonus.mock';
+import {BankMock} from '../../../shared/models/bank.mock.model';
+import {StageBankMock} from '../../../shared/models/stage-bank.mock.model';
+import {StageBonusTypeMock} from '../../../shared/models/stage-bonus-type.mock.model';
 import {Router} from '@angular/router';
+import {ProjectService} from '../../../shared/services/project.service';
 import {LoadingService} from '@core/services/loading.service';
 import {FormUtil} from '@common/utils/form.util';
-import {DataType} from '../../shared/models/data-type.model';
-import {PropertyGroupMock} from '../../shared/models/property-group.mock.model';
-import {ProjectService} from '../../shared/services/project.service';
 import {finalize} from 'rxjs/operators';
-import {StageBankMock} from '../../shared/models/stage-bank.mock.model';
-import {StageBonusTypeMock} from '../../shared/models/stage-bonus-type.mock.model';
-import {ProjectStageMock} from '../../shared/models/project-stage.mock.model';
-import {FinancialBonusTypeMock} from '../../shared/models/financial-bonus-type.mock';
+import {ProjectStageMock} from '../../../shared/models/project-stage.mock.model';
+import {DataType} from '../../../shared/models/data-type.model';
+import {
+  AdditionalInformationComponent
+} from '../../../shared/components/additional-information/additional-information.component';
+import {ButtonLoadingComponent} from '@common/components/button-loading.component';
+import Swal from 'sweetalert2';
+import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 
 @Component({
-  selector: 'app-section-two',
+  selector: 'app-project-stage-info-bonus-bank',
   imports: [
     AdditionalInformationComponent,
-    ButtonLoadingComponent,
     FormsModule,
-    ProjectPropertyTypesComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ButtonLoadingComponent
   ],
-  templateUrl: './section-two.component.html'
+  templateUrl: './project-stage-info-bonus-bank.component.html'
 })
-export class SectionTwoComponent implements OnInit  {
+export class ProjectStageInfoBonusBankComponent {
   public form: FormGroup;
-  public project: ProjectMock = { id : 0 };
   loading:boolean = false;
   financialsBonus: FinancialBonusMock[] = [];
   banks: BankMock[] = [];
@@ -45,7 +39,6 @@ export class SectionTwoComponent implements OnInit  {
 
   constructor(private readonly  router: Router,
               private readonly fb: FormBuilder,
-              private readonly projectService: ProjectService,
               private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
   }
@@ -69,7 +62,7 @@ export class SectionTwoComponent implements OnInit  {
     this.router.navigate(['/public/home/project-new/section1']);
   }
 
-  next(): void {
+  save(): void {
     console.log(this.form);
     if (this.form?.invalid) {
       FormUtil.markAllAsTouched(this.form);
@@ -78,15 +71,14 @@ export class SectionTwoComponent implements OnInit  {
     console.log(this.form.value);
 
     this.loadingService.show();
-    setTimeout(() => {
-      this.captureData();
-      this.projectService.save(this.project)
-        .pipe(finalize(() => this.loadingService.hide()))
-        .subscribe(project => {
-          this.router.navigate(['/public/home/project-new/infrastructure-installation']);
-          this.project = project;
-        });
-    }, 50);
+    Swal.fire(
+      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea guardar la información de banca/bonus?"))
+      .then((result) => {
+        this.loadingService.hide();
+        if (result.isConfirmed) {
+          this.captureData();
+        }
+      });
   }
 
   private initBonusesForm(): void {
@@ -157,31 +149,15 @@ export class SectionTwoComponent implements OnInit  {
       if(stageBonus.checked === true) {
         stageBonus.types.forEach((bonusType: any) => {
           stageBonuseTypes.push({
-              financialBonusType: bonusType.reference,
-              typeValue: bonusType.value,
+            financialBonusType: bonusType.reference,
+            typeValue: bonusType.value,
           });
         })
       }
     });
-
-    this.project.projectStages?.forEach((stage: ProjectStageMock) => {
-      stage.stageBanks = stagesBanks;
-      stage.stageBonusTypes = stageBonuseTypes;
-    });
   }
 
   private loadData(): void {
-    this.loadingService.show();
-    this.projectService.readDraft()
-      .pipe(finalize(() => this.loadingService.hide()))
-      .subscribe((project ) => {
-        this.project = project as ProjectMock;
-        if(this.project && this.project.projectStages && this.project.projectStages.length > 0) {
-          this.stageBonusTypesCurrent = this.project.projectStages?.at(0)!.stageBonusTypes;
-          this.stageBanksCurrent = this.project.projectStages?.at(0)!.stageBanks;
-        }
-      });
-
     this.financialsBonus = [ {
       id: 1, name : "Techo Propio",
       types : [{

@@ -1,23 +1,26 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
 import {IsInvalidFieldPipe} from '@common/pipes/is-invalid-field.pipe';
-import {NgForOf, NgIf} from '@angular/common';
+import {NgForOf, NgIf, NgTemplateOutlet} from '@angular/common';
 import {SelectStyleDirective} from '@common/directives/select-style.directive';
-import {InfraestructureInstallationMock} from '../../shared/models/infraestructure-installation.mock';
-import {InstallationType} from '../../shared/models/installation-data.type';
-import {InstallationDataType} from '../../shared/models/installation-type.model';
+import {InfraestructureInstallationMock} from '../../models/infraestructure-installation.mock';
+import {InstallationType} from '../../models/installation-data.type';
+import {InstallationDataType} from '../../models/installation-type.model';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
 import {FormUtil} from '@common/utils/form.util';
 import {LoadingService} from '@core/services/loading.service';
-import {ProjectMock} from '../../shared/models/project.mock.model';
+import {ProjectMock} from '../../models/project.mock.model';
 import {finalize} from 'rxjs/operators';
-import {ProjectService} from '../../shared/services/project.service';
-import {StageInfrastructureInstallationMock} from '../../shared/models/stage-infrastructure-installation.mock.model';
-import {ProjectStageMock} from '../../shared/models/project-stage.mock.model';
-import {StageCatalogDetail} from '../../shared/models/stage-catalog-detail';
-import {CatalogDetailMock} from '../../../shared/models/catalog-detail.mock.model';
+import {ProjectService} from '../../services/project.service';
+import {StageInfrastructureInstallationMock} from '../../models/stage-infrastructure-installation.mock.model';
+import {ProjectStageMock} from '../../models/project-stage.mock.model';
+import {StageCatalogDetail} from '../../models/stage-catalog-detail';
+import {CatalogDetailMock} from '../../../../shared/models/catalog-detail.mock.model';
+import Swal from 'sweetalert2';
+import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
+import {ProjectStageDtoMock} from '../../models/project-stage.mock.dto.model';
 
 @Component({
   selector: 'app-infrastructure-installation',
@@ -29,13 +32,16 @@ import {CatalogDetailMock} from '../../../shared/models/catalog-detail.mock.mode
     FormErrorMessagesPipe,
     NgIf,
     NgForOf,
-    ButtonLoadingComponent
+    ButtonLoadingComponent,
+    NgTemplateOutlet
   ],
   templateUrl: './infrastructure-installation.component.html'
 })
 export class InfrastructureInstallationComponent implements OnInit {
   protected form: FormGroup;
   loading:boolean = false;
+  @Input()
+  projectStageCurrent?: ProjectStageDtoMock;
   private project: ProjectMock = { id : 0 };
   protected infraInstallations: InfraestructureInstallationMock[] = [];
   private stageInfraInstallationsCurrent?: StageInfrastructureInstallationMock[];
@@ -184,6 +190,36 @@ export class InfrastructureInstallationComponent implements OnInit {
 
   back():void {
     this.router.navigate(['/public/home/project-new/section2']);
+  }
+
+  onSubmit(): void {
+    if (this.projectStageCurrent) {
+      this.save();
+    } else {
+      this.next();
+    }
+  }
+
+  save(): void {
+    if (this.form?.invalid) {
+      FormUtil.markAllAsTouched(this.form);
+      return;
+    }
+    Swal.fire(
+      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea guardar los datos de la sección?"))
+      .then(result => {
+        if (result.isConfirmed) {
+          this.loadingService.show();
+          setTimeout(() => {
+            this.captureData();
+            this.projectService.save(this.project)
+              .pipe(finalize(() => this.loadingService.hide()))
+              .subscribe(project => {
+                this.project = project;
+              });
+          }, 200);
+        }
+      });
   }
 
   next(): void {

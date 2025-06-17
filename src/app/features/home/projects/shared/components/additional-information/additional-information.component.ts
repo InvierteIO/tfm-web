@@ -1,10 +1,10 @@
 import {Component, Input} from '@angular/core';
 import {FormArray, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {FinancialBonusMock} from '../../shared/models/financial-bonus.mock';
-import {DataType} from '../../shared/models/data-type.model';
+import {FinancialBonusMock} from '../../models/financial-bonus.mock';
+import {DataType} from '../../models/data-type.model';
 import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
 import {NgForOf, NgIf, NgStyle} from '@angular/common';
-import {BankMock} from '../../shared/models/bank.mock.model';
+import {BankMock} from '../../models/bank.mock.model';
 import {SelectStyleDirective} from "@common/directives/select-style.directive";
 
 @Component({

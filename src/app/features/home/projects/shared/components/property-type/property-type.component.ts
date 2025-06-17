@@ -108,6 +108,11 @@ export class PropertyTypeComponent  implements OnInit  {
     apt .disable({ emitEvent: false, onlySelf: true });
     house.disable({ emitEvent: false, onlySelf: true });
 
+    if (this.isView) {
+      this.form.updateValueAndValidity({ onlySelf: false, emitEvent: false });
+      return;
+    }
+
     if (cat === PropertyCategory.LAND) {
       land.enable({ emitEvent: false, onlySelf: true });
     } else if (cat === PropertyCategory.APARTMENT) {
@@ -123,6 +128,11 @@ export class PropertyTypeComponent  implements OnInit  {
     const apt = this.apartmentFormGroup;
     apt.get('area_floor_two')!.disable({ emitEvent: false });
     apt.get('area_floor_three')!.disable({ emitEvent: false });
+
+    if (this.isView) {
+      apt.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+      return;
+    }
     if (type === 'DUPLEX') {
       apt.get('area_floor_two')!.enable({ emitEvent: false });
     } else if (type === 'TRIPLEX') {
@@ -437,6 +447,9 @@ export class PropertyTypeComponent  implements OnInit  {
     if(this.isView) {
       this.titleBreadcrumbPage = "Ver tipo de inmueble";
       this.form.disable({ emitEvent: false });
+      this.landFormGroup.disable({ emitEvent: false });
+      this.apartmentFormGroup.disable({ emitEvent: false });
+      this.houseFormGroup.disable({ emitEvent: false });
     } else {
       this.titleBreadcrumbPage = "Editar tipo de inmueble";
     }
