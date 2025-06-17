@@ -14,6 +14,8 @@ import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 import {StagePropertyGroupDtoMock} from '../../models/stage-property-group.dto.mock.model';
 import {ProjectStageMock} from '../../models/project-stage.mock.model';
+import {ProjectPropertyTypesService} from '../../services/project-property-types.service';
+import {finalize} from 'rxjs/operators';
 
 @Component({
   selector: 'app-property-type-duplication-modal',
@@ -38,6 +40,7 @@ export class PropertyTypeDuplicationModalComponent {
   loading:boolean = false;
 
   constructor(public readonly activeModal: NgbActiveModal,
+              private readonly projectPropertyTypeSvc: ProjectPropertyTypesService,
               private readonly fb: FormBuilder) {
     this.form = this.buildForm();
   }
@@ -60,24 +63,21 @@ export class PropertyTypeDuplicationModalComponent {
       DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION](`¿Desea duplicar '${this.propertyGroup.name}'
        con las mismas características con el nombre de '${this.form.get('name')?.value}'?`))
       .then((result) => {
-        this.loading= false;
         if (result.isConfirmed) {
-          this.activeModal.close(this.captureData());
+          this.projectPropertyTypeSvc.create(this.captureData())
+            .pipe(finalize(() => this.loading= false))
+            .subscribe(spgs => this.activeModal.close(spgs));
         }
       });
   }
 
   private captureData(): StagePropertyGroupDtoMock[] {
     let stagePropertyGroups: StagePropertyGroupDtoMock[] = [];
-    let name = this.form.get('name')?.value;
-    this.form.get('stages')?.value.forEach((stage: any, index: number) =>
-      stagePropertyGroups.push({
-        stage ,
-        propertyGroup: {
-          id: 10+index,
-           name
-        }
-      }));
+    this.propertyGroup.name = this.form.get('name')?.value;
+    let stages: PropertyGroupMock[] = this.form.get('stages')?.value as PropertyGroupMock[] ;
+    stages.forEach((stage: any) => {
+      stagePropertyGroups.push({ stage, propertyGroup: this.propertyGroup });
+    });;
     return stagePropertyGroups
   }
 }

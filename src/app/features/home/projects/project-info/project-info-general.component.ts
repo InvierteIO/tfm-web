@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Membership} from '../../../dashboard/membership/membership.model';
 import {ProjectMock} from '../shared/models/project.mock.model';
 import {FormUtil} from '@common/utils/form.util';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
@@ -25,7 +24,7 @@ import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
 })
 export class ProjectInfoGeneralComponent implements OnInit {
   @Input()
-  public project: ProjectMock = { id : 0 };
+  public project?: ProjectMock
   public form: FormGroup;
   loading:boolean = false;
 
@@ -51,13 +50,13 @@ export class ProjectInfoGeneralComponent implements OnInit {
 
   private loadDataForm(): void {
     this.form?.reset({
-      project_name: this.project.name,
-      office_address: this.project.officeAddress,
-      office_number: this.project.officeNumber,
-      supervisor: this.project.supervisor,
-      description: this.project.description,
-      address: this.project.address,
-      zipcode: this.project.zipCode
+      project_name: this.project?.name,
+      office_address: this.project?.officeAddress,
+      office_number: this.project?.officeNumber,
+      supervisor: this.project?.supervisor,
+      description: this.project?.description,
+      address: this.project?.address,
+      zipcode: this.project?.zipCode
     });
   }
 

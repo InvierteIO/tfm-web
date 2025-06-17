@@ -4,7 +4,7 @@ import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {IsInvalidFieldPipe} from '@common/pipes/is-invalid-field.pipe';
 import {NgForOf, NgIf} from '@angular/common';
 import {SelectStyleDirective} from '@common/directives/select-style.directive';
-import {FeatureMock} from '../../shared/models/feature.mock.model';
+import {FeatureMock} from '../../models/feature.mock.model';
 
 @Component({
   selector: 'app-apartment-property-features',

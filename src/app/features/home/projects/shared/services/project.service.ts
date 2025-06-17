@@ -24,8 +24,14 @@ export class ProjectService {
     return of();
   }
 
+  save(project: ProjectMock): Observable<ProjectMock> {
+    localStorage.setItem('project_draft_new', JSON.stringify(project));
+    return of(project);
+  }
   createDraft(project: ProjectMock): Observable<ProjectMock> {
-    this.generateProjectStageMock(project);
+    if(localStorage.getItem('project_draft_new')) {
+      return this.save(project);
+    } else this.generateProjectStageMock(project);
     return of(project);
   }
 

@@ -59,24 +59,38 @@ export class ProjectPropertyTypesComponent implements OnInit {
     this.loadData();
   }
 
-  toGoPropertyType(propertyType: PropertyGroupMock | undefined):void {
+  toGoPropertyType(propertyType: PropertyGroupMock |
+    undefined, view: boolean | undefined = undefined):void {
     this.loadingService.show();
     setTimeout(() => {
       this.router.navigate(['/public/home/project-new/property-type'],
-        { state: { property_type: propertyType, project_stages: this.project.projectStages ?? []} });
+        { state: { view, property_type: propertyType, project_stages: this.project.projectStages ?? []} });
       this.loadingService.hide();
     }, 500);
   }
 
-  get isShowTable() {
-    return !this.stagesPropertyTypes || this.stagesPropertyTypes.length === 0;
+  viewPropertyType(propertyType: PropertyGroupMock):void {
+    this.loadingService.show();
+    this.projectPropertyTypeSvc.readStagePropertyGroupByPropertyType(propertyType!)
+      .pipe(finalize(() => this.loadingService.hide()))
+      .subscribe(spgs => {
+        propertyType.stagePropertyGroups = spgs;
+        this.toGoPropertyType(propertyType, true);
+      });
   }
-
 
   editPropertyType(propertyType: PropertyGroupMock):void {
     Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea ir a editar el tipo de inmueble?"))
-      .then(r => {
-        this.toGoPropertyType(propertyType);
+      .then(result => {
+        if (result.isConfirmed) {
+          this.loadingService.show();
+          this.projectPropertyTypeSvc.readStagePropertyGroupByPropertyType(propertyType!)
+            .pipe(finalize(() => this.loadingService.hide()))
+            .subscribe(spgs => {
+              propertyType.stagePropertyGroups = spgs;
+              this.toGoPropertyType(propertyType);
+            });
+        }
       });
   }
 
@@ -87,10 +101,10 @@ export class ProjectPropertyTypesComponent implements OnInit {
         if (result.isConfirmed) {
           this.loadingService.show();
           setTimeout(() => {
-            this.stagesPropertyTypes = this.stagesPropertyTypes
-              .filter(pt => pt.propertyGroup?.id !== propertyType.id);
-            this.loadingService.hide();
-          }, 2000);
+            this.projectPropertyTypeSvc.removePropertyGroup(propertyType)
+              .subscribe()
+            this.loadData();
+          }, 1000);
         }
       });
   }
@@ -102,9 +116,10 @@ export class ProjectPropertyTypesComponent implements OnInit {
         if (result.isConfirmed) {
           this.loadingService.show();
           setTimeout(() => {
-            this.stagesPropertyTypes.splice(this.stagesPropertyTypes.indexOf(stagePropertyType), 1);
-            this.loadingService.hide();
-          }, 2000);
+            this.projectPropertyTypeSvc.remove(stagePropertyType)
+              .subscribe()
+            this.loadData();
+          }, 1000);
         }
       });
   }
@@ -204,15 +219,6 @@ export class ProjectPropertyTypesComponent implements OnInit {
     } as DocumentMock;
   }
 
-  get propertyTypes(): PropertyGroupMock [] {
-    return this.stagesPropertyTypes
-      .map(stage => stage.propertyGroup)
-      .filter((group): group is PropertyGroupMock => !!group)
-      .filter((group, index, groups) =>
-        groups.findIndex(g => g && g.id === group.id) === index
-      );
-  }
-
   downloadFile(file: DocumentMock | undefined): void {
     if (!file || !file.path) {
       return;
@@ -262,10 +268,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
     modalRef.componentInstance.propertyGroup = propertyGroup;
     modalRef.result.then((result) => {
       if (result) {
-        let projectStageSelected = result as ProjectStageMock[];
-        projectStageSelected.forEach(stage => {
-          this.stagesPropertyTypes.push({ stage, propertyGroup});
-        });
+        this.loadData();
       }
     });
   }
@@ -276,68 +279,28 @@ export class ProjectPropertyTypesComponent implements OnInit {
     modalRef.componentInstance.propertyGroup = propertyGroup;
     modalRef.result.then((result) => {
       if (result) {
-        let stagePropertyGroupsSelected = result as StagePropertyGroupDtoMock[];
-        stagePropertyGroupsSelected.forEach(spg => this.stagesPropertyTypes.push(spg));
+        this.loadData();
       }
     });
   }
 
   loadData(): void {
-
-    this.stagesPropertyTypes = [{
-      stage : {
-        id: 1, stage: "I"
-      },
-      propertyGroup: {
-        id: 1,
-        name: "Tipo 1 - Departamento"
-      },
-    },
-      {
-        stage : {
-          id: 2, stage: "II"
-        },
-        propertyGroup: {
-          id: 1,
-          name: "Tipo 1 - Departamento"
-        }
-      },
-      {
-        stage : {
-          id: 2, stage: "II"
-        },
-        propertyGroup: {
-          id: 2,
-          name: "Tipo 1 - Casa"
-        },
-        architecturalBluetprint: {
-          id:1,
-          name:"Plano 1",
-          filename: "Calendario09-10.PNG",
-          path: "https://invierteio-klm.s3.eu-west-1.amazonaws.com/Calendario09-10.PNG"
-        }
-      },
-      {
-        stage : {
-          id: 3, stage: "III"
-        },
-        propertyGroup: {
-          id: 2,
-          name: "Tipo 1 - Casa"
-        },
-        architecturalBluetprint: {
-          id:2,
-          path: "https://invierteio-klm.s3.eu-west-1.amazonaws.com/keyboard-shortcuts-windows.pdf",
-          filename: "keyboard-shortcuts-windows.pdf",
-          name:"Plano 2"
-        },
-        formatTemplateLoaded: {
-          id:3,
-          path: "https://invierteio-klm.s3.eu-west-1.amazonaws.com/TemplateFormat_InvierteIO.xlsx",
-          filename: "TemplateFormat_InvierteIO.xlsx",
-          name:"Plantilla llenado"
-        }
-      }];
+    this.loadingService.show();
+    this.projectPropertyTypeSvc.readStagePropertyGroupByProject(this.project)
+      .pipe(finalize(() => this.loadingService.hide()))
+      .subscribe(spg => this.stagesPropertyTypes = spg);
   }
 
+  get propertyTypes(): PropertyGroupMock [] {
+    return this.stagesPropertyTypes
+      .map(stage => stage.propertyGroup)
+      .filter((group): group is PropertyGroupMock => !!group)
+      .filter((group, index, groups) =>
+        groups.findIndex(g => g && g.id === group.id) === index
+      );
+  }
+
+  get isShowTableEmpty() {
+    return !this.stagesPropertyTypes || this.stagesPropertyTypes.length === 0;
+  }
 }

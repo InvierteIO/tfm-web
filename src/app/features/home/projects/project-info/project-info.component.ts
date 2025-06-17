@@ -1,18 +1,19 @@
 import {Component, OnInit} from '@angular/core';
 import {ProjectMock} from '../shared/models/project.mock.model';
 import {Router} from '@angular/router';
-import {ProjectStatus} from '../shared/models/project-status.model';
 import {ProjectStageDtoMock} from '../shared/models/project-stage.mock.dto.model';
 import {ProjectStageService} from '../shared/services/project-stage.service';
 import {ProjectStageCardComponent} from './project-stage-card.component';
 import {ProjectInfoGeneralComponent} from "./project-info-general.component";
 import {ProjectDocumentsComponent} from './project-documents.component';
 import {ProjectPropertyTypesComponent} from '../shared/components/project-property-types/project-property-types.component';
+import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-project-info',
   standalone: true,
   imports: [
+    NgbNavModule,
     ProjectStageCardComponent,
     ProjectInfoGeneralComponent,
     ProjectDocumentsComponent,
@@ -22,18 +23,18 @@ import {ProjectPropertyTypesComponent} from '../shared/components/project-proper
 })
 export class ProjectInfoComponent implements OnInit {
   project?: ProjectMock;
-  statusCurrent?: ProjectStatus;
   stages: ProjectStageDtoMock[] = [];
+  activeId: string = 'detail';
 
   constructor(private router: Router,
               private readonly projectStageSvc: ProjectStageService) {
     const nav = this.router.getCurrentNavigation();
     this.project = nav?.extras.state?.['project'];
+    this.activeId = nav?.extras.state?.['activeId'] ?? 'detail';
 
     if((this.project?.id ?? 0) === 0) {
       this.router.navigate(['/public/home/projects']);
     }
-    this.statusCurrent = this.project?.status;
   }
 
   ngOnInit(): void {
