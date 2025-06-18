@@ -9,14 +9,42 @@ import {
   InfrastructureInstallationComponent
 } from './projects/shared/components/infraestructure-installation/infrastructure-installation.component';
 import {ComplementaryComponent} from './projects/project-creation/complementary/complementary.component';
-import {PropertiesComponent} from "./projects/project-creation/properties/properties.component";
+import {PropertiesComponent} from "./projects/shared/components/properties/properties.component";
 import {
   LegalScopeHabilitationComponent
 } from './projects/project-creation/legal-scope-habilitation/legal-scope-habilitation.component';
-import {TitleSplitsComponent} from './projects/project-creation/title-splits/title-splits.component';
+import {TitleSplitsComponent} from './projects/shared/components/title-splits/title-splits.component';
 import {UserManagementComponent} from "./user-management/user-management.component";
 import {SectionTwoComponent} from './projects/project-creation/section-two/section-two.component';
 import {ProjectStageComponent} from './projects/project-info/project-stage/project-stage.component';
+import {ProjectStateGuard} from './projects/shared/services/project-state.guard';
+
+const projectCreationChildrenRoutes: Routes = [
+  {
+    path: 'section1', component: SectionOneComponent
+  },
+  {
+    path: 'section2', component: SectionTwoComponent
+  },
+  {
+    path: 'property-type', component: PropertyTypeComponent
+  },
+  {
+    path: 'infrastructure-installation', component: InfrastructureInstallationComponent
+  },
+  {
+    path: 'complementary', component: ComplementaryComponent
+  },
+  {
+    path: 'properties', component: PropertiesComponent
+  },
+  {
+    path: 'legal-scope', component: LegalScopeHabilitationComponent
+  },
+  {
+    path: 'title-splits', component: TitleSplitsComponent
+  }
+];
 
 export const homeRoutes: Routes = [
   {
@@ -29,44 +57,31 @@ export const homeRoutes: Routes = [
     path: 'users', component: UserManagementComponent
   },
   {
-    path: 'projects', component: ProjectsComponent
-  },
-  {
-    path: 'project-info/stage',
-    component: ProjectStageComponent
+    path: 'projects', component: ProjectsComponent,
+    canActivateChild: [ProjectStateGuard],
   },
   {
     path: 'project-info',
     component: ProjectInfoComponent
   },
   {
+    path: 'project-info/stage',
+    component: ProjectStageComponent
+  },
+  {
+    path: 'project-info/property-type', component: PropertyTypeComponent
+  },
+  {
+    path: 'project-info/properties', component: PropertiesComponent
+  },
+  {
     path: 'project-new',
-    children : [
-      {
-        path: 'section1', component: SectionOneComponent
-      },
-      {
-        path: 'section2', component: SectionTwoComponent
-      },
-      {
-        path: 'property-type', component: PropertyTypeComponent
-      },
-      {
-        path: 'infrastructure-installation', component: InfrastructureInstallationComponent
-      },
-      {
-        path: 'complementary', component: ComplementaryComponent
-      },
-      {
-        path: 'properties', component: PropertiesComponent
-      },
-      {
-        path: 'legal-scope', component: LegalScopeHabilitationComponent
-      },
-      {
-        path: 'title-splits', component: TitleSplitsComponent
-      }
-    ]
+    children : projectCreationChildrenRoutes,
+    canActivateChild: [ProjectStateGuard],
+  },
+  {
+    path: 'project-draft',
+    children : projectCreationChildrenRoutes
   },
   {
     path: '**',

@@ -9,12 +9,14 @@
   <div class="row">
     <div class="col-12">
       <span class="fs-s1">{{subtitle}}</span>
-      <app-file-dropzone class="mt-2"
-                         dropzoneClass="dz-s1"
-                         text="Arrastra archivos PDF o imágenes (JPG, PNG)"
-                         accept=".pdf,image/png,image/jpeg"
-                         (dropFile)="onDropFile($event)"
-                         (fileSelected)="onFileSelected($event)" />
+      @if (!isViewPage) {
+        <app-file-dropzone class="mt-2"
+                           dropzoneClass="dz-s1"
+                           text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                           accept=".pdf,image/png,image/jpeg"
+                           (dropFile)="onDropFile($event)"
+                           (fileSelected)="onFileSelected($event)" />
+      }
     </div>
     <div class="d-flex align-items-center justify-content-center mt-3" *ngIf="loading">
       <app-loading></app-loading>
@@ -32,15 +34,27 @@
              <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver" (click)="viewDocument(file)">
               <img src="./assets/svg/view15.svg" alt="ver">
             </button>
-             <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
-                    (click)="deleteDocument(file)">
-              <img src="./assets/svg/delete16.svg" alt="eliminar">
-            </button>
+            @if (!isViewPage) {
+              <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                      (click)="deleteDocument(file)">
+                <img src="./assets/svg/delete16.svg" alt="eliminar">
+              </button>
+            }
           </td>
         </tr>
         </tbody>
       </table>
     </div>
+    <div class="col-12" *ngIf="documents.length==0">
+      <table class="table table-s3 mt-3 mb-0">
+        <tbody>
+        <tr>
+          <td colspan="9" class="text-center">No hay registros</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </div>
 

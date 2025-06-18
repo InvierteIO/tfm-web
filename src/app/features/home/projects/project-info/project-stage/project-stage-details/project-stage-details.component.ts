@@ -29,4 +29,6 @@ import {ProjectStageInfoLocationComponent} from './project-stage-info-location.c
 export class ProjectStageDetailsComponent {
   @Input()
   projectStage?: ProjectStageDtoMock;
+  @Input()
+  isView = false;
 }

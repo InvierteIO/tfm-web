@@ -8,6 +8,7 @@ import {SelectStyleDirective} from '@common/directives/select-style.directive';
 import {debounceTime, distinctUntilChanged} from 'rxjs';
 import {positiveNumberValidator} from '@common/validators/positive-number.validator';
 import {HouseFloorAreaMock} from '../../models/house-floor-area.mock.model';
+import {ProjectStoreService} from '../../services/project-store.service';
 
 @Component({
   selector: 'app-house-property-features',
@@ -27,7 +28,7 @@ export class HousePropertyFeaturesComponent implements OnInit{
   @Input({ required: true }) houseFeatures!: FeatureMock[];
   @Input({ required: true }) houseFloorAreasValues!: HouseFloorAreaMock[];
   @Input() isView: boolean = false;
-   constructor(private fb: FormBuilder) {
+   constructor(protected readonly fb: FormBuilder) {
   }
 
   ngOnInit(): void {

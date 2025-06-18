@@ -2,13 +2,13 @@ import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DocumentPropertyStep} from './document-property-step.model';
 import {FileDropzoneComponent} from '@common/components/file-dropzone.component';
-import {PropertyDocumentMock} from '../../shared/models/property-document.mock.model';
+import {PropertyDocumentMock} from '../../models/property-document.mock.model';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {TypeFileIconGoogleFontsPipe} from '@common/pipes/typefile-icon-googlefonts.pipe';
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 import {LoadingComponent} from '@common/components/loading.component';
-import {PropertyDocumentDtoMock} from '../../shared/models/property-document.dto.model.mock';
+import {PropertyDocumentDtoMock} from '../../models/property-document.dto.model.mock';
 import {
 GalleryModule
 } from '@ks89/angular-modal-gallery';
@@ -17,6 +17,8 @@ import {FileUtil} from '@common/utils/file.util';
 import {PdfViewerModalComponent} from '@common/components/pdf-viewer-modal.component';
 import {KsModalGalleryService} from '@core/services/ks-modal-gallery.service';
 import {Document} from '@core/models/document.model';
+import {ProjectStoreService} from '../../services/project-store.service';
+import {ProjectDraftStatus} from '../../models/project-draft-status';
 
 @Component({
   selector: 'app-property-document-modal',
@@ -43,7 +45,8 @@ export class PropertyDocumentModalComponent implements OnInit {
 
   constructor(public readonly activeModal: NgbActiveModal,
               private readonly ksModalGallerySvc: KsModalGalleryService,
-              private readonly modalService: NgbModal) {
+              private readonly modalService: NgbModal,
+              protected readonly draftStore: ProjectStoreService) {
   }
 
   ngOnInit(): void {
@@ -123,7 +126,6 @@ export class PropertyDocumentModalComponent implements OnInit {
       });
   }
 
-
   viewDocument(file: PropertyDocumentMock): void {
     const extension = file.filename?.toLowerCase().split('.').pop();
     if (extension === 'pdf') {
@@ -142,4 +144,7 @@ export class PropertyDocumentModalComponent implements OnInit {
     return;
   }
 
+  get isViewPage() {
+    return this.draftStore.draftStatus() == ProjectDraftStatus.VIEW;
+  }
 }

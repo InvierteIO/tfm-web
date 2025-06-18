@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormUtil} from '@common/utils/form.util';
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
@@ -23,13 +23,21 @@ import {ButtonLoadingComponent} from '@common/components/button-loading.componen
   ],
   templateUrl: './project-stage-info-general.component.html'
 })
-export class ProjectStageInfoGeneralComponent {
+export class ProjectStageInfoGeneralComponent implements OnInit {
   public form: FormGroup;
   loading:boolean = false;
+  @Input()
+  isView = false;
 
   public constructor(private readonly fb: FormBuilder,
                       private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
+  }
+
+  ngOnInit(): void {
+    if(this.isView) {
+      this.form.disable({ emitEvent: false });
+    }
   }
 
   public save(): void {

@@ -4,10 +4,10 @@
     <ol class="breadcrumb title-tp-h1 mt-4 mb-3 d-flex align-items-center">
       <li class="breadcrumb-item d-flex align-items-center">
         <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
-        <a class="breadcrumb-link" (click)="back()">Crear Proyecto</a>
+        <a class="breadcrumb-link" (click)="goToFlowInit()">{{titleBreadcrumbBase}}</a>
       </li>
       <li class="breadcrumb-item d-flex align-items-center">
-        <a class="breadcrumb-link" (click)="toGoPropertyType()">{{propertyType?.propertyGroup?.name}}</a>
+        <a class="breadcrumb-link" (click)="toGoPropertyType()">{{stagePropertyType?.propertyGroup?.name}}</a>
       </li>
       <li class="breadcrumb-item io-green-primary active" aria-current="page">
         <span class="fw-light">Inmuebles</span>
@@ -24,11 +24,11 @@
           <div class="row">
             <div class="col-xl-6 col-lg-6 col-sm-12">
               <span class="fw-bold mb-1 d-block">Nombre</span>
-              <span>{{propertyType?.propertyGroup?.name}}</span>
+              <span>{{stagePropertyType?.propertyGroup?.name}}</span>
             </div>
             <div class="col-xl-6 col-lg-6 col-sm-12">
               <span class="fw-bold mb-1 d-block">Etapa</span>
-              <span>{{propertyType?.stage?.stage}}</span>
+              <span>{{stagePropertyType?.stage?.stage}}</span>
             </div>
           </div>
 
@@ -53,11 +53,13 @@
         [(selectedFilter)]="selectedFilter"
         dropdownId="mn-search-property" />
     </div>
-    <div class="col-auto ms-auto">
-       <button type="button" class="btn btn-s3 button-tp py-2 d-flex justify-content-center align-items-center" (click)="add()">
-        <span class="material-symbols-rounded">add_box</span> Agregar
-      </button>
-    </div>
+    @if (!isViewPage) {
+      <div class="col-auto ms-auto">
+        <button type="button" class="btn btn-s3 button-tp py-2 d-flex justify-content-center align-items-center" (click)="add()">
+          <span class="material-symbols-rounded">add_box</span> Agregar
+        </button>
+      </div>
+    }
   </div>
   <div class="table-responsive">
     <table class="table table-s4">
@@ -139,10 +141,10 @@
           } @else {
             <div class="custom-select-wrapper">
               <select class="input-s4 form-select form-control custom-select-arrow" formControlName="commercializationCycle" appSelectStyle>
-                <option [ngValue]="CommercializationCycle.ACTIVE">ACTIVE</option>
-                <option [ngValue]="CommercializationCycle.PRE_SALES">PRE_SALES</option>
-                <option [ngValue]="CommercializationCycle.SALES">SALES</option>
-                <option [ngValue]="CommercializationCycle.CLOSED">CLOSED</option>
+                <option [ngValue]="COMMERCIALIZATION_CYCLE.ACTIVE">ACTIVE</option>
+                <option [ngValue]="COMMERCIALIZATION_CYCLE.PRE_SALES">PRE_SALES</option>
+                <option [ngValue]="COMMERCIALIZATION_CYCLE.SALES">SALES</option>
+                <option [ngValue]="COMMERCIALIZATION_CYCLE.CLOSED">CLOSED</option>
               </select>
               <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
             </div>
@@ -159,28 +161,31 @@
           }
         </td>
         <td class="text-center align-middle">
-          @if (!row.editing) {
-            <div class="d-flex justify-content-center">
-              <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center" title="Editar inmueble" (click)="edit(row)">
-                <span class="material-symbols-rounded">edit_square</span>
-              </button>
-              <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center" title="Eliminar inmueble" (click)="delete(row)">
-                <span class="material-symbols-rounded">delete</span>
-              </button>
-            </div>
-          } @else {
-            <div class="d-flex justify-content-center">
-              <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center" title="Guardar" (click)="save(row)">
-                <span class="material-symbols-rounded">save</span>
-              </button>
-              <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center" title="Cancelar" (click)="cancel(row,i)">
-                <span class="material-symbols-rounded">cancel</span>
-              </button>
-            </div>
+          @if (!isViewPage) {
+            @if (!row.editing) {
+              <div class="d-flex justify-content-center">
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center" title="Editar inmueble" (click)="edit(row)">
+                  <span class="material-symbols-rounded">edit_square</span>
+                </button>
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center" title="Eliminar inmueble" (click)="delete(row)">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+            } @else {
+              <div class="d-flex justify-content-center">
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center" title="Guardar" (click)="save(row)">
+                  <span class="material-symbols-rounded">save</span>
+                </button>
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center" title="Cancelar" (click)="cancel(row,i)">
+                  <span class="material-symbols-rounded">cancel</span>
+                </button>
+              </div>
+            }
           }
+
         </td>
       </tr>
-      <tr *ngIf="isShowTable">
+      <tr *ngIf="isShowTableEmpty">
         <td colspan="9" class="text-center">No hay registros</td>
       </tr>
       </tbody>

@@ -17,18 +17,17 @@
   <div class="card p-0 border-0 rounded-0 ">
 
     <div class="card-header tab-s3 disable-active-nav py-2 border-0 rounded-0">
-        <ul ngbNav #nav="ngbNav" class="nav nav-underline m-1" [destroyOnHide]="false">
+        <ul ngbNav #nav="ngbNav" class="nav nav-underline m-1" [destroyOnHide]="false" [activeId]="activeId">
             <li [ngbNavItem]="'detail'">
                 <button ngbNavLink id="detail-tab" class="nav-link">Detalle</button>
                 <ng-template ngbNavContent>
-                    <app-project-stage-details [projectStage]="projectStage"/>
+                    <app-project-stage-details [projectStage]="projectStage" [isView]="isViewPage"/>
                 </ng-template>
             </li>
             <li [ngbNavItem]="'blueprints'">
                 <button ngbNavLink id="blueprints-tab" class="nav-link">Planos generales / Otros</button>
                 <ng-template ngbNavContent>
                     <div class="d-flex flex-wrap justify-content-center mt-2">
-
                     </div>
                 </ng-template>
             </li>
@@ -41,13 +40,12 @@
             <li [ngbNavItem]="'propertytypes'">
                 <button ngbNavLink id="propertypes-tab" class="nav-link">Tipos de inmuebles</button>
                 <ng-template ngbNavContent>
-                    <app-stage-property-type [project]="project" [projectStage]="projectStage" />
+                    <app-stage-property-type [project]="project" [projectStage]="projectStage" [isView]="isViewPage" />
                 </ng-template>
             </li>
             <li [ngbNavItem]="'clients'">
                 <button ngbNavLink id="clients-tab" class="nav-link">Clientes</button>
                 <ng-template ngbNavContent>
-
                 </ng-template>
             </li>
         </ul>

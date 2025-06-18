@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { AuthRedirectGuard } from './auth-redirect-guard.service';
+import { AuthRedirectGuard } from './auth-redirect.guard';
 import { AuthService } from '@core/services/auth.service';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 

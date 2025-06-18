@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {StagePropertyGroupDtoMock} from '../../models/stage-property-group.dto.mock.model';
 import {Router} from '@angular/router';
 import {ProjectMock} from '../../models/project.mock.model';
@@ -14,7 +14,7 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import {LoadingService} from '@core/services/loading.service';
 import {FileDropzoneComponent} from '@common/components/file-dropzone.component';
-import {NgForOf, NgIf} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 import {PropertyGroupMock} from '../../models/property-group.mock.model';
@@ -25,8 +25,10 @@ import {finalize} from 'rxjs/operators';
 import {FileUtil} from '@common/utils/file.util';
 import {StageAssignmentModalComponent} from './stage-assignment-modal.component';
 import {PropertyTypeDuplicationModalComponent} from './property-type-duplication-modal.component';
-import {ProjectStageMock} from '../../models/project-stage.mock.model';
-import {ProjectStageDtoMock} from '../../models/project-stage.mock.dto.model';
+import {ProjectStoreService} from '../../services/project-store.service';
+import {ProjectDraftStatus} from '../../models/project-draft-status';
+import {ProjectActionStatus} from '../../models/project-action-status';
+import {TypeFileIconGoogleFontsPipe} from '@common/pipes/typefile-icon-googlefonts.pipe';
 
 @Component({
   selector: 'app-project-property-types',
@@ -46,16 +48,26 @@ import {ProjectStageDtoMock} from '../../models/project-stage.mock.dto.model';
 export class ProjectPropertyTypesComponent implements OnInit {
   @Input()
   public project: ProjectMock = { id : 0 };
+  @Input()
+  isView: boolean = false;
   stagesPropertyTypes: StagePropertyGroupDtoMock[]= [];
+  pathBase?: string;
 
   constructor(private readonly router: Router,
               private readonly ksModalGallerySvc: KsModalGalleryService,
               private readonly modalService: NgbModal,
               private readonly loadingService: LoadingService,
-              private readonly projectPropertyTypeSvc: ProjectPropertyTypesService) {
+              private readonly projectPropertyTypeSvc: ProjectPropertyTypesService,
+              protected readonly projectStore: ProjectStoreService) {
   }
 
   ngOnInit(): void {
+    if(this.projectStore.status() !== ProjectActionStatus.NEW) {
+      this.pathBase = `/public/home/project-info/`
+    } else {
+      this.pathBase = `/public/home/${this.projectStore.draftPathCurrent()}/`;
+    }
+
     this.loadData();
   }
 
@@ -63,8 +75,8 @@ export class ProjectPropertyTypesComponent implements OnInit {
     undefined, view: boolean | undefined = undefined):void {
     this.loadingService.show();
     setTimeout(() => {
-      this.router.navigate(['/public/home/project-new/property-type'],
-        { state: { view, property_type: propertyType, project_stages: this.project.projectStages ?? []} });
+      this.router.navigate([`${this.pathBase}property-type`],
+        { state: { view, propertyType, project: this.project } });
       this.loadingService.hide();
     }, 500);
   }
@@ -145,11 +157,19 @@ export class ProjectPropertyTypesComponent implements OnInit {
       });
   }
 
-  toGoProperties(propertyType: StagePropertyGroupDtoMock) : void {
+  toGoProperties(stagePropertyType: StagePropertyGroupDtoMock) : void {
     this.loadingService.show();
     setTimeout(() => {
-      this.router.navigate(['/public/home/project-new/properties'], { state:  { property_type: propertyType } });
+
       this.loadingService.hide();
+      this.projectPropertyTypeSvc.readStagePropertyGroupByPropertyType(stagePropertyType?.propertyGroup!)
+        .pipe(finalize(() => this.loadingService.hide()))
+        .subscribe(spgs => {
+          stagePropertyType!.propertyGroup!.stagePropertyGroups = spgs ?? [];
+          this.router.navigate([`${this.pathBase}properties`],
+            { state: {  stagePropertyType, projectStages: this.project.projectStages ?? [], originFlow: "PROJECT"} });
+        });
+
     }, 1000);
   }
 
@@ -302,5 +322,13 @@ export class ProjectPropertyTypesComponent implements OnInit {
 
   get isShowTableEmpty() {
     return !this.stagesPropertyTypes || this.stagesPropertyTypes.length === 0;
+  }
+
+  get isViewPage() {
+    if(this.projectStore.status() === ProjectActionStatus.EDIT) {
+      return false;
+    }
+    if(this.isView) return true;
+    return this.projectStore.draftStatus() == ProjectDraftStatus.VIEW;
   }
 }

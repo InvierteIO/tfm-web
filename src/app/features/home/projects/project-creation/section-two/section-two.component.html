@@ -4,7 +4,7 @@
     <ol class="breadcrumb title-tp-h1 mt-4 mb-3 d-flex align-items-center">
       <li class="breadcrumb-item d-flex align-items-center">
         <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="toGoSection1()">arrow_back</span>
-        <a class="breadcrumb-link" (click)="toGoSection1()">Crear Proyecto</a>
+        <a class="breadcrumb-link" (click)="toGoSection1()">{{projectStore.titleBreadcrumbBase()}}</a>
       </li>
       <li class="breadcrumb-item io-green-primary active" aria-current="page">
         <span class="fw-light">Seccion 2</span>
@@ -13,14 +13,14 @@
   </nav>
 
   <div class="card p-0 border-0 rounded-0">
-    <div class="card-body px-3 my-4">
+    <div class="card-body px-3 mb-4 mb-2">
       <div class="row justify-content-center">
         <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
           <form  [formGroup]="form" (ngSubmit)="next()" >
             <app-additional-information [form]="form"
-                                        [financialsBonus]="financialsBonus" [banks]="banks"  />
+                                        [financialsBonus]="financialsBonus" [banks]="banks"/>
 
-            <app-project-property-types [project]="project"/>
+            <app-project-property-types [project]="project" [isView]="isViewPage"/>
 
             <app-button-loading
               type="submit"

@@ -1,4 +1,4 @@
-import {PropertyMock} from '../../../shared/models/property.mock.model';
+import {PropertyMock} from '../../../../shared/models/property.mock.model';
 import {FormGroup} from '@angular/forms';
 
 export interface PropertyRow {

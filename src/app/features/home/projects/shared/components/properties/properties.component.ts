@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {StagePropertyGroupDtoMock} from '../../shared/models/stage-property-group.dto.mock.model';
+import {StagePropertyGroupDtoMock} from '../../models/stage-property-group.dto.mock.model';
 import {Router} from '@angular/router';
 import {DropdownSearchComponent} from '@common/components/dropdown-search.component';
-import {PropertyMock} from '../../../shared/models/property.mock.model';
-import {CommercializationCycle} from '../../../shared/models/commercialization-cycle.mock.model';
+import {PropertyMock} from '../../../../shared/models/property.mock.model';
+import {CommercializationCycle} from '../../../../shared/models/commercialization-cycle.mock.model';
 import {BooleanLabelPipe} from '@common/pipes/boolean-label.pipe';
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
@@ -15,6 +15,11 @@ import {FormUtil} from '@common/utils/form.util';
 import {PropertyRow} from './property-row.model';
 import {LowerCasePipe, NgForOf, NgIf} from '@angular/common';
 import {LoadingService} from "@core/services/loading.service";
+import {ProjectStoreService} from '../../services/project-store.service';
+import {ProjectDraftStatus} from '../../models/project-draft-status';
+import {ProjectStageMock} from '../../models/project-stage.mock.model';
+import {ProjectActionStatus} from '../../models/project-action-status';
+import {ProjectMock} from '../../models/project.mock.model';
 
 @Component({
   selector: 'app-properties',
@@ -29,24 +34,31 @@ import {LoadingService} from "@core/services/loading.service";
     IsInvalidFieldPipe,
     SelectStyleDirective
   ],
-  templateUrl: './properties.component.html',
-  styleUrl: './properties.component.css'
+  templateUrl: './properties.component.html'
 })
 export class PropertiesComponent implements OnInit {
   rows: PropertyRow[] = [];
-  propertyType?: StagePropertyGroupDtoMock;
+  stagePropertyType?: StagePropertyGroupDtoMock;
+  projectStages: ProjectStageMock[]= [];
   selectedFilter: string = 'Nombre';
-  protected readonly CommercializationCycle = CommercializationCycle;
+  isView: boolean = false;
+  originFlow?: string;
+  project?: ProjectMock;
+  protected readonly COMMERCIALIZATION_CYCLE = CommercializationCycle;
 
   constructor(private router: Router,
               private readonly fb: FormBuilder,
-              private readonly loadingService: LoadingService) {
+              private readonly loadingService: LoadingService,
+              protected readonly projectStore: ProjectStoreService) {
     const nav = this.router.getCurrentNavigation();
 
-    this.propertyType = nav?.extras.state?.["property_type"];
-    console.log(this.propertyType);
-    if(!this.propertyType || !this.propertyType!.propertyGroup) {
-      this.router.navigate(['/public/home/project-new/section1']);
+    this.stagePropertyType = nav?.extras.state?.["stagePropertyType"];
+    this.projectStages = nav?.extras.state?.["projectStages"];
+    this.isView = nav?.extras.state?.["view"];
+    this.project = nav?.extras.state?.["project"];
+    this.originFlow = nav?.extras.state?.["originFlow"];
+    if(!this.stagePropertyType || !this.stagePropertyType!.propertyGroup) {
+      this.back();
     }
   }
 
@@ -55,15 +67,43 @@ export class PropertiesComponent implements OnInit {
   }
 
   toGoPropertyType():void {
-    this.router.navigate(['/public/home/project-new/property-type']);
+    if(this.projectStore.status() !== ProjectActionStatus.NEW) {
+      this.router.navigate(['/public/home/project-info/property-type'],
+        { state: { view: true, propertyType: this.stagePropertyType?.propertyGroup, projectStages: this.projectStages ?? []} });
+    } else {
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/property-type`],
+        { state: { view: true, propertyType: this.stagePropertyType?.propertyGroup, projectStages: this.projectStages ?? []} });
+    }
+  }
+
+  goToFlowInit(): void {
+    if(this.projectStore.status() === ProjectActionStatus.NEW) {
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section1`]);
+      return;
+    }
+    this.router.navigate(['/public/home/project-info/'], {
+      state: { project: this.project,  activeId: 'detail' }
+    });
   }
 
   back(): void {
-    this.router.navigate(['/public/home/project-new/section1']);
+    if(this.projectStore.status() === ProjectActionStatus.NEW) {
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
+      return;
+    }
+    if(this.originFlow === 'STAGE') {
+      this.router.navigate(['/public/home/project-info/stage'], {
+        state: { project: this.project, stage: this.stagePropertyType?.stage, activeId: 'propertytypes'  }
+      });
+    } else if (this.originFlow === 'PROJECT') {
+      this.router.navigate(['/public/home/project-info/'], {
+        state: { project: this.project,  activeId: 'propertytypes' }
+      });
+    }
   }
 
 
-  get isShowTable() {
+  get isShowTableEmpty() {
     return !this.rows || this.rows.length === 0;
   }
 
@@ -190,7 +230,17 @@ export class PropertiesComponent implements OnInit {
         isNew: false
       }));
       this.loadingService.hide();
-    }, 1000);
+    }, 500);
   }
 
+  get titleBreadcrumbBase() {
+    if(this.projectStore.status() !== ProjectActionStatus.NEW){
+      return this.project?.name ?? '';
+    }
+    return this.projectStore.titleBreadcrumbBase();
+  }
+
+  get isViewPage() {
+    return this.projectStore.draftStatus() == ProjectDraftStatus.VIEW || this.isView;
+  }
 }

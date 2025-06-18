@@ -3,13 +3,15 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {FormUtil} from '@common/utils/form.util';
 import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
-import {NgForOf, NgIf} from '@angular/common';
+import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
 import {Router} from "@angular/router";
 import {IsInvalidFieldPipe} from "@common/pipes/is-invalid-field.pipe";
 import {LoadingService} from '@core/services/loading.service';
 import {ProjectMock} from '../../shared/models/project.mock.model';
 import {ProjectService} from '../../shared/services/project.service';
 import {finalize} from 'rxjs/operators';
+import {ProjectDraftStatus} from '../../shared/models/project-draft-status';
+import {ProjectStoreService} from '../../shared/services/project-store.service';
 
 @Component({
   selector: 'app-section-one',
@@ -27,37 +29,51 @@ export class SectionOneComponent  implements OnInit  {
   public form: FormGroup;
   loading:boolean = false;
   public project?: ProjectMock;
+  public projectDraftStatus:ProjectDraftStatus = ProjectDraftStatus.NEW;
 
   constructor(private readonly  router: Router,
               private readonly fb: FormBuilder,
               private readonly projectService: ProjectService,
-              private readonly loadingService: LoadingService) {
+              private readonly loadingService: LoadingService,
+              protected readonly projectStore: ProjectStoreService) {
     this.form = this.buildForm();
+    const nav = this.router.getCurrentNavigation();
+    this.project = nav?.extras.state?.['project'];
+    this.projectDraftStatus  = this.projectStore.draftStatus();
   }
 
   ngOnInit(): void {
-    // Simulación asíncrona de carga
+    if(this.projectDraftStatus == ProjectDraftStatus.VIEW){
+      this.form.disable({ emitEvent: false });
+    }
     setTimeout(() => {
       this.loadData();
     }, 500);
   }
 
+  public goToProjects(): void {
+    this.router.navigate([`/public/home/projects`]);
+  }
 
   public next(): void {
+    if(this.projectDraftStatus == ProjectDraftStatus.VIEW) {
+        this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`, { state: { project: this.project } }]);
+    }
+
     console.log(this.form);
     if (this.form?.invalid) {
       FormUtil.markAllAsTouched(this.form);
-      console.log("Form invalid!!");
       return;
     }
     console.log(this.form.value);
 
     this.loadingService.show();
     setTimeout(() => {
-      this.router.navigate(['/public/home/project-new/section2']);
       this.projectService.createDraft(this.captureData())
         .pipe(finalize(() => this.loadingService.hide()))
         .subscribe(project => this.project = project);
+
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
     }, 50);
   }
 
@@ -107,5 +123,4 @@ export class SectionOneComponent  implements OnInit  {
       stages:  this.project?.stages
     });
   }
-
 }

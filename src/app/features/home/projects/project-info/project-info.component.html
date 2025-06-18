@@ -11,7 +11,7 @@
         <li [ngbNavItem]="'detail'">
           <button ngbNavLink id="detail-tab" class="nav-link">Detalle</button>
           <ng-template ngbNavContent>
-            <app-project-info-general [project]="project"/>
+            <app-project-info-general [project]="project" [isViewPage]="isViewPage"/>
           </ng-template>
         </li>
         <li [ngbNavItem]="'stages'">
@@ -19,7 +19,7 @@
           <ng-template ngbNavContent>
             <div class="d-flex flex-wrap justify-content-center mt-2">
               @for(item of stages; track item.id) {
-                <app-project-stage-card [stage]="item" [project]="project"/>
+                <app-project-stage-card [stage]="item" [project]="project" [isView]="isViewPage"/>
               }
             </div>
           </ng-template>
@@ -27,7 +27,7 @@
         <li [ngbNavItem]="'documents'">
           <button ngbNavLink id="documents-tab" class="nav-link">Documentos</button>
           <ng-template ngbNavContent>
-            <app-project-documents [project]="project!" />
+            <app-project-documents [project]="project!" [isView]="isViewPage" />
           </ng-template>
         </li>
         <li [ngbNavItem]="'propertytypes'">
@@ -35,7 +35,7 @@
           <ng-template ngbNavContent>
             <div class="row justify-content-center">
               <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12 my-3">
-                <app-project-property-types [project]="project!" class="mt-4" />
+                <app-project-property-types [project]="project!" class="mt-4" [isView]="isViewPage" />
               </div>
             </div>
           </ng-template>

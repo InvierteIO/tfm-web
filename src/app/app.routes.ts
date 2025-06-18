@@ -9,8 +9,8 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { LoginInternalComponent } from './features/auth/login/internal/login-internal.component';
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
 import { Role } from '@core/models/role.model';
-import { RoleGuardService } from '@core/guards/role-guard.service';
-import { AuthRedirectGuard } from '@core/guards/auth-redirect-guard.service';
+import { RoleGuardService } from '@core/guards/role.guard.service';
+import { AuthRedirectGuard } from '@core/guards/auth-redirect.guard';
 
 
 export const routes: Routes = [

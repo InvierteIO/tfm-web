@@ -21,6 +21,8 @@ import {ProjectMultimediaComponent} from '../../shared/components/project-multim
 import {
   LocationInformationComponent
 } from '../../shared/components/location-information/location-information.component';
+import {ProjectStoreService} from '../../shared/services/project-store.service';
+import {ProjectDraftStatus} from '../../shared/models/project-draft-status';
 
 @Component({
   selector: 'app-complementary',
@@ -48,13 +50,18 @@ export class ComplementaryComponent implements OnInit {
 
   constructor(private readonly router: Router,
               private readonly fb: FormBuilder,
-              private readonly locationsSvc: GeographicalLocationService,
               private readonly ksModalGallerySvc: KsModalGalleryService,
               private readonly modalService: NgbModal,
-              private readonly loadingService: LoadingService) {
+              private readonly loadingService: LoadingService,
+              protected readonly projectStore: ProjectStoreService) {
   }
 
   ngOnInit(): void {
+    if(this.isViewPage) {
+      this.form.disable({ emitEvent: false });
+      this.form.get('bonuses')?.disable({ emitEvent: false });
+      this.form.get('banks')?.disable({ emitEvent: false });
+    }
   }
 
   onDropFile(event: DragEvent): void {
@@ -134,7 +141,7 @@ export class ComplementaryComponent implements OnInit {
   }
 
   toGoSection1(): void {
-    this.router.navigate(['/public/home/project-new/section1']);
+    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section1`]);
   }
 
   viewDocument(file: ProjectDocumentMock, type: 'blueprint'): void {
@@ -176,10 +183,14 @@ export class ComplementaryComponent implements OnInit {
   }
 
   back():void {
-    this.router.navigate(['/public/home/project-new/infrastructure-installation']);
+    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/infrastructure-installation`]);
   }
 
   next(): void {
+    if(this.isViewPage) {
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/legal-scope`]);
+      return;
+    }
     if (this.form?.invalid) {
       FormUtil.markAllAsTouched(this.form);
       console.log("Form invalid!!");
@@ -187,8 +198,12 @@ export class ComplementaryComponent implements OnInit {
     }
     this.loadingService.show();
     setTimeout(() => {
-      this.router.navigate(['public/home/project-new/legal-scope']);
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/legal-scope`]);
       this.loadingService.hide();
     }, 50);
+  }
+
+  get isViewPage() {
+    return this.projectStore.draftStatus() == ProjectDraftStatus.VIEW;
   }
 }
