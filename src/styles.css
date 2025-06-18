@@ -307,7 +307,8 @@ body {
   border-bottom: none !important;
 }
 
-.tab-s2 .nav-item .active {
+.tab-s2 .nav-item .active,
+.tab-s4 .nav-item .active{
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 16px;
@@ -316,13 +317,18 @@ body {
   color: #066B4B;
 }
 
-.tab-s2 .nav-item .nav-link:not(.active) {
+.tab-s2 .nav-item .nav-link:not(.active),
+.tab-s4 .nav-item .nav-link:not(.active){
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 16px;
   line-height: 100%;
   vertical-align: middle;
   color: #5F5F5F;
+}
+
+.tab-s4 .nav-item .nav-link:not(.active) {
+  font-weight: 600 !important;
 }
 
 .tab-s3 {
@@ -389,6 +395,14 @@ body {
 }
 
 /*****************Others********************/
+.project-image {
+  height: 20rem;
+  width: auto;
+  max-width: 100%;
+  border-radius: 0.5rem;
+  object-fit: contain;
+}
+
 .arrow-back {
   background-color: #F9B234 !important;
   color: white !important;

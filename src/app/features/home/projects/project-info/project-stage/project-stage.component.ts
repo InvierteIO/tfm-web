@@ -6,14 +6,16 @@ import {LoadingService} from '@core/services/loading.service';
 import {ProjectMock} from "../../shared/models/project.mock.model";
 import {ProjectStageDtoMock} from "../../shared/models/project-stage.mock.dto.model";
 import {StagePropertyTypeComponent} from "./stage-property-type.component";
+import {ProjectStageDetailsComponent} from "./project-stage-details/project-stage-details.component";
 
 @Component({
   selector: 'app-project-stage',
   standalone: true,
-  imports: [
-    NgbNavModule,
-    StagePropertyTypeComponent
-  ],
+    imports: [
+        NgbNavModule,
+        StagePropertyTypeComponent,
+        ProjectStageDetailsComponent
+    ],
   templateUrl: './project-stage.component.html'
 })
 export class ProjectStageComponent {

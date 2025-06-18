@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 import {NgForOf, NgIf} from '@angular/common';
 import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
+import {LoadingService} from '@core/services/loading.service';
 
 @Component({
   selector: 'app-project-info-general',
@@ -19,16 +20,15 @@ import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
     FormErrorMessagesPipe,
     NgForOf
   ],
-  templateUrl: './project-info-general.component.html',
-  styleUrl: './project-info-general.component.css'
+  templateUrl: './project-info-general.component.html'
 })
 export class ProjectInfoGeneralComponent implements OnInit {
   @Input()
   public project?: ProjectMock
   public form: FormGroup;
   loading:boolean = false;
-
-  constructor(private readonly fb: FormBuilder) {
+  constructor(private readonly fb: FormBuilder,
+              private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
   }
 
@@ -65,11 +65,11 @@ export class ProjectInfoGeneralComponent implements OnInit {
       FormUtil.markAllAsTouched(this.form);
       return;
     }
-    this.loading= true;
+    this.loadingService.show();
     Swal.fire(
-      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.CONFIRMATION]("¿Desea actualizar la información general del proyecto?"))
+      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea actualizar la información general del proyecto?"))
       .then((result) => {
-        this.loading= false;
+        this.loadingService.hide();
         if (result.isConfirmed) {
 
         }

@@ -1,0 +1,38 @@
+<div class="card p-0 border-0 rounded-0">
+
+  <div class="card-body p-0">
+    <div class="tab-s4">
+      <ul ngbNav #nav="ngbNav" class="nav nav-underline m-1" [destroyOnHide]="false">
+        <li [ngbNavItem]="'general'">
+          <button ngbNavLink id="general-tab" class="nav-link">Datos generales</button>
+          <ng-template ngbNavContent>
+            <app-project-stage-info-general/>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="'bankbonus'">
+          <button ngbNavLink id="bankbonus-tab" class="nav-link">Banca / Bonos</button>
+          <ng-template ngbNavContent>
+            <app-project-stage-info-bonus-bank/>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="'infrastructurefeatures'">
+          <button ngbNavLink id="infrastructurefeatures-tab" class="nav-link">Características / Servicios</button>
+          <ng-template ngbNavContent>
+            <div class="pt-4">
+              <app-infrastructure-installation [projectStageCurrent]="projectStage"/>
+            </div>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="'location'">
+          <button ngbNavLink id="location-tab" class="nav-link">Ubicación</button>
+          <ng-template ngbNavContent>
+            <div class="pt-4">
+              <app-project-stage-info-location [projectStageCurrent]="projectStage"/>
+            </div>
+          </ng-template>
+        </li>
+      </ul>
+    </div>
+    <div [ngbNavOutlet]="nav" class="tab-content"></div>
+  </div>
+</div>

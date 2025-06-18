@@ -1,22 +1,34 @@
-<div class="container">
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb title-tp-h1 mt-4 mb-3 d-flex align-items-center">
-      <li class="breadcrumb-item d-flex align-items-center">
-        <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
-        <a class="breadcrumb-link" (click)="toGoSection1()">Crear Proyecto</a>
-      </li>
-      <li class="breadcrumb-item io-green-primary active" aria-current="page">
-        <span class="fw-light">Característica de habilitación</span>
-      </li>
-    </ol>
-  </nav>
+<ng-container *ngIf="!projectStageCurrent; else stageContent">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb title-tp-h1 mt-4 mb-3 d-flex align-items-center">
+        <li class="breadcrumb-item d-flex align-items-center">
+          <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
+          <a class="breadcrumb-link" (click)="toGoSection1()">Crear Proyecto</a>
+        </li>
+        <li class="breadcrumb-item io-green-primary active" aria-current="page">
+          <span class="fw-light">Característica de habilitación</span>
+        </li>
+      </ol>
+    </nav>
 
-  <div class="card p-0 border-0 rounded-0">
-    <div class="card-body px-3 my-4">
-      <div class="row justify-content-center">
-        <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
-          <form  [formGroup]="form" (ngSubmit)="next()" >
-            <h2 class="mb-4 subtitle-tp-h2 io-green-primary">Características de Habilitación</h2>
+    <div class="card p-0 border-0 rounded-0">
+      <div class="card-body px-3 my-4">
+        <ng-container *ngTemplateOutlet="formContent"></ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #stageContent>
+  <ng-container *ngTemplateOutlet="formContent"></ng-container>
+</ng-template>
+
+<ng-template #formContent>
+  <div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
+      <form  [formGroup]="form" (ngSubmit)="onSubmit()" >
+        <h2 class="mb-4 subtitle-tp-h2 io-green-primary">Características de Habilitación</h2>
             <div class="row" formArrayName="infra_features_defined" >
               @for (infra of infraInstallationsDefined; track infra.id; let i = $index) {
                 <div class="col-xl-6 col-lg-6 col-sm-12 mb-3"  [formGroupName]="i">
@@ -146,13 +158,11 @@
             </div>
             <app-button-loading
               type="submit"
-              [btnClasses]="'btn d-block mx-auto mt-5 btn-width300 h37  btn-s4 button-tp br5'"
+              [btnClasses]="'btn d-block mx-auto mt-4 btn-width300 h37 btn-s4 button-tp br5'"
               [loading]="loading"
               msgLoading="Cargando..."
-              msgButton="Siguiente"/>
+              [msgButton]="projectStageCurrent ? 'Guardar' : 'Siguiente'"/>
           </form>
         </div>
       </div>
-    </div>
-  </div>
-</div>
+</ng-template>
