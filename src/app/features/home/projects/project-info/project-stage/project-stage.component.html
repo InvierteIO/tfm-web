@@ -27,13 +27,13 @@
             <li [ngbNavItem]="'blueprints'">
                 <button ngbNavLink id="blueprints-tab" class="nav-link">Planos generales / Otros</button>
                 <ng-template ngbNavContent>
-                    <app-project-stage-documents />
+                    <app-project-stage-documents [documentTypes]="documentBluePrintTypes" [isView]="isViewPage"/>
                 </ng-template>
             </li>
             <li [ngbNavItem]="'legalsdocuments'">
                 <button ngbNavLink id="legalsdocuments-tab" class="nav-link">Documentos legales</button>
                 <ng-template ngbNavContent>
-
+                  <app-project-stage-documents [documentTypes]="documentLegalTypes" [isView]="isViewPage"/>
                 </ng-template>
             </li>
             <li [ngbNavItem]="'propertytypes'">

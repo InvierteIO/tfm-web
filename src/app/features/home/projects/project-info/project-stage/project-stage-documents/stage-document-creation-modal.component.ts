@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {FileDropzoneComponent} from '@common/components/file-dropzone.component';
 import {LoadingComponent} from '@common/components/loading.component';
@@ -30,8 +30,9 @@ import {IsInvalidFieldPipe} from '@common/pipes/is-invalid-field.pipe';
   templateUrl: './stage-document-creation-modal.component.html'
 })
 export class StageDocumentCreationModalComponent implements OnInit {
-  loading: boolean = false;
+  @Input()
   documentTypes: CatalogDetailMock[] = [];
+  loading: boolean = false;
   documentSelected?: CatalogDetailMock;
   form: FormGroup;
   constructor(public readonly activeModal: NgbActiveModal,
@@ -48,16 +49,6 @@ export class StageDocumentCreationModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.documentTypes = [{
-      id: 1,
-      code: '00010001',
-      name: 'Plano general del proyecto',
-    },
-      {
-        id: 2,
-        code: '00010002',
-        name: 'Plano de la etapa del proyecto',
-      }];
   }
 
   onDropFile(event: DragEvent): void {

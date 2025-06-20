@@ -10,6 +10,7 @@ import {ProjectStageDetailsComponent} from "./project-stage-details/project-stag
 import {ProjectStoreService} from '../../shared/services/project-store.service';
 import {ProjectActionStatus} from '../../shared/models/project-action-status';
 import {ProjectStageDocumentsComponent} from './project-stage-documents/project-stage-documents.component';
+import {CatalogDetailMock} from '../../../shared/models/catalog-detail.mock.model';
 
 @Component({
   selector: 'app-project-stage',
@@ -27,20 +28,63 @@ export class ProjectStageComponent {
   projectStage?: ProjectStageDtoMock;
   private isView = false;
   activeId: string = 'detail';
+  documentBluePrintTypes: CatalogDetailMock[] = [];
+  documentLegalTypes: CatalogDetailMock[] = [];
+
   constructor(private readonly router: Router,
-              private readonly projectService: ProjectService,
-              private readonly loadingService: LoadingService,
               private readonly projectStore: ProjectStoreService) {
+    this.loadInfoFromNavigation();
+
+    if((this.project?.id ?? 0) === 0) {
+      this.router.navigate(['/public/home/projects']);
+    }
+    this.loadData();
+  }
+
+  private loadInfoFromNavigation(): void {
     const nav = this.router.getCurrentNavigation();
     this.project = nav?.extras.state?.['project'];
     this.projectStage = nav?.extras.state?.['stage'];
     this.isView = nav?.extras.state?.['view'];
     this.activeId = nav?.extras.state?.['activeId'] ?? 'detail';
-    if((this.project?.id ?? 0) === 0) {
-      this.router.navigate(['/public/home/projects']);
-    }
   }
 
+  private loadData() {
+    this.documentBluePrintTypes = [{
+      id: 1,
+      code: '00010001',
+      name: 'Plano general del proyecto',
+    },
+      {
+        id: 2,
+        code: '00010002',
+        name: 'Plano de la etapa del proyecto',
+      }];
+    this.documentLegalTypes= [{
+      id: 3,
+      code: '00020001',
+      name: 'Copia Literal',
+    },
+      {
+        id: 4,
+        code: '00020002',
+        name: 'Certificado registral inmobiliario',
+      },
+      {
+        id: 5,
+        code: '00020003',
+        name: 'Licencia de edificacion',
+      },{
+        id: 6,
+        code: '00020004',
+        name: 'Partida electronica inmmobiliaria',
+      },
+      {
+        id: 7,
+        code: '00020004',
+        name: 'Contrato',
+      }];
+  }
   toProjects(): void {
     this.router.navigate(['/public/home/projects']);
   }
