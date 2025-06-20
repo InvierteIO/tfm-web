@@ -34,10 +34,12 @@
           <td class="align-middle text-center">{{stagePropertyGroup.propertyGroup?.name}}</td>
           <td class="align-middle">
             @if(stagePropertyGroup.architecturalBluetprint) {
-              <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="Eliminar archivo de plano de arquitectura"
-                      (click)="deleteFile($event, stagePropertyGroup, 'blueprint')">
-                <span class="material-symbols-rounded">delete</span>
-              </button>
+              @if (!isView) {
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="Eliminar archivo de plano de arquitectura"
+                        (click)="deleteFile($event, stagePropertyGroup, 'blueprint')">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              }
               <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="descargar archivo de plano de arquitectura"
                       (click)="downloadFile(stagePropertyGroup.architecturalBluetprint)">
                 <span class="material-symbols-rounded">download_2</span>
@@ -47,7 +49,7 @@
                 <span class="material-symbols-rounded">file_open</span>
               </button>
               {{stagePropertyGroup.architecturalBluetprint.name}}
-            } @else {
+            } @else if(!isView){
               <app-file-dropzone
                 text="Arratra archivos PDF o imágenes (JPG, PNG)"
                 accept=".pdf,image/png,image/jpeg"
@@ -58,16 +60,18 @@
           </td>
           <td class="align-middle">
             @if(stagePropertyGroup.formatTemplateLoaded) {
-              <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="Eliminar archivo de plantilla precargada"
-                      (click)="deleteFile($event, stagePropertyGroup, 'template')">
-                <span class="material-symbols-rounded">delete</span>
-              </button>
+              @if (!isView) {
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="Eliminar archivo de plantilla precargada"
+                        (click)="deleteFile($event, stagePropertyGroup, 'template')">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              }
               <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="descargar archivo de plantilla precargada"
                       (click)="downloadFile(stagePropertyGroup.formatTemplateLoaded)">
                 <span class="material-symbols-rounded">download_2</span>
               </button>
               {{stagePropertyGroup.formatTemplateLoaded.name}}
-            } @else {
+            } @else if(!isView){
               <app-file-dropzone
                 text="Arratra archivo excel con información válida"
                 accept=".xls,.xlsx"

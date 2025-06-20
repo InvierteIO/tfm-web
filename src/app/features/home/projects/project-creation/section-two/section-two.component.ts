@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {AdditionalInformationComponent} from '../../shared/components/additional-information/additional-information.component';
+import {
+  AdditionalInformationComponent
+} from '../../shared/components/additional-information/additional-information.component';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
-import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
 import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {IsInvalidFieldPipe} from '@common/pipes/is-invalid-field.pipe';
-import {NgForOf, NgIf} from '@angular/common';
 import {
   ProjectPropertyTypesComponent
 } from '../../shared/components/project-property-types/project-property-types.component';
@@ -15,13 +14,13 @@ import {Router} from '@angular/router';
 import {LoadingService} from '@core/services/loading.service';
 import {FormUtil} from '@common/utils/form.util';
 import {DataType} from '../../shared/models/data-type.model';
-import {PropertyGroupMock} from '../../shared/models/property-group.mock.model';
 import {ProjectService} from '../../shared/services/project.service';
 import {finalize} from 'rxjs/operators';
 import {StageBankMock} from '../../shared/models/stage-bank.mock.model';
 import {StageBonusTypeMock} from '../../shared/models/stage-bonus-type.mock.model';
 import {ProjectStageMock} from '../../shared/models/project-stage.mock.model';
-import {FinancialBonusTypeMock} from '../../shared/models/financial-bonus-type.mock';
+import {ProjectStoreService} from '../../shared/services/project-store.service';
+import {ProjectDraftStatus} from '../../shared/models/project-draft-status';
 
 @Component({
   selector: 'app-section-two',
@@ -42,11 +41,13 @@ export class SectionTwoComponent implements OnInit  {
   banks: BankMock[] = [];
   stageBanksCurrent?: StageBankMock[];
   stageBonusTypesCurrent?: StageBonusTypeMock[];
+  public projectDraftStatus:ProjectDraftStatus = ProjectDraftStatus.NEW;
 
   constructor(private readonly  router: Router,
               private readonly fb: FormBuilder,
               private readonly projectService: ProjectService,
-              private readonly loadingService: LoadingService) {
+              private readonly loadingService: LoadingService,
+              protected readonly projectStore: ProjectStoreService) {
     this.form = this.buildForm();
   }
 
@@ -55,8 +56,16 @@ export class SectionTwoComponent implements OnInit  {
     this.loadData();
     this.initBonusesForm();
     this.initBanksForm();
+    if(this.isViewPage) {
+      this.form.disable({ emitEvent: false });
+      this.form.get('bonuses')?.disable({ emitEvent: false });
+      this.form.get('banks')?.disable({ emitEvent: false });
+    }
   }
 
+  get isViewPage() {
+    return this.projectStore.draftStatus() == ProjectDraftStatus.VIEW;
+  }
 
   private buildForm(): FormGroup {
     return this.fb.group({
@@ -66,11 +75,13 @@ export class SectionTwoComponent implements OnInit  {
   }
 
   toGoSection1(): void {
-    this.router.navigate(['/public/home/project-new/section1']);
+    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section1`]);
   }
 
   next(): void {
-    console.log(this.form);
+    if(this.projectDraftStatus == ProjectDraftStatus.VIEW) {
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/infrastructure-installation`]);
+    }
     if (this.form?.invalid) {
       FormUtil.markAllAsTouched(this.form);
       return;
@@ -83,7 +94,7 @@ export class SectionTwoComponent implements OnInit  {
       this.projectService.save(this.project)
         .pipe(finalize(() => this.loadingService.hide()))
         .subscribe(project => {
-          this.router.navigate(['/public/home/project-new/infrastructure-installation']);
+          this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/infrastructure-installation`]);
           this.project = project;
         });
     }, 50);

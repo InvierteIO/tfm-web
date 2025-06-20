@@ -3,7 +3,7 @@
     <ol class="breadcrumb title-tp-h1 mt-4 mb-3 d-flex align-items-center">
       <li class="breadcrumb-item d-flex align-items-center">
         <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
-        <a class="breadcrumb-link" (click)="toGoSection1()">Crear Proyecto</a>
+        <a class="breadcrumb-link" (click)="toGoSection1()">{{draftStore.titleBreadcrumbBase()}}</a>
       </li>
 
       <li class="breadcrumb-item io-green-primary active" aria-current="page">
@@ -59,7 +59,7 @@
         <td>{{property.stagePropertyGroup?.stage?.stage}}</td>
         <td class="text-center align-middle">
           <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center"
-                  title="Adjuntar independizacion de cada lote / Terreno con u codigo unico de registro publico"
+                  title="Adjuntar independizacion de cada lote / Terreno con un codigo unico de registro publico"
                   (click)="openModalDocumentsModal($event, property, DOCUMENT_PROPERTY_STEP.STEP_7)">
             <span class="material-symbols-rounded">folder_open</span>
           </button>

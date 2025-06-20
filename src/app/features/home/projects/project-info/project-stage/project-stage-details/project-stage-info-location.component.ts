@@ -23,6 +23,8 @@ import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swa
 export class ProjectStageInfoLocationComponent {
   @Input()
   projectStageCurrent?:ProjectStageDtoMock;
+  @Input()
+  isView = false;
   loading: boolean = false;
   public form: FormGroup;
 

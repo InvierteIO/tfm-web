@@ -6,8 +6,12 @@ import {ProjectStageService} from '../shared/services/project-stage.service';
 import {ProjectStageCardComponent} from './project-stage-card.component';
 import {ProjectInfoGeneralComponent} from "./project-info-general.component";
 import {ProjectDocumentsComponent} from './project-documents.component';
-import {ProjectPropertyTypesComponent} from '../shared/components/project-property-types/project-property-types.component';
+import {
+  ProjectPropertyTypesComponent
+} from '../shared/components/project-property-types/project-property-types.component';
 import {NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
+import {ProjectStoreService} from '../shared/services/project-store.service';
+import {ProjectActionStatus} from '../shared/models/project-action-status';
 
 @Component({
   selector: 'app-project-info',
@@ -27,7 +31,8 @@ export class ProjectInfoComponent implements OnInit {
   activeId: string = 'detail';
 
   constructor(private router: Router,
-              private readonly projectStageSvc: ProjectStageService) {
+              private readonly projectStageSvc: ProjectStageService,
+              protected readonly projectStore: ProjectStoreService) {
     const nav = this.router.getCurrentNavigation();
     this.project = nav?.extras.state?.['project'];
     this.activeId = nav?.extras.state?.['activeId'] ?? 'detail';
@@ -50,5 +55,9 @@ export class ProjectInfoComponent implements OnInit {
 
   back(): void {
     this.router.navigate(['/public/home/projects']);
+  }
+
+  get isViewPage(): boolean {
+    return this.projectStore.status() === ProjectActionStatus.VIEW;
   }
 }

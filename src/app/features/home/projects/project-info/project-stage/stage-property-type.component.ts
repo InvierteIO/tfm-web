@@ -30,6 +30,8 @@ export class StagePropertyTypeComponent implements OnInit  {
   project?: ProjectMock;
   @Input()
   projectStage?: ProjectStageDtoMock;
+  @Input()
+  isView = false;
   stagesPropertyTypes: StagePropertyGroupDtoMock[]= [];
 
   constructor(private readonly  router: Router,
@@ -50,10 +52,11 @@ export class StagePropertyTypeComponent implements OnInit  {
     });
   }
 
-  toGoProperties(propertyType: StagePropertyGroupDtoMock) : void {
+  toGoProperties(stagePropertyType: StagePropertyGroupDtoMock) : void {
     this.loadingService.show();
     setTimeout(() => {
-      this.router.navigate(['/public/home/project-new/properties'], { state:  { property_type: propertyType } });
+      this.router.navigate(['/public/home/project-info/properties'],
+        { state:  { project: this.project, stagePropertyType, view:this.isView, originFlow: "STAGE"} });
       this.loadingService.hide();
     }, 1000);
   }

@@ -30,6 +30,9 @@ import {HouseFloorAreaMock} from '../../models/house-floor-area.mock.model';
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 import {zip} from 'rxjs';
+import {ProjectStoreService} from '../../services/project-store.service';
+import {ProjectMock} from '../../models/project.mock.model';
+import {ProjectActionStatus} from '../../models/project-action-status';
 
 @Component({
     imports: [
@@ -58,13 +61,15 @@ export class PropertyTypeComponent  implements OnInit  {
   features: FeatureMock[] = [];
   loading:boolean = false;
   projectStages: ProjectStageMock[] = [];
+  project?: ProjectMock;
   propertyGroupCurrent?: PropertyGroupMock;
   titleBreadcrumbPage: string = "Agregar tipo de inmueble";
   isView: boolean = false;
 
   constructor(private readonly router: Router, private readonly fb: FormBuilder,
               private readonly loadingService: LoadingService,
-              private readonly projectPropertyTypesSvc: ProjectPropertyTypesService) {
+              private readonly projectPropertyTypesSvc: ProjectPropertyTypesService,
+              protected readonly projectStore: ProjectStoreService) {
     this.form = this.buildForm();
     this.loadInfoFromNavigation();
   }
@@ -239,7 +244,13 @@ export class PropertyTypeComponent  implements OnInit  {
   }
 
   back(): void {
-    this.router.navigate(['/public/home/project-new/section2']);
+    if(this.projectStore.status() !== ProjectActionStatus.NEW) {
+      this.router.navigate(['/public/home/project-info/'], {
+        state: { project: this.project,  activeId: 'propertytypes' }
+      });
+    } else {
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
+    }
   }
 
   save(): void {
@@ -258,14 +269,23 @@ export class PropertyTypeComponent  implements OnInit  {
             if(!this.propertyGroupCurrent) {
               this.projectPropertyTypesSvc.create(this.captureData())
                 .pipe(finalize(() => {
-                  this.router.navigate(['/public/home/project-new/section2']);
+                  if(this.projectStore.status() !== ProjectActionStatus.NEW) {
+                    this.back();
+                  } else {
+                    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
+                  }
+
                   this.loadingService.hide();
                 })).subscribe();
             } else {
               zip(this.projectPropertyTypesSvc.removePropertyGroup(this.propertyGroupCurrent),
                 this.projectPropertyTypesSvc.create(this.captureData()))
                 .pipe(finalize(() => {
-                  this.router.navigate(['/public/home/project-new/section2']);
+                  if(this.projectStore.status() !== ProjectActionStatus.NEW) {
+                    this.back();
+                  } else {
+                    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
+                  }
                   this.loadingService.hide();
                 })).subscribe();
             }
@@ -437,8 +457,9 @@ export class PropertyTypeComponent  implements OnInit  {
 
   private loadInfoFromNavigation(): void {
     const nav = this.router.getCurrentNavigation();
-    this.projectStages = nav?.extras.state?.['project_stages'] ?? [];
-    this.propertyGroupCurrent = nav?.extras.state?.['property_type'];
+    this.project = nav?.extras.state?.['project'];
+    this.projectStages = this.project?.projectStages  ?? [];
+    this.propertyGroupCurrent = nav?.extras.state?.['propertyType'];
     this.isView = nav?.extras.state?.['view'];
   }
 
@@ -493,6 +514,13 @@ export class PropertyTypeComponent  implements OnInit  {
 
   getHouseFloorAreas(propertyGroup: PropertyGroupHouseMock | undefined):HouseFloorAreaMock[]{
     return propertyGroup?.houseFloorAreas ?? [];
+  }
+
+  get titleBreadcrumbBase():string {
+    if(this.projectStore.status() !== ProjectActionStatus.NEW){
+      return this.project?.name ?? '';
+    }
+    return this.projectStore.titleBreadcrumbBase();
   }
 
 }

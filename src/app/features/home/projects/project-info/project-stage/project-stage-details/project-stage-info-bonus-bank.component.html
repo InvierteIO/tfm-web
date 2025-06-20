@@ -3,13 +3,14 @@
     <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
       <app-additional-information [form]="form"
                                   [financialsBonus]="financialsBonus" [banks]="banks"  />
-
-      <app-button-loading
-        type="submit"
-        [btnClasses]="'btn d-block mx-auto mt-3 mb-2 btn-width300 h37  btn-s4 button-tp br5'"
-        [loading]="loading"
-        msgLoading="Cargando..."
-        msgButton="Guardar"/>
+      @if (!isView) {
+        <app-button-loading
+          type="submit"
+          [btnClasses]="'btn d-block mx-auto mt-3 mb-2 btn-width300 h37  btn-s4 button-tp br5'"
+          [loading]="loading"
+          msgLoading="Cargando..."
+          msgButton="Guardar"/>
+      }
     </div>
   </div>
 </form>

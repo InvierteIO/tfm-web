@@ -4,4 +4,5 @@ export interface DocumentMock {
   path?: string;
   creationDate?: Date;
   name?: string;
+  description?: string;
 }

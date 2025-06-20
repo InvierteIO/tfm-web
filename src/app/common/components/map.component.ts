@@ -18,7 +18,7 @@ import JSZip from 'jszip';
 export class MapComponent implements AfterViewInit {
   private map!: Map;
   @Input()
-  urlKml!: string;
+  urlKml!: string ;
 
   ngAfterViewInit(): void {
     this.initMap();

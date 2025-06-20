@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ProjectDocumentMock} from '../../models/project-document.mock.model';
 import {KsModalGalleryService} from '@core/services/ks-modal-gallery.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -26,6 +26,7 @@ import {DatePipe, NgForOf, NgIf} from '@angular/common';
   templateUrl: './project-multimedia.component.html'
 })
 export class ProjectMultimediaComponent  implements OnInit {
+  @Input() isView:boolean = false;
   photographicRecords: ProjectDocumentMock[] = [];
   brochures: ProjectDocumentMock[] = [];
   multimediaDescription: string = '';

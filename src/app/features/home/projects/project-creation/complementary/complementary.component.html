@@ -3,7 +3,7 @@
         <ol class="breadcrumb title-tp-h1 mt-4 mb-3 d-flex align-items-center">
             <li class="breadcrumb-item d-flex align-items-center">
                 <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
-                <a class="breadcrumb-link" (click)="toGoSection1()">Crear Proyecto</a>
+                <a class="breadcrumb-link" (click)="toGoSection1()">{{projectStore.titleBreadcrumbBase()}}</a>
             </li>
             <li class="breadcrumb-item io-green-primary active" aria-current="page">
                 <span class="fw-light">Complementarios</span>
@@ -16,30 +16,32 @@
             <div class="row justify-content-center">
                 <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
                     <form  [formGroup]="form" (ngSubmit)="next()" >
-                        <app-location-information [form]="form"/>
+                        <app-location-information [form]="form" [isView]="isViewPage" />
                         <span class="fw-bold  mt-3 mb-1 d-block">Planos General de lotizacion</span>
                         <div class="row">
-
+                          @if (!isViewPage) {
                             <div class="col-12 col-sm-6 mt-3">
-                                <label for="blueprint_name" class="form-label text-tp-h3">Nombre de plano</label>
-                                <input type="text" class="form-control input-s4" id="blueprint_name"
-                                       placeholder="Ingresa nombre" [maxLength]="100"
-                                       [(ngModel)]="blueprintName"
-                                       (ngModelChange)="onBlueprintNameChange($event)"
-                                       [ngModelOptions]="{standalone: true}" />
-                                <div *ngIf="blueprintNameError"  class="text-danger font-italic">
-                                    <small>Debe definir el nombre del plano</small>
-                                </div>
+                              <label for="blueprint_name" class="form-label text-tp-h3">Nombre de plano</label>
+                              <input type="text" class="form-control input-s4" id="blueprint_name"
+                                     placeholder="Ingresa nombre" [maxLength]="100"
+                                     [(ngModel)]="blueprintName"
+                                     (ngModelChange)="onBlueprintNameChange($event)"
+                                     [ngModelOptions]="{standalone: true}" />
+                              <div *ngIf="blueprintNameError"  class="text-danger font-italic">
+                                <small>Debe definir el nombre del plano</small>
+                              </div>
                             </div>
                             <div class="col-12 mb-3 mt-2">
-                                <span class="fs-s1">Sube documento en pdf o imagen</span>
-                                <app-file-dropzone class="mt-2"
-                                                   dropzoneClass="dz-s1"
-                                                   text="Arrastra archivos PDF o imágenes (JPG, PNG)"
-                                                   accept=".pdf,image/png,image/jpeg"
-                                                   (dropFile)="onDropFile($event)"
-                                                   (fileSelected)="onFileSelected($event)" />
+                              <span class="fs-s1">Sube documento en pdf o imagen</span>
+                              <app-file-dropzone class="mt-2"
+                                                 dropzoneClass="dz-s1"
+                                                 text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                                                 accept=".pdf,image/png,image/jpeg"
+                                                 (dropFile)="onDropFile($event)"
+                                                 (fileSelected)="onFileSelected($event)" />
                             </div>
+                          }
+
                             <div class="col-12" *ngIf="blueprints.length>0">
                                 <table class="table table-s3 mb-1">
                                     <tbody>
@@ -53,18 +55,29 @@
                                              <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver" (click)="viewDocument(file, 'blueprint')">
                                                 <img src="./assets/svg/view15.svg" alt="ver">
                                             </button>
-                                             <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                                          @if (!isViewPage) {
+                                            <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
                                                     (click)="deleteBlueprint(file)">
-                                                <img src="./assets/svg/delete16.svg" alt="eliminar">
+                                              <img src="./assets/svg/delete16.svg" alt="eliminar">
                                             </button>
+                                          }
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
+                          <div class="col-12" *ngIf="blueprints.length==0">
+                            <table class="table table-s3 mb-1">
+                              <tbody>
+                              <tr>
+                                <td colspan="9" class="text-center">No hay registros</td>
+                              </tr>
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
 
-                        <app-project-multimedia/>
+                        <app-project-multimedia [isView]="isViewPage"/>
 
                         <app-button-loading
                                 type="submit"

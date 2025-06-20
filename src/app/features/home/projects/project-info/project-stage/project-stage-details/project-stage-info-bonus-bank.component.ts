@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ProjectMock} from '../../../shared/models/project.mock.model';
 import {FinancialBonusMock} from '../../../shared/models/financial-bonus.mock';
@@ -29,13 +29,15 @@ import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swa
   ],
   templateUrl: './project-stage-info-bonus-bank.component.html'
 })
-export class ProjectStageInfoBonusBankComponent {
+export class ProjectStageInfoBonusBankComponent implements OnInit{
   public form: FormGroup;
   loading:boolean = false;
   financialsBonus: FinancialBonusMock[] = [];
   banks: BankMock[] = [];
   stageBanksCurrent?: StageBankMock[];
   stageBonusTypesCurrent?: StageBonusTypeMock[];
+  @Input()
+  isView = false;
 
   constructor(private readonly  router: Router,
               private readonly fb: FormBuilder,
@@ -48,6 +50,12 @@ export class ProjectStageInfoBonusBankComponent {
     this.loadData();
     this.initBonusesForm();
     this.initBanksForm();
+
+    if(this.isView) {
+      this.form.disable({ emitEvent: false });
+      this.form.get('bonuses')?.disable({ emitEvent: false });
+      this.form.get('banks')?.disable({ emitEvent: false });
+    }
   }
 
 

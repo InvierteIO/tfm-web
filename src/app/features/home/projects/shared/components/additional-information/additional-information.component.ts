@@ -23,6 +23,7 @@ export class AdditionalInformationComponent {
   @Input({ required: true }) form!: FormGroup;
   @Input({ required: true }) financialsBonus: FinancialBonusMock[] = [];
   @Input({ required: true }) banks: BankMock[] = [];
+
   protected readonly DATA_TYPE = DataType;
 
   get bonusesFormArray(): FormArray<FormGroup> {

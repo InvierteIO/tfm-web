@@ -9,12 +9,14 @@
 
 <h2 class="subtitle-tp-h2 io-green-primary">Tipo de inmueble</h2>
 
-<div class="d-flex align-items-center justify-content-between pt-3 pb-4">
-  <span>Crea los tipos de propiedad según la combinación de características de las categorías como casa, departamento o terreno</span>
-  <button type="button" class="btn btn-s1 button-tp py-2 br5 text-nowrap" (click)="toGoPropertyType(undefined)" >
-    Agregar tipo inmueble
-  </button>
-</div>
+@if (!isViewPage) {
+  <div class="d-flex align-items-center justify-content-between pt-3 pb-4">
+    <span>Crea los tipos de propiedad según la combinación de características de las categorías como casa, departamento o terreno</span>
+    <button type="button" class="btn btn-s1 button-tp py-2 br5 text-nowrap" (click)="toGoPropertyType(undefined)" >
+      Agregar tipo inmueble
+    </button>
+  </div>
+}
 
 <div ngbAccordion class="accordion-flush" *ngIf="propertyTypes.length>0">
   <div ngbAccordionItem [collapsed]="false"
@@ -24,21 +26,23 @@
         <button type="button" class="btn border-0 bg-transparent" title="Ver tipo de inmueble">
           <img src="./assets/svg/view15.svg" alt="ver" (click)="viewPropertyType(propertyType)">
         </button>
-        <button type="button" class="btn border-0 bg-transparent io-yellow-primary d-inline-flex align-items-center justify-content-center"
-                title="Editar tipo inmueble" (click)="editPropertyType(propertyType)">
-          <span class="material-symbols-rounded">edit_square</span>
-        </button>
-        <button type="button" class="btn border-0 bg-transparent io-yellow-primary" title="duplicar tipo inmueble"
-        (click)="openDuplicationPropertyTypeModal(propertyType)">
-          <img src="./assets/svg/duplicate19.svg" alt="duplicar">
-        </button>
-        <button type="button" class="btn border-0 bg-transparent io-yellow-primary d-flex align-items-center justify-content-center"
-          title="Asignar etapa al tipo de inmueble" (click)="openStageAssigmentModal(propertyType)">
-          <span class="material-symbols-rounded">add_box</span>
-        </button>
-        <button type="button" class="btn border-0 bg-transparent" title="Eliminar tipo inmueble" (click)="deletePropertyType(propertyType)" >
-          <img src="./assets/svg/delete16.svg" alt="eliminar">
-        </button>
+        @if(!isViewPage) {
+          <button type="button" class="btn border-0 bg-transparent io-yellow-primary d-inline-flex align-items-center justify-content-center"
+                  title="Editar tipo inmueble" (click)="editPropertyType(propertyType)">
+            <span class="material-symbols-rounded">edit_square</span>
+          </button>
+          <button type="button" class="btn border-0 bg-transparent io-yellow-primary" title="duplicar tipo inmueble"
+                  (click)="openDuplicationPropertyTypeModal(propertyType)">
+            <img src="./assets/svg/duplicate19.svg" alt="duplicar">
+          </button>
+          <button type="button" class="btn border-0 bg-transparent io-yellow-primary d-flex align-items-center justify-content-center"
+                  title="Asignar etapa al tipo de inmueble" (click)="openStageAssigmentModal(propertyType)">
+            <span class="material-symbols-rounded">add_box</span>
+          </button>
+          <button type="button" class="btn border-0 bg-transparent" title="Eliminar tipo inmueble" (click)="deletePropertyType(propertyType)" >
+            <img src="./assets/svg/delete16.svg" alt="eliminar">
+          </button>
+        }
       </div>
       <button ngbAccordionButton class="ms-auto bg-transparent btn-s5" type="button">{{propertyType.name}}</button>
     </h2>
@@ -60,20 +64,23 @@
                 <td class="align-middle text-center">{{stagePropertyGroup.stage?.stage}}</td>
                 <td class="align-middle">
                   @if(stagePropertyGroup.architecturalBluetprint) {
-                    <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="Eliminar archivo de plano de arquitectura"
-                            (click)="deleteFile($event, stagePropertyGroup, 'blueprint')">
-                      <span class="material-symbols-rounded">delete</span>
-                    </button>
                     <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="descargar archivo de plano de arquitectura"
                     (click)="downloadFile(stagePropertyGroup.architecturalBluetprint)">
                       <span class="material-symbols-rounded">download_2</span>
                     </button>
                     <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="abrir archivo de plano de arquitectura"
-                    (click)="viewDocument(stagePropertyGroup.architecturalBluetprint)">
+                            (click)="viewDocument(stagePropertyGroup.architecturalBluetprint)">
                       <span class="material-symbols-rounded">file_open</span>
                     </button>
+                    @if (!isViewPage) {
+                      <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="Eliminar archivo de plano de arquitectura"
+                              (click)="deleteFile($event, stagePropertyGroup, 'blueprint')">
+                        <span class="material-symbols-rounded">delete</span>
+                      </button>
+                    }
                     {{stagePropertyGroup.architecturalBluetprint.name}}
-                  } @else {
+                  } @else if (!isViewPage) {
+
                     <app-file-dropzone
                       text="Arratra archivos PDF o imágenes (JPG, PNG)"
                       accept=".pdf,image/png,image/jpeg"
@@ -84,16 +91,18 @@
                 </td>
                 <td class="align-middle">
                   @if(stagePropertyGroup.formatTemplateLoaded) {
-                    <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="Eliminar archivo de plantilla precargada"
-                            (click)="deleteFile($event, stagePropertyGroup, 'template')">
-                      <span class="material-symbols-rounded">delete</span>
-                    </button>
+                    @if (!isViewPage) {
+                      <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="Eliminar archivo de plantilla precargada"
+                              (click)="deleteFile($event, stagePropertyGroup, 'template')">
+                        <span class="material-symbols-rounded">delete</span>
+                      </button>
+                    }
                     <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="descargar archivo de plantilla precargada"
                             (click)="downloadFile(stagePropertyGroup.formatTemplateLoaded)">
                       <span class="material-symbols-rounded">download_2</span>
                     </button>
                     {{stagePropertyGroup.formatTemplateLoaded.name}}
-                  } @else {
+                  } @else if (!isViewPage) {
                     <app-file-dropzone
                       text="Arratra archivo excel con información válida"
                       accept=".xls,.xlsx"
@@ -104,10 +113,13 @@
                 </td>
                 <td class="align-middle">
                   <div class="d-flex justify-content-center">
-                    <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary"
-                            title="Eliminar asignación etapa al tipo de inmueble" (click)="deleteStagePropertyType(stagePropertyGroup)">
-                      <span class="material-symbols-rounded">delete</span>
-                    </button>
+                    @if (!isViewPage) {
+                      <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary"
+                              title="Eliminar asignación etapa al tipo de inmueble" (click)="deleteStagePropertyType(stagePropertyGroup)">
+                        <span class="material-symbols-rounded">delete</span>
+                      </button>
+                    }
+
                     @if(stagePropertyGroup.formatTemplateLoaded) {
                       <button type="button"
                                class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="Inmuebles"
@@ -133,3 +145,12 @@
     </div>
   </div>
 </div>
+
+<table class="table table-s3 mb-1 mt-4" *ngIf="propertyTypes.length==0">
+  <tbody>
+  <tr>
+    <td colspan="9" class="text-center">No hay registros</td>
+  </tr>
+  </tbody>
+</table>
+

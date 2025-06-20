@@ -20,15 +20,11 @@ export class ProjectStageCardComponent implements OnInit {
   project?: ProjectMock;
   projectStatus?: ProjectStatus;
   @Input() stage?: ProjectStageDtoMock;
+  @Input()
+  isView = false;
 
   constructor(private readonly router: Router,
               private readonly loadingService: LoadingService) {
-  }
-
-  edit(): void {
-    this.router.navigate(['/public/home/project-info/stage'], {
-      state: { project: this.project, stage: this.stage }
-    });
   }
 
   ngOnInit(): void {
@@ -46,6 +42,18 @@ export class ProjectStageCardComponent implements OnInit {
       });
   }
 
+  edit(): void {
+    this.router.navigate(['/public/home/project-info/stage'], {
+      state: { project: this.project, stage: this.stage }
+    });
+  }
+
+  view():void {
+    this.router.navigate(['/public/home/project-info/stage'], {
+      state: { project: this.project, stage: this.stage, view: true }
+    });
+  }
+
   get isShowNumberApartments() {
     return this.stage?.numberApartments && this.stage?.numberApartments>0;
   }
@@ -59,18 +67,20 @@ export class ProjectStageCardComponent implements OnInit {
   }
 
   get isShowEditStage() {
+    if(this.isView) return false;
     return (this.projectStatus === ProjectStatus.DRAFT || this.projectStatus === ProjectStatus.NOPUBLISHED)
       && this.stage?.status === ProjectStageStatus.DRAFT;
   }
 
   get isShowDeleteStage() {
+    if(this.isView) return false;
     return (this.projectStatus === ProjectStatus.DRAFT || this.projectStatus === ProjectStatus.NOPUBLISHED)
       && this.stage?.status === ProjectStageStatus.DRAFT;
   }
 
   get isShowPublishStage() {
+    if(this.isView) return false;
     return this.projectStatus === ProjectStatus.NOPUBLISHED
       && this.stage?.status === ProjectStageStatus.DRAFT;
   }
-
 }

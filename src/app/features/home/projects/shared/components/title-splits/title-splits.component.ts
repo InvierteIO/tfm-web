@@ -5,12 +5,13 @@ import {LoadingService} from '@core/services/loading.service';
 import {BooleanLabelPipe} from '@common/pipes/boolean-label.pipe';
 import {DropdownSearchComponent} from '@common/components/dropdown-search.component';
 import {LowerCasePipe, NgForOf, NgIf} from '@angular/common';
-import {CommercializationCycle} from '../../../shared/models/commercialization-cycle.mock.model';
-import {PropertyDocumentDtoMock} from '../../shared/models/property-document.dto.model.mock';
-import {PropertyCategory} from '../../../../shared/models/property-category.model';
+import {CommercializationCycle} from '../../../../shared/models/commercialization-cycle.mock.model';
+import {PropertyDocumentDtoMock} from '../../models/property-document.dto.model.mock';
+import {PropertyCategory} from '../../../../../shared/models/property-category.model';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {PropertyDocumentModalComponent} from './property-document-modal.component';
 import {DocumentPropertyStep} from './document-property-step.model';
+import {ProjectStoreService} from '../../services/project-store.service';
 
 @Component({
   selector: 'app-title-splits',
@@ -32,7 +33,8 @@ export class TitleSplitsComponent  implements OnInit {
 
   constructor(private readonly  router: Router,
               private readonly modalService: NgbModal,
-              private readonly loadingService: LoadingService) {
+              private readonly loadingService: LoadingService,
+              protected readonly draftStore: ProjectStoreService) {
 
   }
 
@@ -82,11 +84,11 @@ export class TitleSplitsComponent  implements OnInit {
   }
 
   back(): void {
-    this.router.navigate(['/public/home/project-new/legal-scope']);
+    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/legal-scope`]);
   }
 
   toGoSection1(): void {
-    this.router.navigate(['/public/home/project-new/section1']);
+    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/section1`]);
   }
 
   get isShowTable() {

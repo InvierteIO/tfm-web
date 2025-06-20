@@ -21,6 +21,8 @@ import {CatalogDetailMock} from '../../../../shared/models/catalog-detail.mock.m
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 import {ProjectStageDtoMock} from '../../models/project-stage.mock.dto.model';
+import {ProjectStoreService} from '../../services/project-store.service';
+import {ProjectDraftStatus} from '../../models/project-draft-status';
 
 @Component({
   selector: 'app-infrastructure-installation',
@@ -42,6 +44,9 @@ export class InfrastructureInstallationComponent implements OnInit {
   loading:boolean = false;
   @Input()
   projectStageCurrent?: ProjectStageDtoMock;
+  @Input()
+  isView = false;
+
   private project: ProjectMock = { id : 0 };
   protected infraInstallations: InfraestructureInstallationMock[] = [];
   private stageInfraInstallationsCurrent?: StageInfrastructureInstallationMock[];
@@ -50,7 +55,8 @@ export class InfrastructureInstallationComponent implements OnInit {
   constructor(private readonly router: Router,
               private readonly fb: FormBuilder,
               private readonly projectService: ProjectService,
-              private readonly loadingService: LoadingService) {
+              private readonly loadingService: LoadingService,
+              protected readonly draftStore: ProjectStoreService) {
     this.form = this.buildForm();
   }
 
@@ -58,6 +64,11 @@ export class InfrastructureInstallationComponent implements OnInit {
     this.loadData();
     this.initFeaturesDefinedFormGroup();
     this.initFeaturesProjectedFormGroup();
+    if(this.isViewPage) {
+      this.form.disable({ emitEvent: false });
+      this.form.get('infra_features_defined')?.disable({ emitEvent: false });
+      this.form.get('infra_features_defined')?.disable({ emitEvent: false });
+    }
   }
 
   private buildForm(): FormGroup {
@@ -185,11 +196,11 @@ export class InfrastructureInstallationComponent implements OnInit {
 
 
   toGoSection1(): void {
-    this.router.navigate(['/public/home/project-new/section1']);
+    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/section1`]);
   }
 
   back():void {
-    this.router.navigate(['/public/home/project-new/section2']);
+    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/section2`]);
   }
 
   onSubmit(): void {
@@ -223,6 +234,11 @@ export class InfrastructureInstallationComponent implements OnInit {
   }
 
   next(): void {
+    if(this.isViewPage) {
+      this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/complementary`]);
+      return;
+    }
+
     console.log(this.form.value);
     if (this.form?.invalid) {
       FormUtil.markAllAsTouched(this.form);
@@ -234,8 +250,8 @@ export class InfrastructureInstallationComponent implements OnInit {
       this.projectService.save(this.project)
         .pipe(finalize(() => this.loadingService.hide()))
         .subscribe(project => {
-          this.router.navigate(['/public/home/project-new/complementary']);
           this.project = project;
+          this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/complementary`]);
         });
     }, 200);
   }
@@ -432,6 +448,10 @@ export class InfrastructureInstallationComponent implements OnInit {
         }
       }
     ];
+  }
+
+  get isViewPage() {
+    return this.draftStore.draftStatus() == ProjectDraftStatus.VIEW || this.isView;
   }
 
 }

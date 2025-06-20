@@ -109,7 +109,7 @@
   </div>
 
   <span class="fw-bold  mt-3 mb-1 d-block">Vista del Mapa</span>
-  @if (!this.urlKmlKmz) {
+  @if (!this.urlKmlKmz && !this.isView) {
     <div class="row">
       <div class="col-12 mb-3">
         <span class="fs-s1">Sube archivo para la informacion geográfica</span>
@@ -135,14 +135,16 @@
           <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver">
             <img src="./assets/svg/view15.svg" alt="ver"  (click)="refreshMap()">
           </button>
-          <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar">
-            <img src="./assets/svg/delete16.svg" alt="eliminar" (click)="deleteKmlKmz()">
-          </button>
+          @if (!this.isView) {
+            <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar">
+              <img src="./assets/svg/delete16.svg" alt="eliminar" (click)="deleteKmlKmz()">
+            </button>
+          }
         </td>
       </tr>
       </tbody>
     </table>
 
-    <app-map [urlKml]="this.urlKmlKmz" />
+    <app-map [urlKml]="this.urlKmlKmz!" />
   }
 </section>
