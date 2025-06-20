@@ -3,8 +3,6 @@ import {DropdownSearchComponent} from '@common/components/dropdown-search.compon
 import {LowerCasePipe, NgForOf, NgIf} from '@angular/common';
 import {ReactiveFormsModule} from '@angular/forms';
 import {ClientMock} from '../../shared/models/client.mock.model';
-import ol from 'ol/dist/ol';
-import string = ol.string;
 import {FirstLetterCircleDirective} from '@common/directives/first-letter-circle.directive';
 
 @Component({
