@@ -131,3 +131,44 @@
 .table-s4 tbody tr td:last-child {
   border-right: 0.5rem solid #ffffff;
 }
+/**************/
+
+.table-s5 thead tr th {
+  background-color: #E0E0E0;
+  color: #848484;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  vertical-align: middle;
+}
+
+.table-s5 tbody tr {
+  color: #7B7B7B;
+  position: relative;
+}
+
+.table-s5 tbody tr::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  border-bottom: 1px solid #ECECEC;
+}
+
+.table-s5 tbody tr td{
+  font-family: 'Poppins', sans-serif;
+  color: #7B7B7B;
+  font-weight: 400;
+  font-size: 14px;
+  border-bottom: none;
+}
+
+.table-s5 tbody tr td:first-child {
+  padding-left: 8px;
+}
+
+.table-s5 tbody tr td:last-child {
+  padding-right: 8px;
+}
