@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {DocumentMock} from '../../../shared/models/document.mock.model';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {FileDropzoneComponent} from '@common/components/file-dropzone.component';
@@ -14,6 +14,7 @@ import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swa
 
 @Component({
   selector: 'app-stage-document-list-modal',
+  standalone: true,
   imports: [
     DatePipe,
     LoadingComponent,
@@ -26,7 +27,9 @@ import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swa
 export class StageDocumentListModalComponent {
   documents: DocumentMock[] = [];
   loading:boolean = false;
-  isView: boolean = false;
+  @Input()
+  isView = false;
+
   constructor(public readonly activeModal: NgbActiveModal,
               private readonly ksModalGallerySvc: KsModalGalleryService,
               private readonly modalService: NgbModal) {

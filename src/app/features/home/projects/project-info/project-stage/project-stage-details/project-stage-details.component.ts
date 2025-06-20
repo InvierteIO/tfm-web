@@ -6,9 +6,6 @@ import {
   InfrastructureInstallationComponent
 } from '../../../shared/components/infraestructure-installation/infrastructure-installation.component';
 import {ProjectStageDtoMock} from '../../../shared/models/project-stage.mock.dto.model';
-import {
-  LocationInformationComponent
-} from '../../../shared/components/location-information/location-information.component';
 import {ProjectStageInfoLocationComponent} from './project-stage-info-location.component';
 
 @Component({
