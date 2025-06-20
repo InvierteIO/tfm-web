@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <h1 class="modal-title title-tp-h1 io-green-primary" id="staticBackdropLabel">Documentos del Tipo</h1>
+  <button type="button" class="btn-close custom-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <img src="./assets/svg/close24.svg" alt="cerrar">
+  </button>
+</div>
+
+<div class="modal-body px-4 pt-4">
+  <div class="row">
+
+    <div class="d-flex align-items-center justify-content-center mt-3" *ngIf="loading">
+      <app-loading></app-loading>
+    </div>
+    <div class="col-12" *ngIf="documents.length>0">
+      <table class="table table-s3 mt-3 mb-0" *ngIf="!loading">
+        <tbody>
+        <tr *ngFor="let file of documents" >
+          <td  class="px-2 ms-1  d-flex justify-content-start align-items-center">
+            <span class="material-symbols-rounded">{{file!.filename | typeFileIconGoogleFonts}}</span>
+          </td>
+          <td class="">{{file.filename}}</td>
+          <td class="">{{file.creationDate | date:'dd/MM/yyyy'}}</td>
+          <td  class="text-center">
+            <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver" (click)="viewDocument(file)">
+              <img src="./assets/svg/view15.svg" alt="ver">
+            </button>
+            @if (!isView) {
+              <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                      (click)="deleteDocument(file)">
+                <img src="./assets/svg/delete16.svg" alt="eliminar">
+              </button>
+            }
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-12" *ngIf="documents.length==0">
+      <table class="table table-s3 mt-3 mb-0">
+        <tbody>
+        <tr>
+          <td colspan="9" class="text-center">No hay registros</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-s3 button-tp d-flex justify-content-center align-items-center" (click)="activeModal.dismiss('Cross click')">Cerrar</button>
+</div>
+

@@ -1,4 +1,4 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {LocationCode} from '../../models/location-code.mock.model';
 import {GeographicalLocationService} from '../../services/geographical-location.service';
@@ -34,7 +34,7 @@ import {ProjectStageDtoMock} from '../../models/project-stage.mock.dto.model';
   ],
   templateUrl: './location-information.component.html'
 })
-export class LocationInformationComponent {
+export class LocationInformationComponent implements OnInit {
   @Input() form!: FormGroup;
   @Input() projectStageCurrent?: ProjectStageDtoMock;
   @Input() isView:boolean = false;
@@ -48,8 +48,6 @@ export class LocationInformationComponent {
 
   constructor(private readonly fb: FormBuilder,
               private readonly locationsSvc: GeographicalLocationService,
-              private readonly ksModalGallerySvc: KsModalGalleryService,
-              private readonly modalService: NgbModal,
               private readonly loadingService: LoadingService) {}
 
   ngOnInit(): void {

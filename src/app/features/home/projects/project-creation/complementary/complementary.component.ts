@@ -71,7 +71,7 @@ export class ComplementaryComponent implements OnInit {
     if (files && files.length > 0) {
       const file = files[0];
       console.log(`Dropped :${file.name} - ${file.type}`);
-      this.loadBlueprint(file);;
+      this.loadBlueprint(file);
     }
   }
 

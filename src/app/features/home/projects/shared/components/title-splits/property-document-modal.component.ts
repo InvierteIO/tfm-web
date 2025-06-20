@@ -46,7 +46,7 @@ export class PropertyDocumentModalComponent implements OnInit {
   constructor(public readonly activeModal: NgbActiveModal,
               private readonly ksModalGallerySvc: KsModalGalleryService,
               private readonly modalService: NgbModal,
-              protected readonly draftStore: ProjectStoreService) {
+              protected readonly projectStore: ProjectStoreService) {
   }
 
   ngOnInit(): void {
@@ -145,6 +145,6 @@ export class PropertyDocumentModalComponent implements OnInit {
   }
 
   get isViewPage() {
-    return this.draftStore.draftStatus() == ProjectDraftStatus.VIEW;
+    return this.projectStore.draftStatus() == ProjectDraftStatus.VIEW;
   }
 }

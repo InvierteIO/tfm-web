@@ -15,7 +15,6 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ProjectPropertyTypesService} from '../../shared/services/project-property-types.service';
 import {ProjectMock} from '../../shared/models/project.mock.model';
 import {ProjectStageDtoMock} from '../../shared/models/project-stage.mock.dto.model';
-import {ProjectStoreService} from '../../shared/services/project-store.service';
 
 @Component({
   selector: 'app-stage-property-type',

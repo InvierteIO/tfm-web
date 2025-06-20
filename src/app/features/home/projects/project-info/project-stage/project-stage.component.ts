@@ -9,15 +9,17 @@ import {StagePropertyTypeComponent} from "./stage-property-type.component";
 import {ProjectStageDetailsComponent} from "./project-stage-details/project-stage-details.component";
 import {ProjectStoreService} from '../../shared/services/project-store.service';
 import {ProjectActionStatus} from '../../shared/models/project-action-status';
+import {ProjectStageDocumentsComponent} from './project-stage-documents/project-stage-documents.component';
 
 @Component({
   selector: 'app-project-stage',
   standalone: true,
-    imports: [
-        NgbNavModule,
-        StagePropertyTypeComponent,
-        ProjectStageDetailsComponent
-    ],
+  imports: [
+    NgbNavModule,
+    StagePropertyTypeComponent,
+    ProjectStageDetailsComponent,
+    ProjectStageDocumentsComponent
+  ],
   templateUrl: './project-stage.component.html'
 })
 export class ProjectStageComponent {

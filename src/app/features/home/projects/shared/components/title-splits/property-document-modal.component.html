@@ -24,24 +24,24 @@
     <div class="col-12" *ngIf="documents.length>0">
       <table class="table table-s3 mt-3 mb-0" *ngIf="!loading">
         <tbody>
-        <tr *ngFor="let file of documents" >
-          <td  class="px-2 ms-1  d-flex justify-content-start align-items-center">
-            <span class="material-symbols-rounded">{{file!.filename | typeFileIconGoogleFonts}}</span>
-          </td>
-          <td class="">{{file.filename}}</td>
-          <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
-          <td  class="text-center">
-             <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver" (click)="viewDocument(file)">
-              <img src="./assets/svg/view15.svg" alt="ver">
-            </button>
-            @if (!isViewPage) {
-              <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
-                      (click)="deleteDocument(file)">
-                <img src="./assets/svg/delete16.svg" alt="eliminar">
+          <tr *ngFor="let file of documents" >
+            <td  class="px-2 ms-1  d-flex justify-content-start align-items-center">
+              <span class="material-symbols-rounded">{{file!.filename | typeFileIconGoogleFonts}}</span>
+            </td>
+            <td class="">{{file.filename}}</td>
+            <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+            <td  class="text-center">
+               <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver" (click)="viewDocument(file)">
+                <img src="./assets/svg/view15.svg" alt="ver">
               </button>
-            }
-          </td>
-        </tr>
+              @if (!isViewPage) {
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                        (click)="deleteDocument(file)">
+                  <img src="./assets/svg/delete16.svg" alt="eliminar">
+                </button>
+              }
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

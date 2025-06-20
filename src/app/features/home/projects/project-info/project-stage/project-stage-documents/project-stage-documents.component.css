@@ -1,0 +1,63 @@
+.custom-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.custom-table td {
+  background-color: #F6F6F6;
+  padding: 12px 16px;
+  vertical-align: middle;
+}
+
+.custom-table td:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.custom-table td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-weight: 500;
+  font-size: 16px;
+  color: #3E4347;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 20px;
+  min-height: 25px;
+}
+.badge.complete {
+  background-color: #C9E1BF;
+  color: #066B4B;
+}
+.badge.incomplete {
+  background-color: #F9B234;
+  color: #fff;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  align-items: center;
+}
+.actions svg, .actions img {
+  width: 25px;
+  height: 25px;
+  fill: #616161;
+  cursor: pointer;
+}
