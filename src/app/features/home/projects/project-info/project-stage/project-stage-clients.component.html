@@ -1,0 +1,44 @@
+<div class="row gx-0 align-items-center py-4 px-3 io-bg-gray-s1">
+  <div class="col-12 col-sm-6 col-md-6 col-lg-5 col-xl-5">
+    <div class="input-group ig-s1">
+      <input id="txtBusqueda" type="text" (keyup.enter)="search()"
+             class="form-control input-tp-h4 input-s3"
+             placeholder="Busca por  {{this.selectedFilter | lowercase}}" />
+      <span class="input-group-text text-icon-search" (click)="search()" ><i class="material-symbols-rounded">search</i></span>
+    </div>
+  </div>
+  <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex justify-content-center align-items-center">
+    <app-dropdown-search
+      [options]="['Clientes potenciales', 'Posibles clientes', 'Clientes interesados']"
+      [(selectedFilter)]="selectedFilter"
+      dropdownId="mn-search-property" />
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-s5">
+    <thead>
+    <tr>
+      <th class="py-3 px-3 ms-3">Item</th>
+      <th class="py-3 text-center">DNI</th>
+      <th class="py-3">Nombre</th>
+      <th class="py-3">Correo electrónico</th>
+      <th class="py-3 text-center">Teléfono de contacto</th>
+      <th class="py-3 text-center">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let client of clients">
+      <td class="text-center align-middle"><span [appFirstLetterCircle]="client.fullName?? ''"></span></td>
+      <td class="text-center align-middle">{{client.identityDocument}}</td>
+      <td class="fw-bolder align-middle">{{client.fullName}}</td>
+      <td class="align-middle">{{client.email}}</td>
+      <td class="text-center align-middle">{{client.phoneNumber}}</td>
+      <td class="text-center align-middle"></td>
+    </tr>
+    <tr *ngIf="isShowTableEmpty">
+      <td colspan="6" class="text-center">No hay registros</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

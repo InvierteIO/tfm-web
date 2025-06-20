@@ -45,11 +45,12 @@
             <li [ngbNavItem]="'clients'">
                 <button ngbNavLink id="clients-tab" class="nav-link">Clientes</button>
                 <ng-template ngbNavContent>
+                  <app-project-stage-clients/>
                 </ng-template>
             </li>
         </ul>
     </div>
-      <div class="card-body p-2 pb-3 px-3">
+      <div class="card-body pb-3 px-0 pt-0">
           <div [ngbNavOutlet]="nav" class="tab-content"></div>
       </div>
   </div>

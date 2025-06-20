@@ -50,16 +50,19 @@ export class PropertiesComponent implements OnInit {
               private readonly fb: FormBuilder,
               private readonly loadingService: LoadingService,
               protected readonly projectStore: ProjectStoreService) {
-    const nav = this.router.getCurrentNavigation();
+    this.loadInfoFromNavigation();
+    if(!this.stagePropertyType || !this.stagePropertyType!.propertyGroup) {
+      this.back();
+    }
+  }
 
+  private loadInfoFromNavigation() {
+    const nav = this.router.getCurrentNavigation();
     this.stagePropertyType = nav?.extras.state?.["stagePropertyType"];
     this.projectStages = nav?.extras.state?.["projectStages"];
     this.isView = nav?.extras.state?.["view"];
     this.project = nav?.extras.state?.["project"];
     this.originFlow = nav?.extras.state?.["originFlow"];
-    if(!this.stagePropertyType || !this.stagePropertyType!.propertyGroup) {
-      this.back();
-    }
   }
 
   ngOnInit(): void {

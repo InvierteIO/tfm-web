@@ -11,6 +11,7 @@ import {ProjectStoreService} from '../../shared/services/project-store.service';
 import {ProjectActionStatus} from '../../shared/models/project-action-status';
 import {ProjectStageDocumentsComponent} from './project-stage-documents/project-stage-documents.component';
 import {CatalogDetailMock} from '../../../shared/models/catalog-detail.mock.model';
+import {ProjectStageClientsComponent} from './project-stage-clients.component';
 
 @Component({
   selector: 'app-project-stage',
@@ -19,7 +20,8 @@ import {CatalogDetailMock} from '../../../shared/models/catalog-detail.mock.mode
     NgbNavModule,
     StagePropertyTypeComponent,
     ProjectStageDetailsComponent,
-    ProjectStageDocumentsComponent
+    ProjectStageDocumentsComponent,
+    ProjectStageClientsComponent
   ],
   templateUrl: './project-stage.component.html'
 })
