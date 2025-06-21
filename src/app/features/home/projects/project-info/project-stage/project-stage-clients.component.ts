@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {DropdownSearchComponent} from '@common/components/dropdown-search.component';
 import {LowerCasePipe, NgForOf, NgIf} from '@angular/common';
 import {ReactiveFormsModule} from '@angular/forms';
-import {ClientMock} from '../../shared/models/client.mock.model';
+import {ClientDtoMock} from '../../shared/models/client.mock.dto.model';
 import {FirstLetterCircleDirective} from '@common/directives/first-letter-circle.directive';
 
 @Component({
@@ -19,7 +19,7 @@ import {FirstLetterCircleDirective} from '@common/directives/first-letter-circle
 })
 export class ProjectStageClientsComponent implements OnInit {
   selectedFilter: string = 'Clientes potenciales';
-  clients?: ClientMock[] = [];
+  clients?: ClientDtoMock[] = [];
 
   ngOnInit(): void {
     this.search();

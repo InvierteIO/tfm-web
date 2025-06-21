@@ -293,8 +293,4 @@
   justify-content: center;
 }
 
-.sidebar.collapsed ~ main {
-  margin-left: 85px;
-}
-
 

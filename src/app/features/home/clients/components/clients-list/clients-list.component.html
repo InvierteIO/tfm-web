@@ -1,0 +1,63 @@
+<div class="container">
+  <h1 class="title-tp-h1 io-green-primary mt-4 mb-3">Clientes</h1>
+  <div class="row py-4 px-3 bg-white  gx-0">
+    <div class="col-12"></div>
+  </div>
+  <div class="row gx-0 p-4 align-items-center io-bg-gray-s1">
+    <div class="col-12 col-sm-6 col-md-6 col-lg-5 col-xl-5">
+      <div class="input-group ig-s1">
+        <input id="txtSearch" type="text" (keyup.enter)="search()"
+               class="form-control input-tp-h4 input-s3"
+               placeholder="Busca por  {{this.selectedFilter | lowercase}}" />
+        <span class="input-group-text text-icon-search" (click)="search()" ><i class="material-symbols-rounded">search</i></span>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex justify-content-center align-items-center">
+      <app-dropdown-search
+        [options]="['Clientes potenciales', 'Posibles clientes', 'Clientes interesados']"
+        [(selectedFilter)]="selectedFilter"
+        dropdownId="mn-search-property" />
+    </div>
+    <div class="col-auto ms-auto">
+      <button class="btn btn-s3 button-tp py-2 d-flex justify-content-center align-items-center" (click)="create()">
+        Agregar cliente
+      </button>
+    </div>
+  </div>
+
+  <table class="table table-s5">
+    <thead>
+    <tr>
+      <th class="py-3 px-3 ms-3">DNI</th>
+      <th class="py-3">Nombre</th>
+      <th class="py-3">Correo electrónico</th>
+      <th class="py-3">Teléfono de contacto</th>
+      <th class="py-3 text-center">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let client of clients" >
+      <td>{{client.identityDocument}}</td>
+      <td>{{client.fullName}}</td>
+      <td>{{client.email}}</td>
+      <td>{{client.phoneNumber}}</td>
+      <td class="text-center">
+        <button class="btn p-0 border-0 bg-transparent mx-1" title="Editar" (click)="update(client)">
+          <img src="./assets/svg/edit24.svg" alt="editar">
+        </button>
+        <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver" (click)="view(client)">
+          <img src="./assets/svg/view24.svg" alt="ver">
+        </button>
+        <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar" (click)="delete(client.id!)">
+          <img src="./assets/svg/delete24.svg" alt="eliminar">
+        </button>
+      </td>
+    </tr>
+    <tr *ngIf="isShowTableEmpty">
+      <td colspan="5" class="text-center">No hay registros</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+

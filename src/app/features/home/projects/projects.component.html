@@ -105,7 +105,7 @@
         </div>
 
         <div class="tab-pane fade" id="tabDraft" role="tabpanel" aria-labelledby="draft-tab">
-          <div class="d-flex flex-wrap mt-2">
+          <div class="d-flex flex-wrap justify-content-center mt-2">
             @for(item of projects; track item.id) {
               <app-project-card [project]="item" [propertyCategory]="categoryCurrent" />
             }

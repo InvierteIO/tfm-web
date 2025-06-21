@@ -7,4 +7,5 @@ export interface MenuSidebar {
   icon_svg?: string;
   url?: string;
   submenus?: SubmenuSidebar[];
+  activeUrls?: string[];
 }
