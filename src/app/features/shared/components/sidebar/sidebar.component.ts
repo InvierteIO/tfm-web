@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, HostBinding, Input, OnInit} from '@angular/core';
 import {CollapseDirective} from "@common/directives/collapse.directive";
 import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {NgForOf} from '@angular/common';
@@ -34,6 +34,11 @@ export class SidebarComponent implements OnInit {
     }
   }
 
+  @HostBinding('class.collapsed')
+  get hostCollapsed(): boolean {
+    return this.sidebarCollapsed;
+  }
+
   isOpen(dropdownId: string): boolean {
     return this.currentDropdown === dropdownId;
   }
@@ -50,6 +55,10 @@ export class SidebarComponent implements OnInit {
 
   isMenuActive(menu: MenuSidebar): boolean {
     const currentUrl = this.router.url;
+
+    if (menu.activeUrls && menu.activeUrls.some(url => currentUrl.startsWith(url))) {
+      return true;
+    }
 
     if (!menu.submenus || menu.submenus.length === 0) {
       return menu.url === currentUrl;
@@ -79,11 +88,11 @@ export class SidebarComponent implements OnInit {
           const isOperator : boolean = this.authService.untilOperator();
           this.authService.logout();
           if(isOperator) {
-            this.router.navigate(['/internal/auth/login']);            
+            this.router.navigate(['/internal/auth/login']);
           } else {
             this.router.navigate(['/public/auth/login']);
-          }          
+          }
         }
-      });    
+      });
   }
 }

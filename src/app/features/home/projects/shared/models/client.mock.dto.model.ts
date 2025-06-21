@@ -1,4 +1,4 @@
-export interface ClientMock {
+export interface ClientDtoMock {
   id?: number;
   identityDocument?: string;
   fullName?: string;

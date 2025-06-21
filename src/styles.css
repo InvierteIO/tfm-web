@@ -429,6 +429,13 @@ main {
   margin-left: 270px;
 }
 
+
+@media (min-width: 769px) {
+  app-sidebar.collapsed ~ main {
+    margin-left: 85px;
+  }
+}
+
 main .pt65 {
   padding-top: 65px;
 }

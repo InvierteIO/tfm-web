@@ -1,0 +1,317 @@
+<div class="container">
+  <h1 class="title-tp-h1 mt-4 mb-3 d-flex align-items-center io-green-primary">
+    <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
+    <span class="">{{mode ==='edit'? 'Editar cliente':'Crear cliente'}}</span>
+  </h1>
+
+  <div class="card p-0 border-0 rounded-0">
+    <div class="card-body px-3 my-4">
+      <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
+          <form  [formGroup]="form" (ngSubmit)="save()" >
+            <h2 class="mb-4 subtitle-tp-h2 io-green-primary">Datos Principales</h2>
+            <div class="row">
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="identity_document_type" class="form-label text-tp-h3">Tipo de documento</label>
+                <div class="custom-select-wrapper" >
+                  <select class="input-s4 form-select custom-select-arrow" ID="identity_document_type"
+                          formControlName="identity_document_type"
+                          appSelectStyle>
+                    <option value="" disabled hidden>Selecciona</option>
+                    <option value="1">DNI</option>
+                    <option value="4">CE</option>
+                    <option value="6">RUC</option>
+                  </select>
+                  <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+                </div>
+                <div *ngIf="form.get('identity_document_type') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('identity_document_type') | formErrorMessages:'Tipo de documento'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="identity_document" class="form-label text-tp-h3">Número de documento</label>
+                <input type="text"
+                       class="form-control input-s4"
+                       id="identity_document" formControlName="identity_document"
+                       placeholder="Ingresa número de documento" [maxLength]="200"/>
+                <div *ngIf="form.get('identity_document') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('identity_document') | formErrorMessages:'Número de documento'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="fullname" class="form-label text-tp-h3">Nombre</label>
+                <input type="text" class="form-control input-s4" id="fullname" formControlName="fullname"
+                       placeholder="Ingresa nombre" [maxLength]="100"/>
+                <div *ngIf="form.get('fullname') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('fullname') | formErrorMessages:'Nombre'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="birthday" class="form-label text-tp-h3">Fecha de nacimiento</label>
+                <input type="date"
+                       class="form-control input-s4"
+                       id="birthday" formControlName="birthday"
+                       placeholder="Ingresa fecha de nacimiento" [maxLength]="200"/>
+                <div *ngIf="form.get('birthday') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('birthday') | formErrorMessages:'Fecha de nacimiento'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="stages" class="form-label text-tp-h3">Lista de proyectos disponibles</label>
+                <ng-select
+                  id="stages"
+                  [items]="projectStages"
+                  [multiple]="true"
+                  bindLabel="name"
+                  placeholder="Selecciona"
+                  formControlName="stages"
+                  notFoundText="No encontrado">
+                </ng-select>
+                <div *ngIf="form.get('stages') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('stages') | formErrorMessages:'Proyecto - Etapa'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="stages" class="form-label text-tp-h3">Nivel de interes de compra</label>
+                <div class="mt-2 d-flex flex-wrap align-items-center">
+                  <div class="radio me-3">
+                    <input  id="radio-1"
+                            type="radio" formControlName="level_purchase_interest" value="1">
+                    <label for="radio-1" class="radio-label">Alto</label>
+                  </div>
+                  <div class="radio me-3">
+                    <input  id="radio-2"
+                            type="radio" formControlName="level_purchase_interest" value="2">
+                    <label for="radio-2" class="radio-label">Medio</label>
+                  </div>
+                  <div class="radio me-3">
+                    <input  id="radio-3"
+                            type="radio" formControlName="level_purchase_interest" value="3">
+                    <label for="radio-3" class="radio-label">Bajo</label>
+                  </div>
+                </div>
+                <div *ngIf="form.get('level_purchase_interest') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('level_purchase_interest') | formErrorMessages:'Nivel de interes de compra'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 mb-3">
+                <label for="stages" class="form-label text-tp-h3">Cliente pontencial con capacidad de inversion</label>
+                <div class="mt-2 d-flex flex-wrap align-items-center">
+                  <div class="radio me-3">
+                    <input id="radio-21"
+                           type="radio" formControlName="investment_capacity" value="1">
+                    <label for="radio-21" class="radio-label">1</label>
+                  </div>
+                  <div class="radio me-3">
+                    <input id="radio-22"
+                           type="radio" formControlName="investment_capacity" value="2">
+                    <label for="radio-22" class="radio-label">2</label>
+                  </div>
+                  <div class="radio me-3">
+                    <input id="radio-23"
+                           type="radio" formControlName="investment_capacity" value="3">
+                    <label for="radio-23" class="radio-label">3</label>
+                  </div>
+                  <div class="radio me-3">
+                    <input id="radio-24"
+                           type="radio" formControlName="investment_capacity" value="4">
+                    <label for="radio-24" class="radio-label">4</label>
+                  </div>
+                  <div class="radio me-3">
+                    <input id="radio-25"
+                           type="radio" formControlName="investment_capacity" value="5">
+                    <label for="radio-25" class="radio-label">5</label>
+                  </div>
+                </div>
+                <div *ngIf="form.get('investment_capacity') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('investment_capacity') | formErrorMessages:'Capacidad de inversion'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            </div>
+
+            <h2 class="mb-4  mt-3 subtitle-tp-h2 io-green-primary">Datos de contacto</h2>
+
+            <div class="row">
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="email" class="form-label text-tp-h3">Correo electrónico</label>
+                <input type="text" class="form-control input-s4" id="email" formControlName="email"
+                       placeholder="Ingresa correo eletronico" [maxLength]="100"/>
+                <div *ngIf="form.get('email') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('email') | formErrorMessages:'Correo electrónico'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="phone" class="form-label text-tp-h3">Telefono</label>
+                <div>
+                  <div class="phone-input-s2">
+                    <span class="prefix mx-2 my-0 px-3 pb-1 pt-2 input-tp-sub-h6">+51</span>
+                    <input type="text" class="input-tp-h4" id="phone" formControlName="phone"
+                           placeholder="Ingresa telefono de contacto" [maxLength]="13"/>
+                  </div>
+                </div>
+
+                <div *ngIf="form.get('phone') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('phone') | formErrorMessages:'Telefono'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="alternative_phone" class="form-label text-tp-h3">Telefono alternativo</label>
+                <div>
+                  <div class="phone-input-s2">
+                    <span class="prefix mx-2 my-0 px-3 pb-1 pt-2 input-tp-sub-h6">+51</span>
+                    <input type="text" class="input-tp-h4" id="alternative_phone" formControlName="alternative_phone"
+                           placeholder="Ingresa telefono de contacto alternativo" [maxLength]="13"/>
+                  </div>
+                </div>
+                <div *ngIf="form.get('alternative_phone') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('alternative_phone') | formErrorMessages:'Telefono alternativo'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            </div>
+
+            <h2 class="mb-4  mt-3 subtitle-tp-h2 io-green-primary">Dirección</h2>
+
+            <div class="row">
+              <div class="col-12 mb-3">
+                <label for="address" class="form-label text-tp-h3">Dirección</label>
+                <input type="text" class="form-control input-s4" id="address" formControlName="address"
+                       placeholder="Ingresa dirección" [maxLength]="200"/>
+                <div *ngIf="form.get('address') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('address') | formErrorMessages:'Dirección'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="address_number" class="form-label text-tp-h3">Número</label>
+                <input type="text" class="form-control input-s4" id="address_number" formControlName="address_number"
+                       placeholder="Ingresa número, piso" [maxLength]="20"/>
+                <div *ngIf="form.get('address_number') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('address_number') | formErrorMessages:'Número'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="address_reference" class="form-label text-tp-h3">Referencia</label>
+                <input type="text"
+                       class="form-control input-s4"
+                       id="address_reference" formControlName="address_reference"
+                       placeholder="Ingresa referencia"
+                       [maxLength]="200"/>
+                <div *ngIf="form.get('address_reference') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('address_reference') | formErrorMessages:'Referencia'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="zipcode" class="form-label text-tp-h3">Código postal</label>
+                <input type="text"
+                       class="form-control input-s4"
+                       id="zipcode" formControlName="zipcode"
+                       placeholder="Ingresa código postal"
+                       [minLength]="6" [maxLength]="8"
+                       inputmode="numeric" appNumericOnly/>
+                <div *ngIf="form.get('zipcode') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('zipcode') | formErrorMessages:'Código postal'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="region" class="form-label text-tp-h3">Departamento</label>
+                <ng-select
+                  id="region"
+                  [items]="regions"
+                  bindValue="code"
+                  bindLabel="name"
+                  [searchable]="true"
+                  placeholder="Selecciona"
+                  formControlName="region"
+                  notFoundText="No encontrado">
+                </ng-select>
+                <div *ngIf="form.get('region') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('region') | formErrorMessages:'Departamento'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="province" class="form-label text-tp-h3">Provincia</label>
+                <ng-select
+                  id="province"
+                  [items]="provinces"
+                  bindValue="code"
+                  bindLabel="name"
+                  [searchable]="true"
+                  placeholder="Selecciona"
+                  notFoundText="No encontrado"
+                  formControlName="province">
+                </ng-select>
+                <div *ngIf="form.get('province') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('province') | formErrorMessages:'Provincia'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+
+              <div class="col-xl-6 col-lg-6 col-sm-12 mb-3">
+                <label for="district" class="form-label text-tp-h3">Distrito</label>
+                <ng-select
+                  id="district"
+                  [items]="districts"
+                  bindValue="code"
+                  bindLabel="name"
+                  [searchable]="true"
+                  placeholder="Selecciona"
+                  notFoundText="No encontrado"
+                  formControlName="district">
+                </ng-select>
+                <div *ngIf="form.get('district') | isInvalidField" class="d-flex flex-column">
+                  <small *ngFor="let msg of form.get('district') | formErrorMessages:'Distrito'"
+                         class="text-danger font-italic">{{ msg }}</small>
+                </div>
+              </div>
+            </div>
+            @if (mode !== "view") {
+              <app-button-loading
+                type="submit"
+                [btnClasses]="'btn d-block mx-auto mt-4 btn-width300 h37 btn-s4 button-tp br5'"
+                [loading]="loading"
+                msgLoading="Cargando..."
+                [msgButton]="mode ==='new' ? 'Crear' : 'Actualizar'"/>
+            }
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

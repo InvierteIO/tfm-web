@@ -1,22 +1,3 @@
-.table-s1 thead tr th {
-  background-color: #E0E0E0;
-  color: #5F5F5F;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 100%;
-  vertical-align: middle;
-}
-.table-s1 tbody tr {
-  color: #7B7B7B;
-}
-
-.table-s1 tbody tr td{
-  font-family: 'Poppins', sans-serif;
-  color: #7B7B7B;
-  font-weight: 400;
-  font-size: 14px;
-}
 
 .table-borderless tbody tr td,
 .table-borderless thead th {

@@ -18,6 +18,8 @@ import {UserManagementComponent} from "./user-management/user-management.compone
 import {SectionTwoComponent} from './projects/project-creation/section-two/section-two.component';
 import {ProjectStageComponent} from './projects/project-info/project-stage/project-stage.component';
 import {ProjectStateGuard} from './projects/shared/services/project-state.guard';
+import {ClientsListComponent} from './clients/components/clients-list/clients-list.component';
+import {ClientFormComponent} from './clients/components/client-form/client-form.component';
 
 const projectCreationChildrenRoutes: Routes = [
   {
@@ -62,17 +64,22 @@ export const homeRoutes: Routes = [
   },
   {
     path: 'project-info',
-    component: ProjectInfoComponent
-  },
-  {
-    path: 'project-info/stage',
-    component: ProjectStageComponent
-  },
-  {
-    path: 'project-info/property-type', component: PropertyTypeComponent
-  },
-  {
-    path: 'project-info/properties', component: PropertiesComponent
+    children : [
+      {
+        path: '',
+        component: ProjectInfoComponent
+      },
+      {
+        path: 'stage',
+        component: ProjectStageComponent
+      },
+      {
+        path: 'property-type', component: PropertyTypeComponent
+      },
+      {
+        path: 'properties', component: PropertiesComponent
+      }
+    ]
   },
   {
     path: 'project-new',
@@ -82,6 +89,31 @@ export const homeRoutes: Routes = [
   {
     path: 'project-draft',
     children : projectCreationChildrenRoutes
+  },
+  {
+    path: 'clients',
+    children: [
+      { path: '', component: ClientsListComponent },
+      {
+        path: 'new',
+        component: ClientFormComponent,
+        data: { mode: 'new' }
+      },
+      {
+        path: 'edit/:id',
+        component: ClientFormComponent,
+        /*canActivate: [ClientExistsGuard],
+        resolve: { client: ClientResolver },*/
+        data: { mode: 'edit' }
+      },
+      {
+        path: 'view/:id',
+        component: ClientFormComponent,
+        /*canActivate: [ClientExistsGuard],
+        resolve: { client: ClientResolver },*/
+        data: { mode: 'view' }
+      }
+    ]
   },
   {
     path: '**',
