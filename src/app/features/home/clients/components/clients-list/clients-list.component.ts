@@ -6,6 +6,8 @@ import {ClientService} from '../../services/client.service';
 import {Router} from '@angular/router';
 import {LoadingService} from '@core/services/loading.service';
 import {finalize} from 'rxjs/operators';
+import Swal from 'sweetalert2';
+import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 
 
 @Component({
@@ -16,8 +18,7 @@ import {finalize} from 'rxjs/operators';
     DropdownSearchComponent,
     LowerCasePipe
   ],
-  templateUrl: './clients-list.component.html',
-  styleUrl: './clients-list.component.css'
+  templateUrl: './clients-list.component.html'
 })
 export class ClientsListComponent implements OnInit {
   clients: ClientMock[] = [];
@@ -38,19 +39,29 @@ export class ClientsListComponent implements OnInit {
   }
 
   create(): void {
-
+    this.router.navigate([`/public/home/clients/new`]);
   }
 
   update(client: ClientMock) {
-
+    this.router.navigate([`/public/home/clients/edit/${client.id}`]);
   }
 
   view(client: ClientMock) {
-
+    this.router.navigate([`/public/home/clients/view/${client.id}`]);
   }
 
   delete(number: number) {
+    this.loadingService.show();
+    Swal.fire(
+      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el cliente?"))
+      .then(result => {
+        if (result.isConfirmed) {
+          this.loadingService.hide();
+          setTimeout(() => {
 
+          }, 200);
+        }
+      });
   }
 
   get isShowTableEmpty() {

@@ -109,3 +109,31 @@ input::placeholder , textarea::placeholder {
   border: 1px solid #B8B8B8 !important;
   color: #90A3BF !important;
 }
+
+.phone-input-s2 {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #B8B8B8 !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+  height: 45px !important;
+  background: #FCFCFC !important;
+}
+
+.phone-input-s2 input {
+  border: none;
+  border-radius: 10px !important;
+  outline: none;
+  padding: 0.5em;
+  font-size: 14px;
+  line-height: 200%;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  vertical-align: middle;
+}
+
+.phone-input-s2 .prefix {
+  background-color: #f2f2f2;
+  border-radius: 10px;
+}
+
