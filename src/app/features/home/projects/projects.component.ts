@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {LowerCasePipe, NgIf} from '@angular/common';
+import {LowerCasePipe} from '@angular/common';
 import {ProjectCardComponent} from './project-card.component';
 import {ProjectStatus} from './shared/models/project-status.model';
 import {PropertyCategory} from '../../shared/models/property-category.model';
@@ -8,6 +8,8 @@ import {ProjectService} from './shared/services/project.service';
 import {ProjectMock} from './shared/models/project.mock.model';
 import {Router} from "@angular/router";
 import {DropdownSearchComponent} from '@common/components/dropdown-search.component';
+import {ProjectStoreService} from './shared/services/project-store.service';
+import {ProjectActionStatus} from './shared/models/project-action-status';
 
 @Component({
   selector: 'app-projects',
@@ -31,9 +33,11 @@ export class ProjectsComponent implements OnInit {
   projects: ProjectMock[] = [];
 
   constructor(private readonly router: Router,
-              private readonly projectService: ProjectService) { }
+              private readonly projectService: ProjectService,
+              private readonly projectStore: ProjectStoreService) { }
 
   create(): void {
+    this.projectStore.setStatus(ProjectActionStatus.NEW);
     this.router.navigate(['/public/home/project-new/section1']);
   }
 

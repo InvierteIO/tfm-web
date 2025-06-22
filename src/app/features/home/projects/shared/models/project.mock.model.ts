@@ -1,4 +1,5 @@
 import {ProjectStatus} from './project-status.model';
+import {ProjectStageMock} from './project-stage.mock.model';
 
 export interface ProjectMock {
   id: number;
@@ -17,4 +18,6 @@ export interface ProjectMock {
   zipCode?: string;
   description?: string;
   kmlKmzUrl?: string;
+
+  projectStages?: ProjectStageMock[];
 }

@@ -72,6 +72,11 @@ body {
   background-color: #F3F3F3;
 }
 
+.io-bg-yellow-primary {
+  background-color: #F9B234 !important;
+}
+
+
 /*****************Texts / labels********************/
 
 .title-tp-h1 {
@@ -244,6 +249,19 @@ body {
   width: 100%;
 }
 
+.btn-s5 {
+  border: none;
+  font-weight: 500;
+  color: #7B7B7B;
+}
+
+.btn-s5:hover,
+.btn-s5:focus,
+.btn-s5:active {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
 
 /*****************Modals********************/
 .btn-close.custom-close {
@@ -289,7 +307,8 @@ body {
   border-bottom: none !important;
 }
 
-.tab-s2 .nav-item .active {
+.tab-s2 .nav-item .active,
+.tab-s4 .nav-item .active{
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 16px;
@@ -298,13 +317,18 @@ body {
   color: #066B4B;
 }
 
-.tab-s2 .nav-item .nav-link:not(.active) {
+.tab-s2 .nav-item .nav-link:not(.active),
+.tab-s4 .nav-item .nav-link:not(.active){
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 16px;
   line-height: 100%;
   vertical-align: middle;
   color: #5F5F5F;
+}
+
+.tab-s4 .nav-item .nav-link:not(.active) {
+  font-weight: 600 !important;
 }
 
 .tab-s3 {
@@ -371,6 +395,14 @@ body {
 }
 
 /*****************Others********************/
+.project-image {
+  height: 20rem;
+  width: auto;
+  max-width: 100%;
+  border-radius: 0.5rem;
+  object-fit: contain;
+}
+
 .arrow-back {
   background-color: #F9B234 !important;
   color: white !important;
@@ -382,6 +414,10 @@ body {
 .h37 {
   height: 37px !important;
 }
+
+.h45 {
+  height: 45px !important;
+}
 .br5 {
   border-radius: 5px !important;
 }
@@ -391,6 +427,13 @@ main {
   min-height: 100vh;
   transition: margin-left 0.4s ease;
   margin-left: 270px;
+}
+
+
+@media (min-width: 769px) {
+  app-sidebar.collapsed ~ main {
+    margin-left: 85px;
+  }
 }
 
 main .pt65 {

@@ -7,50 +7,46 @@
   <div class="card p-0 border-0 rounded-0">
 
     <div class="card-header tab-s3 disable-active-nav py-2 border-0 rounded-0">
-      <ul class="nav nav-underline m-1">
-        <li class="nav-item" >
-          <a class="nav-link active" id="detail-tab" data-bs-toggle="tab" href="#tabDetail" role="tab" aria-controls="#tabDetail" aria-selected="true">
-            Detalle
-          </a>
+      <ul ngbNav #nav="ngbNav" class="nav nav-underline m-1" [destroyOnHide]="false" [activeId]="activeId">
+        <li [ngbNavItem]="'detail'">
+          <button ngbNavLink id="detail-tab" class="nav-link">Detalle</button>
+          <ng-template ngbNavContent>
+            <app-project-info-general [project]="project" [isViewPage]="isViewPage"/>
+          </ng-template>
         </li>
-        <li class="nav-item" >
-          <a class="nav-link" id="stages-tab" data-bs-toggle="tab" href="#tabStages" role="tab" aria-controls="#tabStages" aria-selected="true">
-            Etapas
-          </a>
+        <li [ngbNavItem]="'stages'">
+          <button ngbNavLink id="stages-tab" class="nav-link">Etapas</button>
+          <ng-template ngbNavContent>
+            <div class="d-flex flex-wrap justify-content-center mt-2">
+              @for(item of stages; track item.id) {
+                <app-project-stage-card [stage]="item" [project]="project" [isView]="isViewPage"/>
+              }
+            </div>
+          </ng-template>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" id="documents-tab" data-bs-toggle="tab" href="#tabDocuments" role="tab" aria-controls="tabDocuments" aria-selected="false">
-            Documentos
-          </a>
+        <li [ngbNavItem]="'documents'">
+          <button ngbNavLink id="documents-tab" class="nav-link">Documentos</button>
+          <ng-template ngbNavContent>
+            <app-project-documents [project]="project!" [isView]="isViewPage" />
+          </ng-template>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" id="typesproperty-tab" data-bs-toggle="tab" href="#tabTypesProperty" role="tab" aria-controls="tabTypesProperty" aria-selected="false">
-            Tipos de inmuebles
-          </a>
+        <li [ngbNavItem]="'propertytypes'">
+          <button ngbNavLink id="propertytypes-tab" class="nav-link">Tipos de inmuebles</button>
+          <ng-template ngbNavContent>
+            <div class="row justify-content-center">
+              <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12 my-3">
+                <app-project-property-types [project]="project!" class="mt-4" [isView]="isViewPage" />
+              </div>
+            </div>
+          </ng-template>
         </li>
       </ul>
     </div>
 
     <div class="card-body p-3">
-      <div class="tab-content">
-        <div class="tab-pane fade show active" id="tabDetail" role="tabpanel" aria-labelledby="detail-tab">
-          <app-project-info-general [project]="project!"/>
-        </div>
-        <div class="tab-pane fade" id="tabStages" role="tabpanel" aria-labelledby="stages-tab">
-          <div class="d-flex flex-wrap justify-content-center mt-2">
-            @for(item of stages; track item.id) {
-              <app-project-stage-card [stage]="item" [projectStatus]="statusCurrent"/>
-            }
-          </div>
-        </div>
-
-        <div class="tab-pane fade" id="tabDocuments" role="tabpanel" aria-labelledby="documents-tab">
-        </div>
-
-        <div class="tab-pane fade" id="tabTypesProperty" role="tabpanel" aria-labelledby="typesproperty-tab">
-        </div>
-      </div>
+      <div [ngbNavOutlet]="nav" class="tab-content mt-2"></div>
     </div>
+
   </div>
 </div>
 

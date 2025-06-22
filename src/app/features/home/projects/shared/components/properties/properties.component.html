@@ -1,0 +1,194 @@
+<div class="container">
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb title-tp-h1 mt-4 mb-3 d-flex align-items-center">
+      <li class="breadcrumb-item d-flex align-items-center">
+        <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="back()">arrow_back</span>
+        <a class="breadcrumb-link" (click)="goToFlowInit()">{{titleBreadcrumbBase}}</a>
+      </li>
+      <li class="breadcrumb-item d-flex align-items-center">
+        <a class="breadcrumb-link" (click)="toGoPropertyType()">{{stagePropertyType?.propertyGroup?.name}}</a>
+      </li>
+      <li class="breadcrumb-item io-green-primary active" aria-current="page">
+        <span class="fw-light">Inmuebles</span>
+      </li>
+    </ol>
+  </nav>
+
+  <div class="card p-0 border-0 rounded-0">
+    <div class="card-body px-3 my-3">
+      <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
+          <h2 class="subtitle-tp-h2 io-green-primary mb-3">Tipo de inmueble</h2>
+
+          <div class="row">
+            <div class="col-xl-6 col-lg-6 col-sm-12">
+              <span class="fw-bold mb-1 d-block">Nombre</span>
+              <span>{{stagePropertyType?.propertyGroup?.name}}</span>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-sm-12">
+              <span class="fw-bold mb-1 d-block">Etapa</span>
+              <span>{{stagePropertyType?.stage?.stage}}</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  <div class="row gx-0 gy-2 align-items-center py-4 px-3 io-bg-gray-s1">
+    <div class="col-12 col-sm-6 col-md-6 col-lg-5 col-xl-5">
+      <div class="input-group ig-s1">
+        <input id="txtBusqueda" type="text" (keyup.enter)="search()"
+               class="form-control input-tp-h4 input-s3"
+               placeholder="Busca por  {{this.selectedFilter | lowercase}}" />
+        <span class="input-group-text text-icon-search" (click)="search()" ><i class="material-symbols-rounded">search</i></span>
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 d-flex justify-content-center align-items-center">
+      <app-dropdown-search
+        [options]="['Nombre', 'Codigo Sistema', 'Codigo Empresa']"
+        [(selectedFilter)]="selectedFilter"
+        dropdownId="mn-search-property" />
+    </div>
+    @if (!isViewPage) {
+      <div class="col-auto ms-auto">
+        <button type="button" class="btn btn-s3 button-tp py-2 d-flex justify-content-center align-items-center" (click)="add()">
+          <span class="material-symbols-rounded">add_box</span> Agregar
+        </button>
+      </div>
+    }
+  </div>
+  <div class="table-responsive">
+    <table class="table table-s4">
+      <thead>
+      <tr>
+        <th class="py-3 px-3 ms-3">Código del sistema</th>
+        <th class="py-3">Código de empresa</th>
+        <th class="py-3">Nombre</th>
+        <th class="py-3">¿Disponible a venta?</th>
+        <th class="py-3">Precio</th>
+        <th class="py-3">¿Espacio de parking?</th>
+        <th class="py-3">Ciclo de comercialización</th>
+        <th class="py-3">Dirección</th>
+        <th class="py-3 text-center">Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let row of rows; index as i" [formGroup]="row.form">
+        <td class="text-center">{{row.property.codeSystem}}</td>
+        <td class="text-center">
+          @if (!row.editing) {
+            {{row.property.codeEnterprise}}
+          } @else {
+            <input type="text" class="form-control input-s4" formControlName="codeEnterprise" />
+            <div *ngIf="row.form.get('codeEnterprise') | isInvalidField" class="d-flex flex-column">
+              <small *ngFor="let msg of row.form.get('codeEnterprise') | formErrorMessages:'Código de empresa'" class="text-danger font-italic">{{ msg }}</small>
+            </div>
+          }
+        </td>
+        <td>
+          @if (!row.editing) {
+            {{row.property.name}}
+          } @else {
+            <input type="text" class="form-control input-s4" formControlName="name" [maxLength]="100" />
+            <div *ngIf="row.form.get('name') | isInvalidField" class="d-flex flex-column">
+              <small *ngFor="let msg of row.form.get('name') | formErrorMessages:'Nombre'" class="text-danger font-italic">{{ msg }}</small>
+            </div>
+          }
+        </td>
+        <td class="text-center">
+          @if (!row.editing) {
+            {{ row.property.isAvailableSale | booleanLabel }}
+          } @else {
+            <div class="custom-select-wrapper">
+              <select class="input-s4 form-select form-control custom-select-arrow" formControlName="isAvailableSale" appSelectStyle>
+                <option [ngValue]="true">SI</option>
+                <option [ngValue]="false">NO</option>
+              </select>
+              <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+            </div>
+          }
+        </td>
+        <td>
+          @if (!row.editing) {
+            {{row.property.price}}
+          } @else {
+            <input type="text" class="form-control input-s4" formControlName="price" />
+            <div *ngIf="row.form.get('price') | isInvalidField" class="d-flex flex-column">
+              <small *ngFor="let msg of row.form.get('price') | formErrorMessages:'Precio'" class="text-danger font-italic">{{ msg }}</small>
+            </div>
+          }
+        </td>
+        <td class="text-center">
+          @if (!row.editing) {
+            {{row.property.isParkingSpace | booleanLabel}}
+          } @else {
+            <div class="custom-select-wrapper">
+              <select class="input-s4 form-select form-control custom-select-arrow" formControlName="isParkingSpace" appSelectStyle>
+                <option [ngValue]="true">SI</option>
+                <option [ngValue]="false">NO</option>
+              </select>
+              <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+            </div>
+          }
+        </td>
+        <td>
+          @if (!row.editing) {
+            {{row.property.commercializationCycle}}
+          } @else {
+            <div class="custom-select-wrapper">
+              <select class="input-s4 form-select form-control custom-select-arrow" formControlName="commercializationCycle" appSelectStyle>
+                <option [ngValue]="COMMERCIALIZATION_CYCLE.ACTIVE">ACTIVE</option>
+                <option [ngValue]="COMMERCIALIZATION_CYCLE.PRE_SALES">PRE_SALES</option>
+                <option [ngValue]="COMMERCIALIZATION_CYCLE.SALES">SALES</option>
+                <option [ngValue]="COMMERCIALIZATION_CYCLE.CLOSED">CLOSED</option>
+              </select>
+              <span class="material-symbols-rounded custom-arrow-icon">keyboard_arrow_down</span>
+            </div>
+          }
+        </td>
+        <td>
+          @if (!row.editing) {
+            {{row.property.address}}
+          } @else {
+            <input type="text" class="form-control input-s4" formControlName="address" [maxLength]="200" />
+            <div *ngIf="row.form.get('address') | isInvalidField" class="d-flex flex-column">
+              <small *ngFor="let msg of row.form.get('address') | formErrorMessages:'Dirección'" class="text-danger font-italic">{{ msg }}</small>
+            </div>
+          }
+        </td>
+        <td class="text-center align-middle">
+          @if (!isViewPage) {
+            @if (!row.editing) {
+              <div class="d-flex justify-content-center">
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center" title="Editar inmueble" (click)="edit(row)">
+                  <span class="material-symbols-rounded">edit_square</span>
+                </button>
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center" title="Eliminar inmueble" (click)="delete(row)">
+                  <span class="material-symbols-rounded">delete</span>
+                </button>
+              </div>
+            } @else {
+              <div class="d-flex justify-content-center">
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center" title="Guardar" (click)="save(row)">
+                  <span class="material-symbols-rounded">save</span>
+                </button>
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary d-inline-flex align-items-center justify-content-center" title="Cancelar" (click)="cancel(row,i)">
+                  <span class="material-symbols-rounded">cancel</span>
+                </button>
+              </div>
+            }
+          }
+
+        </td>
+      </tr>
+      <tr *ngIf="isShowTableEmpty">
+        <td colspan="9" class="text-center">No hay registros</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

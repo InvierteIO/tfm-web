@@ -4,6 +4,9 @@ import {Observable, of} from 'rxjs';
 import {ProjectMock} from '../models/project.mock.model';
 import {PropertyCategory} from '../../../../shared/models/property-category.model';
 import {ProjectStatus} from '../models/project-status.model';
+import {ProjectStageMock} from '../models/project-stage.mock.model';
+import {CommercializationCycle} from '../../../shared/models/commercialization-cycle.mock.model';
+import {ProjectStageStatus} from '../models/project-stage-status.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +14,46 @@ import {ProjectStatus} from '../models/project-status.model';
 export class ProjectService {
 
   constructor(private readonly httpService: HttpService) {
+  }
+
+  readDraft(): Observable<ProjectMock | undefined> {
+    if(localStorage.getItem('project_draft_new')) {
+      const projectDaft =  JSON.parse(localStorage.getItem('project_draft_new')!);
+      return of(projectDaft as ProjectMock);
+    }
+    return of();
+  }
+
+  save(project: ProjectMock): Observable<ProjectMock> {
+    localStorage.setItem('project_draft_new', JSON.stringify(project));
+    return of(project);
+  }
+  createDraft(project: ProjectMock): Observable<ProjectMock> {
+    if(localStorage.getItem('project_draft_new')) {
+      return this.save(project);
+    } else this.generateProjectStageMock(project);
+    return of(project);
+  }
+
+  generateProjectStageMock(project: ProjectMock): ProjectMock {
+    let projectStages: ProjectStageMock[] = [];
+    const romanStages = ['I', 'II', 'III', 'IV', 'V'];
+
+    Array.from({ length: project?.stages! }, (_, i) => {
+      const roman = romanStages[i];
+      projectStages.push({
+        id: 10 + i,
+        name: `Etapa ${roman}`,
+        stage: roman,
+        commercializationCycle: CommercializationCycle.PRE_SALES,
+        status: ProjectStageStatus.DRAFT
+      })
+    });
+    project.id = 10;
+    project.projectStages = projectStages;
+    project.status = ProjectStatus.DRAFT
+    localStorage.setItem('project_draft_new', JSON.stringify(project));
+    return project;
   }
 
   listProject(category: PropertyCategory, status: ProjectStatus, search: string): Observable<ProjectMock[]> {

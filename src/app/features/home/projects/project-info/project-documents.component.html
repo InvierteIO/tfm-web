@@ -1,0 +1,174 @@
+<div class="row justify-content-center">
+  <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
+    <h2 class="mb-4 mt-1 subtitle-tp-h2 io-green-primary">Planos</h2>
+
+    <span class="fw-bold  mt-3 mb-1 d-block">Planos General de lotizacion</span>
+    <div class="row">
+      @if (!isView) {
+        <div class="col-12 col-sm-6 mt-3">
+          <label for="blueprint_name" class="form-label text-tp-h3">Nombre de plano</label>
+          <input type="text" class="form-control input-s4" id="blueprint_name"
+                 placeholder="Ingresa nombre" [maxLength]="100"
+                 [(ngModel)]="blueprintName"
+                 (ngModelChange)="onBlueprintNameChange($event)"
+                 [ngModelOptions]="{standalone: true}" />
+          <div *ngIf="blueprintNameError"  class="text-danger font-italic">
+            <small>Debe definir el nombre del plano</small>
+          </div>
+        </div>
+        <div class="col-12 mb-3 mt-2">
+          <span class="fs-s1">Sube documento en pdf o imagen</span>
+          <app-file-dropzone class="mt-2"
+                             dropzoneClass="dz-s1"
+                             text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                             accept=".pdf,image/png,image/jpeg"
+                             (dropFile)="onDropFile($event, 'blueprint')"
+                             (fileSelected)="onFileSelected($event, 'blueprint')" />
+        </div>
+      }
+      <div class="col-12" *ngIf="blueprints.length>0">
+        <table class="table table-s3 mb-1">
+          <tbody>
+          <tr *ngFor="let file of blueprints" >
+            <td  class="px-2 ms-1  d-flex justify-content-start align-items-center">
+              <span class="material-symbols-rounded">{{file!.filename | typeFileIconGoogleFonts}}</span>
+            </td>
+            <td class="">{{file.name}}</td>
+            <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+            <td  class="text-center">
+              <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver" (click)="viewDocument(file, 'blueprint')">
+                <img src="./assets/svg/view15.svg" alt="ver">
+              </button>
+              @if (!isView) {
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                        (click)="deleteBlueprint(file)">
+                  <img src="./assets/svg/delete16.svg" alt="eliminar">
+                </button>
+              }
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-12"  *ngIf="brochures.length==0">
+        <table class="table table-s3 mb-0">
+          <tbody>
+          <tr>
+            <td colspan="9" class="text-center">No hay registros</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <h2 class="mb-3 mt-4 subtitle-tp-h2 io-green-primary">Publicidad / Multimedia</h2>
+    <span class="fw-bold  mt-2 mb-1 d-block">Registro fotográfico</span>
+    <div class="row">
+      @if (!isView) {
+        <div class="col-12 mt-3">
+          <label for="multimedia_description" class="form-label text-tp-h3">Descripción</label>
+          <input type="text" class="form-control input-s4" id="multimedia_description"
+                 placeholder="Ingresa descripciòn" [maxLength]="200"
+                 [(ngModel)]="multimediaDescription"
+                 (ngModelChange)="onMultimediaDescriptionChange($event)"
+                 [ngModelOptions]="{standalone: true}" />
+          <div *ngIf="multimediaDescriptionError"  class="text-danger font-italic">
+            <small>Debe tener hasta 200 carácteres</small>
+          </div>
+        </div>
+        <div class="col-12 mb-3 mt-2">
+          <span class="fs-s1">Sube imagen, proyeccion, 3D o VIDEO</span>
+          <app-file-dropzone class="mt-2"
+                             dropzoneClass="dz-s1"
+                             text="Arrastra archivos imágenes (JPG, PNG)"
+                             accept="image/png,image/jpeg"
+                             (dropFile)="onDropFile($event, 'photographic_record')"
+                             (fileSelected)="onFileSelected($event, 'photographic_record')" />
+        </div>
+      }
+      <div class="col-12"  *ngIf="photographicRecords.length>0">
+        <table class="table table-s3 mb-1">
+          <tbody>
+          <tr *ngFor="let file of photographicRecords" >
+            <td  class="px-2 ms-1  d-flex justify-content-start align-items-center">
+              <span class="material-symbols-rounded">{{file!.filename | typeFileIconGoogleFonts}}</span>
+            </td>
+            <td class="">{{file.name}}</td>
+            <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+            <td  class="text-center">
+              <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver"
+                      (click)="viewDocument(file, 'photographic_record')">
+                <img src="./assets/svg/view15.svg" alt="ver">
+              </button>
+              @if (!isView) {
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                        (click)="deletePhotographicRecord(file)">
+                  <img src="./assets/svg/delete16.svg" alt="eliminar">
+                </button>
+              }
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-12"  *ngIf="photographicRecords.length==0">
+        <table class="table table-s3 mb-1">
+          <tbody>
+          <tr>
+            <td colspan="9" class="text-center">No hay registros</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row  mb-3">
+      <div class="col-12">
+        <span class="fw-bold  mt-2 mb-1 d-block">Brochure</span>
+        @if (!isView) {
+          <span class="fs-s1">Sube documento en pdf o imagen</span>
+          <app-file-dropzone class="mt-2 mb-3"
+                             dropzoneClass="dz-s1"
+                             text="Arrastra archivos PDF o imágenes (JPG, PNG)"
+                             accept=".pdf,image/png,image/jpeg"
+                             (dropFile)="onDropFile($event, 'brochure')"
+                             (fileSelected)="onFileSelected($event, 'brochure')" />
+        }
+      </div>
+      <div class="col-12" *ngIf="brochures.length>0">
+        <table class="table table-s3 mb-1">
+          <tbody>
+          <tr *ngFor="let file of brochures" >
+            <td  class="px-2 ms-1  d-flex justify-content-start align-items-center">
+              <span class="material-symbols-rounded">{{file!.filename | typeFileIconGoogleFonts}}</span>
+            </td>
+            <td class="">{{file.name}}</td>
+            <td class="">{{file.createdAt | date:'dd/MM/yyyy'}}</td>
+            <td  class="text-center">
+              <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Ver" (click)="viewDocument(file, 'brochure')">
+                <img src="./assets/svg/view15.svg" alt="ver" >
+              </button>
+              @if (!isView) {
+                <button type="button" class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar"
+                        (click)="deleteBrochure(file)">
+                  <img src="./assets/svg/delete16.svg" alt="eliminar">
+                </button>
+              }
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-12"  *ngIf="brochures.length==0">
+        <table class="table table-s3 mb-1">
+          <tbody>
+          <tr>
+            <td colspan="9" class="text-center">No hay registros</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+</div>

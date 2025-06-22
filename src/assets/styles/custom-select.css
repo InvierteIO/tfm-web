@@ -95,3 +95,37 @@
 .ng-select .ng-input>input::placeholder {
   line-height: normal !important;
 }
+
+/*******Multiple******/
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-placeholder {
+  top: 12px;
+}
+
+.ng-select.ng-select-multiple .ng-select-container {
+  height: 45px;
+  border-radius: 10px !important;
+  border: 1px solid #B8B8B8 !important;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: normal;
+  background-color: #FCFCFC;
+}
+
+.ng-select.ng-select-disabled > .ng-select-container {
+  color: #90A3BF !important;
+  background: #F6F7F9 !important;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+  background-color: #d2f2dd42;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-label {
+  background-color: #d2f2ddd9;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon.left {
+  border-right: 1px solid #D2F2DD;
+}

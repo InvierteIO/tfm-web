@@ -82,7 +82,7 @@ export class MembershipComponent implements OnInit {
     modalRef.componentInstance.title = 'Ver membresia';
   }
 
-  get isShowTable() {
+  get isShowTableEmpty() {
     return !this.memberships || this.memberships.length === 0;
   }
 }

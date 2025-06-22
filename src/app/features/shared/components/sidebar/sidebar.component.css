@@ -94,7 +94,7 @@
   flex-direction: column;
   justify-content: center;
 
-  font-weight: 800;
+  font-weight: 700;
   font-size: 18px;
   font-family: "Poppins", sans-serif;
 }
@@ -291,10 +291,6 @@
 
 .sidebar.collapsed .secondary-nav .nav-link {
   justify-content: center;
-}
-
-.sidebar.collapsed ~ main {
-  margin-left: 85px;
 }
 
 

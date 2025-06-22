@@ -18,6 +18,8 @@ import {PdfViewerModalComponent} from '@common/components/pdf-viewer-modal.compo
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {KsModalGalleryService} from '@core/services/ks-modal-gallery.service';
 import { Document } from '@core/models/document.model';
+import {ProjectStoreService} from '../../shared/services/project-store.service';
+import {ProjectDraftStatus} from '../../shared/models/project-draft-status';
 
 @Component({
   selector: 'app-legal-scope-habilitation',
@@ -53,7 +55,8 @@ export class LegalScopeHabilitationComponent implements OnInit {
               private readonly fb: FormBuilder,
               private readonly loadingService: LoadingService,
               private readonly ksModalGallerySvc: KsModalGalleryService,
-              private readonly modalService: NgbModal) {
+              private readonly modalService: NgbModal,
+              protected readonly projectStore: ProjectStoreService) {
     this.form = this.buildForm();
   }
 
@@ -324,15 +327,15 @@ export class LegalScopeHabilitationComponent implements OnInit {
   }
 
   back(): void {
-    this.router.navigate(['/public/home/project-new/complementary']);
+    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/complementary`]);
   }
 
   toGoSection1(): void {
-    this.router.navigate(['/public/home/project-new/section1']);
+    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section1`]);
   }
 
   toGoTitleSplits(): void {
-    this.router.navigate(['/public/home/project-new/title-splits']);
+    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/title-splits`]);
   }
 
   save(): void {
@@ -349,4 +352,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
     }, 500);
   }
 
+  get isViewPage() {
+    return this.projectStore.draftStatus() == ProjectDraftStatus.VIEW;
+  }
 }

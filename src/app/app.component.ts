@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { LoadingOverlayComponent } from '@common/components/loading-overlay.component';
 import { LoadingService } from '@core/services/loading.service';
+import {ToastContainerComponent} from '@common/components/toast-container.component';
 
 @Component({
   standalone: true,
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule, LoadingOverlayComponent],
+  imports: [RouterOutlet, CommonModule, LoadingOverlayComponent, ToastContainerComponent],
   templateUrl: './app.component.html'
 })
 export class AppComponent {

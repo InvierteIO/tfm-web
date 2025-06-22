@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Membership} from '../../../dashboard/membership/membership.model';
 import {ProjectMock} from '../shared/models/project.mock.model';
 import {FormUtil} from '@common/utils/form.util';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
@@ -8,6 +7,8 @@ import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 import {NgForOf, NgIf} from '@angular/common';
 import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
+import {LoadingService} from '@core/services/loading.service';
+import {ProjectStoreService} from '../shared/services/project-store.service';
 
 @Component({
   selector: 'app-project-info-general',
@@ -20,20 +21,24 @@ import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
     FormErrorMessagesPipe,
     NgForOf
   ],
-  templateUrl: './project-info-general.component.html',
-  styleUrl: './project-info-general.component.css'
+  templateUrl: './project-info-general.component.html'
 })
 export class ProjectInfoGeneralComponent implements OnInit {
   @Input()
-  public project: ProjectMock = { id : 0 };
+  public project?: ProjectMock;
+  @Input()
+  isViewPage = false;
   public form: FormGroup;
   loading:boolean = false;
-
-  constructor(private readonly fb: FormBuilder) {
+  constructor(private readonly fb: FormBuilder,
+              private readonly loadingService: LoadingService) {
     this.form = this.buildForm();
   }
 
   ngOnInit(): void {
+    if(this.isViewPage) {
+      this.form.disable({ emitEvent: false });
+    }
     this.loadDataForm();
   }
 
@@ -51,13 +56,13 @@ export class ProjectInfoGeneralComponent implements OnInit {
 
   private loadDataForm(): void {
     this.form?.reset({
-      project_name: this.project.name,
-      office_address: this.project.officeAddress,
-      office_number: this.project.officeNumber,
-      supervisor: this.project.supervisor,
-      description: this.project.description,
-      address: this.project.address,
-      zipcode: this.project.zipCode
+      project_name: this.project?.name,
+      office_address: this.project?.officeAddress,
+      office_number: this.project?.officeNumber,
+      supervisor: this.project?.supervisor,
+      description: this.project?.description,
+      address: this.project?.address,
+      zipcode: this.project?.zipCode
     });
   }
 
@@ -66,11 +71,11 @@ export class ProjectInfoGeneralComponent implements OnInit {
       FormUtil.markAllAsTouched(this.form);
       return;
     }
-    this.loading= true;
+    this.loadingService.show();
     Swal.fire(
-      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.CONFIRMATION]("¿Desea actualizar la información general del proyecto?"))
+      DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea actualizar la información general del proyecto?"))
       .then((result) => {
-        this.loading= false;
+        this.loadingService.hide();
         if (result.isConfirmed) {
 
         }
@@ -81,5 +86,6 @@ export class ProjectInfoGeneralComponent implements OnInit {
     return (field: string) =>
       this.form?.get(field)?.invalid && this.form?.get(field)?.touched;
   }
+
 
 }

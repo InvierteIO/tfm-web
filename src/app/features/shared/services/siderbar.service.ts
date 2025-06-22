@@ -17,6 +17,11 @@ export class SidebarService {
       title: 'Proyectos',
       icon_svg: 'projects.svg',
       id: 'projects',
+      activeUrls: [
+        '/public/home/project-new',
+        '/public/home/project-draft',
+        '/public/home/project-info'
+      ],
       submenus: [
         { title: 'Mis proyectos', url: '/public/home/projects' },
         { title: 'Reportes de ventas', url: '/public/home/salesreports' }
@@ -27,7 +32,7 @@ export class SidebarService {
       icon_svg: 'contacts.svg',
       id: 'contacts',
       submenus: [
-        { title: 'Clientes', url: '/public/home/customers' },
+        { title: 'Clientes', url: '/public/home/clients' },
         { title: 'Asesores inmobiliarios', url: '/public/home/realtors' }
       ]
     },

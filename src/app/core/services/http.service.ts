@@ -6,6 +6,7 @@ import {catchError, map} from 'rxjs/operators';
 import {AppError} from '@core/models/app-error.model';
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
+import {ToastService} from '@core/services/toast.service';
 
 
 @Injectable({providedIn: 'root'})
@@ -16,10 +17,13 @@ export class HttpService {
     private headers: HttpHeaders = new HttpHeaders();
     private params: HttpParams = new HttpParams();
     private responseType: string = 'json';
+    private isToast: boolean = false;
+    private isDownloading: boolean = false;
     private successfulNotification:string|undefined = undefined;
     private errorNotification:string|undefined = undefined;
 
-    constructor(private readonly http: HttpClient, private readonly router: Router) {
+    constructor(private readonly http: HttpClient, private readonly router: Router,
+                private readonly toastService: ToastService) {
         this.resetOptions();
     }
 
@@ -39,6 +43,11 @@ export class HttpService {
     successful(notification = 'Successful'): this {
         this.successfulNotification = notification;
         return this;
+    }
+
+    toast(isToast: boolean = false): this {
+      this.isToast = isToast;
+      return this;
     }
 
     error(notification: string): this {
@@ -101,6 +110,19 @@ export class HttpService {
         return this;
     }
 
+    pdf(): this {
+      this.responseType = 'blob';
+      this.header('Accept', 'application/pdf , application/json');
+      return this;
+    }
+
+    download(): this {
+      this.responseType = 'blob';
+      this.header('Accept', 'application/octet-stream');
+      this.isDownloading = true;
+      return this;
+    }
+
     private resetOptions(): void {
         this.headers = new HttpHeaders();
         this.params = new HttpParams();
@@ -119,14 +141,9 @@ export class HttpService {
     }
 
     private extractData(response: any): any {
-        if (this.successfulNotification) {
-            console.log(this.successfulNotification);
-            Swal.fire(
-              DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.CONFIRMATION](this.successfulNotification)
-            );
-            this.successfulNotification = undefined;
-            this.errorNotification = undefined;
-        }
+        this.showSuccess();
+        const downloadingBody = this.checkDownloadingAndGetBody(response);
+        if (downloadingBody) return downloadingBody;
         const contentType = response.headers.get('content-type');
         if (contentType) {
             if (contentType.indexOf('application/pdf') !== -1) {
@@ -140,15 +157,43 @@ export class HttpService {
         }
     }
 
+    private checkDownloadingAndGetBody(response: any): any {
+      let body: any = undefined;
+      if (this.isDownloading) {
+        body = response.body;
+      }
+      this.isDownloading = false;
+      return body;
+    }
+
+    private showSuccess(): void {
+      if (this.successfulNotification) {
+        if(!this.isToast) {
+          Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.CONFIRMATION](this.successfulNotification));
+        } else {
+          this.toastService.success(this.successfulNotification);
+        }
+        this.successfulNotification = undefined;
+        this.errorNotification = undefined;
+      }
+      this.isToast = false;
+    }
     private showError(notification: string): void {
         if (this.errorNotification) {
-            console.error(this.errorNotification);
-          Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR](this.errorNotification));
-            this.errorNotification = undefined;
-            this.successfulNotification = undefined;
+          if(!this.isToast) {
+            Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR](this.errorNotification));
+          } else {
+            this.toastService.error(this.errorNotification);
+          }
+          this.errorNotification = this.successfulNotification = undefined;
         } else {
-            console.error(notification);
+          if(!this.isToast) {
+            Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.ERROR](notification));
+          } else {
+            this.toastService.error(notification);
+          }
         }
+      this.isToast = this.isDownloading = false;
     }
 
     private handleError(response : any): any {

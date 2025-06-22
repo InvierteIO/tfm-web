@@ -1,0 +1,35 @@
+<form  [formGroup]="form" (ngSubmit)="save()" >
+  <div class="d-flex justify-content-center py-3">
+    <img
+      src="./assets/img/property/example-aparments.jpg"
+      alt="Portada la etapa"
+      class="project-image"/>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
+      <div class="row">
+        <div class="col-xl-6 col-lg-6 col-sm-12 mb-3 mx-auto">
+          <label for="name" class="form-label text-tp-h3">Nombre del Etapa del Proyecto</label>
+          <input type="text" class="form-control input-s4" id="name" formControlName="name"
+                 placeholder="Ingrese nombre" [maxLength]="100"/>
+          <div *ngIf="form.get('name') | isInvalidField" class="d-flex flex-column">
+            <small *ngFor="let msg of form.get('name') | formErrorMessages:'Nombre'"
+                   class="text-danger font-italic">{{ msg }}</small>
+          </div>
+        </div>
+
+        <app-project-multimedia [isView]="isView"/>
+        @if (!isView) {
+          <app-button-loading
+            type="submit"
+            [btnClasses]="'btn d-block mx-auto mt-3 mb-2 btn-width300 h37  btn-s4 button-tp br5'"
+            [loading]="loading"
+            msgLoading="Cargando..."
+            msgButton="Guardar"/>
+        }
+
+      </div>
+    </div>
+  </div>
+</form>
+

@@ -1,7 +1,8 @@
 <div class="container">
 
     <h1 class="title-tp-h1 mt-4 mb-3 d-flex align-items-center io-green-primary">
-        <span class="">Crear Proyecto / </span>
+       <span class="rounded-circle  p-1 arrow-back material-symbols-rounded me-2" (click)="goToProjects()">arrow_back</span>
+        <span class="">{{projectStore.titleBreadcrumbBase()}} / </span>
         <span class="fw-light ml-1">&nbsp;Seccion 1</span>
     </h1>
   <div class="card p-0 border-0 rounded-0">
@@ -75,110 +76,9 @@
                      class="text-danger font-italic">{{ msg }}</small>
             </div>
 
-            <app-additional-information [form]="form"
-              [financialsBonus]="financialsBonus" [banks]="banks"  />
-
-            <h2 class="subtitle-tp-h2 io-green-primary">Datos principales del inmueble</h2>
-            <div class="d-flex align-items-center justify-content-end py-3 ">
-              <button class="btn btn-s3 button-tp py-2 d-flex justify-content-center align-items-center" >
-                <span class="material-symbols-rounded">download</span>
-                Descargar plantilla
-              </button>
-            </div>
-
-            <h2 class="subtitle-tp-h2 io-green-primary">Tipo de inmueble</h2>
-
-            <div class="d-flex align-items-center justify-content-between pt-3 pb-4">
-              <span>Crea los tipos de propiedad según la combinación de características de las categorías como casa, departamento o terreno</span>
-              <button class="btn btn-s1 button-tp py-2 br5 text-nowrap" (click)="toGoPropertyType(undefined)" >
-                  Agregar tipo inmueble
-              </button>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-s2 mb-5" *ngIf="!loading">
-                <thead>
-                <tr>
-                  <th class="px-3 ms-3">Tipo</th>
-                  <th class="">Etapa</th>
-                  <th class="">Plano arquitectonico</th>
-                  <th class="">Plantilla formato</th>
-                  <th class=" text-center">Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let propertyType of stagesPropertyTypes" >
-                  <td class="px-3 ms-3">{{propertyType.propertyGroup?.name}}</td>
-                  <td>{{propertyType.stage?.stage}}</td>
-                  <td>
-                    @if(propertyType.architecturalBluetprint) {
-                      <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="descargar documentos">
-                        <img src="./assets/svg/document24.svg" alt="documento">
-                      </button>
-                      {{propertyType.architecturalBluetprint.name}}
-                    } @else {
-                      <app-file-dropzone
-                        text="Arratra archivos PDF o imágenes (JPG, PNG)"
-                        accept=".pdf,image/png,image/jpeg"
-                        (dropFile)="onDropFile($event, 'architectural', propertyType)"
-                        (fileSelected)="onFileSelected($event, 'architectural', propertyType)">
-                      </app-file-dropzone>
-                    }
-                  </td>
-                  <td>
-                    @if(propertyType.formatTemplateLoaded) {
-
-                      <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="descargar archivo">
-                        <img src="./assets/svg/document24.svg" alt="documento">
-                      </button>
-                      {{propertyType.formatTemplateLoaded.name}}
-                    } @else {
-                      <app-file-dropzone
-                        text="Arratra archivo excel con información válida"
-                        accept=".xls,.xlsx"
-                        (dropFile)="onDropFile($event, 'template', propertyType)"
-                        (fileSelected)="onFileSelected($event, 'template', propertyType)">
-                      </app-file-dropzone>
-                    }
-                  </td>
-                  <td class="align-middle">
-                    <div class="d-flex justify-content-center">
-                      <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary" title="duplicar" (click)="duplicatePropertyType(propertyType)">
-                        <img src="./assets/svg/duplicate19.svg" alt="duplicar">
-                      </button>
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Ver tipo de inmueble">
-                        <img src="./assets/svg/view15.svg" alt="ver">
-                      </button>
-                      <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary
-                    d-inline-flex align-items-center justify-content-center" title="Editar tipo de inmueble"
-                              (click)="toGoPropertyType(propertyType)">
-                        <span class="material-symbols-rounded">edit_square</span>
-                      </button>
-                      <button class="btn p-0 border-0 bg-transparent mx-2" title="Eliminar" (click)="deletePropertyType(propertyType)">
-                        <img src="./assets/svg/delete16.svg" alt="eliminar">
-                      </button>
-                    </div>
-                    @if(propertyType.formatTemplateLoaded) {
-                      <div class="d-flex justify-content-center mt-2">
-                        <button class="btn p-0 border-0 bg-transparent mx-2 io-yellow-primary
-                    d-inline-flex align-items-center justify-content-center" title="Inmuebles"
-                                (click)="toGoProperties(propertyType)">
-                          <span class="material-symbols-rounded">other_houses</span>
-                        </button>
-                      </div>
-                    }
-                  </td>
-                </tr>
-                <tr *ngIf="isShowTable">
-                  <td colspan="5" class="text-center">No hay registros</td>
-                </tr>
-                </tbody>
-              </table>
-
-            </div>
-
             <app-button-loading
               type="submit"
-              [btnClasses]="'btn d-block mx-auto mt-3 btn-width300 h37  btn-s4 button-tp br5'"
+              [btnClasses]="'btn d-block mx-auto mt-5 btn-width300 h37  btn-s4 button-tp br5'"
               [loading]="loading"
               msgLoading="Cargando..."
               msgButton="Siguiente"/>

@@ -6,6 +6,9 @@ import {Router} from "@angular/router";
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
 import {LoadingService} from '@core/services/loading.service';
+import {ProjectDraftStatus} from './shared/models/project-draft-status';
+import {ProjectStoreService} from './shared/services/project-store.service';
+import {ProjectActionStatus} from './shared/models/project-action-status';
 
 @Component({
   selector: 'app-project-card',
@@ -18,11 +21,19 @@ export class ProjectCardComponent {
   @Input() project: ProjectMock = { id : 0 };
 
   constructor(private readonly router: Router,
-              private readonly loadingService: LoadingService) {
+              private readonly loadingService: LoadingService,
+              private readonly projectStore: ProjectStoreService) {
   }
 
   edit(): void {
-    this.router.navigate(['/public/home/project-info'], { state: { project: this.project } });
+    if(this.project.status === ProjectStatus.DRAFT) {
+      this.projectStore.setDraftStatus(ProjectDraftStatus.EDIT);
+      this.projectStore.setTitleBreadcrumbBase("Editar Proyecto Borrador");
+      this.router.navigate(['/public/home/project-draft/section1'], { state: { project: this.project } });
+    } else {
+      this.projectStore.setStatus(ProjectActionStatus.EDIT);
+      this.router.navigate(['/public/home/project-info'], { state: { project: this.project } });
+    }
   }
 
   deleteProject() {
@@ -34,6 +45,17 @@ export class ProjectCardComponent {
           setTimeout(() => { this.loadingService.hide(); }, 1000);
         }
       });
+  }
+
+  view() {
+    if(this.project.status === ProjectStatus.DRAFT) {
+      this.projectStore.setDraftStatus(ProjectDraftStatus.VIEW);
+      this.projectStore.setTitleBreadcrumbBase("Ver Proyecto Borrador");
+      this.router.navigate(['/public/home/project-draft/section1'], { state: { project: this.project } });
+    } else {
+      this.projectStore.setStatus(ProjectActionStatus.VIEW);
+      this.router.navigate(['/public/home/project-info'], { state: { project: this.project } });
+    }
   }
 
   get isShowNumberApartments() {

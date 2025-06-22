@@ -22,8 +22,7 @@
         @if (menu.submenus) {
           <a href="#" class="nav-link dropdown-toggle-custom"
              [class.active]="isMenuActive(menu)"
-             (click)="onDropdownClick($event, menu.id)"
-          >
+             (click)="onDropdownClick($event, menu.id)">
             @if (menu.icon_google) {
               <span class="material-symbols-rounded">{{ menu.icon_google }}</span>
             } @else {
@@ -85,7 +84,7 @@
           <span class="material-symbols-rounded">logout</span>
           <span class="nav-label">Cerrar sesión</span>
         </a>
-        
+
         <ul class="dropdown-menu-custom">
           <li class="nav-item">
             <a class="nav-link dropdown-title">Cerrar sesión</a>

@@ -11,7 +11,7 @@ import { LoginFormComponent } from "../login-form.component";
   templateUrl: './login.component.html'
 })
 export class LoginComponent {
-  UserType = UserType;
+  USER_TYPE = UserType;
 
   constructor(private readonly router: Router) { }
 
