@@ -40,7 +40,7 @@ export class UserManagementService {
 
 
     notifyActivationCode(email: string, taxIdentificationNumber: string): Observable<void> {
-        const url = `${UserManagementService.END_POINT_USER_STAFF}/${encodeURIComponent(email)}/companies/${encodeURIComponent(taxIdentificationNumber)}/notify-code`;          
+        const url = `${UserManagementService.END_POINT_USER_STAFF}/${encodeURIComponent(email)}/companies/${encodeURIComponent(taxIdentificationNumber)}/notify-code`;
         return this.httpService
         .error("Error al enviar enlace de activación a usuario.")
         .successful("Se ha enviado enlace de activación de cuenta al usuario")

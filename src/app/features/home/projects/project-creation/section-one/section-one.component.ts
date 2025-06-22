@@ -15,6 +15,10 @@ import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from "@common/dialogs/dialogs-swa
 import {IsInvalidFieldPipe} from "@common/pipes/is-invalid-field.pipe";
 import {FileDropzoneComponent} from '@common/components/file-dropzone.component';
 import {LoadingService} from '@core/services/loading.service';
+import { SectionOneService } from './section-one.service';
+import {Project} from "@core/models/project.model";
+import {Observable, throwError, of} from "rxjs";
+import { catchError, concatMap, finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-section-one',
@@ -39,14 +43,15 @@ export class SectionOneComponent  implements OnInit  {
 
   constructor(private readonly  router: Router,
               private readonly fb: FormBuilder,
-              private readonly loadingService: LoadingService) {
+              private readonly loadingService: LoadingService,
+              private readonly sectionOneService: SectionOneService) {
     this.form = this.buildForm();
   }
 
   ngOnInit(): void {
     // Simulación asíncrona de carga
     setTimeout(() => {
-      this.loadData();
+      //this.loadData();
       this.initBonusesForm();
       this.initBanksForm();
     }, 500);
@@ -73,12 +78,38 @@ export class SectionOneComponent  implements OnInit  {
       return;
     }
     console.log(this.form.value);
-
     this.loadingService.show();
-    setTimeout(() => {
-      this.router.navigate(['/public/home/project-new/infrastructure-installation']);
-      this.loadingService.hide();
-    }, 50);
+    this.createProject();
+  }
+
+  private createProject(): void {
+    const name = this.form.get('project_name')?.value;
+    const officeAddress = this.form.get('office_address')?.value;
+    const officeNumber = this.form.get('office_number')?.value;
+    const supervisor = this.form.get('supervisor')?.value;
+    const stages = this.form.get('stages')?.value;
+    const taxIdentificationNumber = '10449080004';
+
+    const projectDto: Project = {
+      name: name,
+      officeAddress: officeAddress,
+      officeNumber: officeNumber,
+      supervisor: supervisor,
+      stages: stages
+    };
+
+    this.sectionOneService.createProject(projectDto, taxIdentificationNumber)
+    .subscribe({
+      next: () => {
+        this.router.navigate(['/public/home/project-new/infrastructure-installation']);
+      },
+      error: (err) => {
+        console.error('Error during project creation:', err);
+      }
+    });
+
+    this.loadingService.hide();
+
   }
 
   private initBonusesForm(): void {

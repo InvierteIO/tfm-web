@@ -8,6 +8,10 @@ export const tokenInterceptor: HttpInterceptorFn =
         const authService = inject(AuthService);
         const token = authService.getToken();
 
+        if (request.url.includes('/token')) {
+            return next(request);
+        }        
+
         if (token) {
             request = request.clone({
                 setHeaders: {Authorization: `Bearer ${token}`}
