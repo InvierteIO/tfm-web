@@ -76,7 +76,7 @@ export class StageAssignmentModalComponent implements OnInit{
               stageProjectStages.push({propertyGroup: this.propertyGroup, stage: sgp});
           });
           ;
-          this.projectPropertyTypeSvc.assigment(stageProjectStages)
+          this.projectPropertyTypeSvc.assignment(stageProjectStages)
             .pipe(finalize(()=> this.activeModal.close(stageProjectStages)))
             .subscribe();
         }

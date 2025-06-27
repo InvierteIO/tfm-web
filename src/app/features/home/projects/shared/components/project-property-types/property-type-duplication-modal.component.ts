@@ -64,7 +64,7 @@ export class PropertyTypeDuplicationModalComponent {
        con las mismas características con el nombre de '${this.form.get('name')?.value}'?`))
       .then((result) => {
         if (result.isConfirmed) {
-          this.projectPropertyTypeSvc.create(this.captureData())
+          this.projectPropertyTypeSvc.duplicate(this.captureData())
             .pipe(finalize(() => this.loading= false))
             .subscribe(spgs => this.activeModal.close(spgs));
         }

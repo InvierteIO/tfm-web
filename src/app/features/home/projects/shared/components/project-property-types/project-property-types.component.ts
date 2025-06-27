@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, SimpleChanges} from '@angular/core';
 import {StagePropertyGroupDtoMock} from '../../models/stage-property-group.dto.mock.model';
 import {Router} from '@angular/router';
 import {ProjectMock} from '../../models/project.mock.model';
@@ -47,7 +47,7 @@ import {TypeFileIconGoogleFontsPipe} from '@common/pipes/typefile-icon-googlefon
 })
 export class ProjectPropertyTypesComponent implements OnInit {
   @Input()
-  public project: ProjectMock = { id : 0 };
+  public project!: ProjectMock;
   @Input()
   isView: boolean = false;
   stagesPropertyTypes: StagePropertyGroupDtoMock[]= [];
@@ -67,12 +67,19 @@ export class ProjectPropertyTypesComponent implements OnInit {
     } else {
       this.pathBase = `/public/home/${this.projectStore.draftPathCurrent()}/`;
     }
+  }
 
-    this.loadData();
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('ngOnChanges');
+    if (changes['project'] && this.project && this.project.id > 0) {
+      console.log('project init ppt', this.project);
+      this.loadData();
+    }
   }
 
   toGoPropertyType(propertyType: PropertyGroupMock |
     undefined, view: boolean | undefined = undefined):void {
+    console.log('toGoPropertyType');
     this.loadingService.show();
     setTimeout(() => {
       this.router.navigate([`${this.pathBase}property-type`],
@@ -82,6 +89,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   viewPropertyType(propertyType: PropertyGroupMock):void {
+    console.log('viewPropertyType');
     this.loadingService.show();
     this.projectPropertyTypeSvc.readStagePropertyGroupByPropertyType(propertyType!)
       .pipe(finalize(() => this.loadingService.hide()))
@@ -92,6 +100,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   editPropertyType(propertyType: PropertyGroupMock):void {
+    console.log('editPropertyType');
     Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea ir a editar el tipo de inmueble?"))
       .then(result => {
         if (result.isConfirmed) {
@@ -107,36 +116,37 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   deletePropertyType(propertyType: PropertyGroupMock):void {
+    console.log('deletePropertyType');
     Swal.fire(
       DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Desea eliminar el tipo de inmueble?"))
       .then(result => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          setTimeout(() => {
-            this.projectPropertyTypeSvc.removePropertyGroup(propertyType)
-              .subscribe()
+          this.projectPropertyTypeSvc.removePropertyGroup(propertyType, this.project)
+          .subscribe(()=>{
             this.loadData();
-          }, 1000);
+          })
         }
       });
   }
 
   deleteStagePropertyType(stagePropertyType: StagePropertyGroupDtoMock):void {
+    console.log('deleteStagePropertyType');
     Swal.fire(
       DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Desea eliminar la asignación de la etapa al tipo de inmueble?"))
       .then(result => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          setTimeout(() => {
-            this.projectPropertyTypeSvc.remove(stagePropertyType)
-              .subscribe()
-            this.loadData();
-          }, 1000);
+          this.projectPropertyTypeSvc.remove(stagePropertyType, this.project)
+            .subscribe(()=>{
+              this.loadData();
+            })
         }
       });
   }
 
   deleteFile(event:Event, stagePropertyType: StagePropertyGroupDtoMock, fileType: "blueprint" | "template"):void {
+    console.log('deleteFile');
     const button = event.currentTarget as HTMLButtonElement;
     let title = button?.title ?? '';
     title = title.toLocaleLowerCase();
@@ -158,6 +168,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   toGoProperties(stagePropertyType: StagePropertyGroupDtoMock) : void {
+    console.log('toGoProperties');
     this.loadingService.show();
     setTimeout(() => {
 
@@ -174,6 +185,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   onDropFile(event: DragEvent, stagePropertyType: StagePropertyGroupDtoMock, type: 'blueprint' | 'template'): void {
+    console.log('onDropFile');
     event.preventDefault();
     event.stopPropagation();
     const files = event.dataTransfer?.files;
@@ -187,6 +199,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   onFileSelected(event: Event, stagePropertyType: StagePropertyGroupDtoMock , type: 'blueprint' | 'template'): void {
+    console.log('onFileSelected');
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
@@ -197,6 +210,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   loadFile(type: string, file: File, stagePropertyType: StagePropertyGroupDtoMock) {
+    console.log('loadFile');
     switch (type) {
       case 'blueprint': this.loadBlueprint(file, stagePropertyType); break;
       case 'template': this.loadTemplate(file, stagePropertyType); break;
@@ -204,6 +218,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   loadTemplate(file: File, stagePropertyType: StagePropertyGroupDtoMock) {
+    console.log('loadTemplate');
     if(!FileUtil.validateFileExtensionMessage(file, ['xls','xlsx'])) return;
     this.loadingService.show();
     setTimeout(() => {
@@ -214,6 +229,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   loadBlueprint(file: File, stagePropertyType: StagePropertyGroupDtoMock) {
+    console.log('loadBlueprint');
     if(!FileUtil.validateFileExtensionMessage(file)) return;
     this.loadingService.show();
     setTimeout(() => {
@@ -224,6 +240,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   createDocumentMock(file: File, fileType: 'blueprint'| 'template'): DocumentMock {
+    console.log('createDocumentMock');
     const extension = file.name?.toLowerCase().split('.').pop();
     let path :string = "";
     let id :number = this.stagesPropertyTypes.length + (fileType == "blueprint" ? 2 : 1);
@@ -240,6 +257,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   downloadFile(file: DocumentMock | undefined): void {
+    console.log('downloadFile');
     if (!file || !file.path) {
       return;
     }
@@ -250,6 +268,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   viewDocument(file: DocumentMock): void {
+    console.log('viewDocument');
     const extension = file.filename?.toLowerCase().split('.').pop();
     if (extension === 'pdf') {
       this.viewPdf(file);
@@ -262,6 +281,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   viewPdf(file: DocumentMock): void {
+    console.log('viewPdf');
     const modalRef = this.modalService.open(PdfViewerModalComponent, {
       size: 'xl',
       backdrop: 'static',
@@ -277,7 +297,8 @@ export class ProjectPropertyTypesComponent implements OnInit {
       .filter(spg => spg.propertyGroup?.id === propertyGroup.id);
   }
 
-  openStageAssigmentModal(propertyGroup: PropertyGroupMock):void {
+  openStageAssignmentModal(propertyGroup: PropertyGroupMock):void {
+    console.log('openStageAssignmentModal');
     const modalRef = this.modalService.open(StageAssignmentModalComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.stagesCurrent = this.readStagePropertyTypes(propertyGroup)
       .map(stagePropertyGroup => stagePropertyGroup.stage!)
@@ -294,6 +315,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   openDuplicationPropertyTypeModal(propertyGroup: PropertyGroupMock):void {
+    console.log('openDuplicationPropertyTypeModal');
     const modalRef = this.modalService.open(PropertyTypeDuplicationModalComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.projectStages = this.project.projectStages;
     modalRef.componentInstance.propertyGroup = propertyGroup;
@@ -305,10 +327,14 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   loadData(): void {
+    console.log('loadData');
     this.loadingService.show();
     this.projectPropertyTypeSvc.readStagePropertyGroupByProject(this.project)
       .pipe(finalize(() => this.loadingService.hide()))
-      .subscribe(spg => this.stagesPropertyTypes = spg);
+      .subscribe(spg => {
+        console.log('stagesPropertyTypes : ', spg)
+        this.stagesPropertyTypes = spg
+        });
   }
 
   get propertyTypes(): PropertyGroupMock [] {

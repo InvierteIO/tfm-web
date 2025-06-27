@@ -6,7 +6,7 @@ import {StageInfrastructureInstallationMock} from './stage-infrastructure-instal
 import {StageCatalogDetail} from './stage-catalog-detail';
 
 export interface ProjectStageMock {
-  id: number;
+  id?: number;
   name?: string;
   stage?: string;
   kmlKmzUrl?: string;

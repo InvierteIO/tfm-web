@@ -11,6 +11,7 @@ export interface ProjectMock {
   stages?: number;
   areaTotal?: number;
   status?: ProjectStatus;
+  taxIdentificationNumber?: string;
 
   officeAddress?: string;
   officeNumber?: string;

@@ -15,12 +15,15 @@ import {LoadingService} from '@core/services/loading.service';
 import {FormUtil} from '@common/utils/form.util';
 import {DataType} from '../../shared/models/data-type.model';
 import {ProjectService} from '../../shared/services/project.service';
-import {finalize} from 'rxjs/operators';
+import {finalize, map, tap} from 'rxjs/operators';
 import {StageBankMock} from '../../shared/models/stage-bank.mock.model';
 import {StageBonusTypeMock} from '../../shared/models/stage-bonus-type.mock.model';
 import {ProjectStageMock} from '../../shared/models/project-stage.mock.model';
 import {ProjectStoreService} from '../../shared/services/project-store.service';
 import {ProjectDraftStatus} from '../../shared/models/project-draft-status';
+import {BankService} from '../../shared/services/bank.service';
+import {FinancialBonusService} from '../../shared/services/financial-bonus.service';
+import {Observable, throwError, of, forkJoin,} from "rxjs";
 
 @Component({
   selector: 'app-section-two',
@@ -47,20 +50,23 @@ export class SectionTwoComponent implements OnInit  {
               private readonly fb: FormBuilder,
               private readonly projectService: ProjectService,
               private readonly loadingService: LoadingService,
+              private readonly bankService: BankService,
+              private readonly financialBonusService: FinancialBonusService,
               protected readonly projectStore: ProjectStoreService) {
     this.form = this.buildForm();
   }
 
   ngOnInit(): void {
-    // Simulación asíncrona de carga
-    this.loadData();
-    this.initBonusesForm();
-    this.initBanksForm();
-    if(this.isViewPage) {
-      this.form.disable({ emitEvent: false });
-      this.form.get('bonuses')?.disable({ emitEvent: false });
-      this.form.get('banks')?.disable({ emitEvent: false });
-    }
+    this.loadData().subscribe(() => {
+      this.initBonusesForm();
+      this.initBanksForm();
+
+      if (this.isViewPage) {
+        this.form.disable({ emitEvent: false });
+        this.form.get('bonuses')?.disable({ emitEvent: false });
+        this.form.get('banks')?.disable({ emitEvent: false });
+      }
+    });
   }
 
   get isViewPage() {
@@ -89,15 +95,21 @@ export class SectionTwoComponent implements OnInit  {
     console.log(this.form.value);
 
     this.loadingService.show();
-    setTimeout(() => {
-      this.captureData();
-      this.projectService.save(this.project)
-        .pipe(finalize(() => this.loadingService.hide()))
-        .subscribe(project => {
-          this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/infrastructure-installation`]);
+    this.captureData();
+    this.projectService.updateDraft(this.project, '10449080004')
+      .pipe(finalize(() => this.loadingService.hide()))
+      .subscribe({
+        next: (project: ProjectMock) => {
           this.project = project;
-        });
-    }, 50);
+          console.log('Project draft section-two successfully:', this.project);
+          this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/infrastructure-installation`],
+          {state: {project: this.project}});
+        },
+        error: (err : string) => {
+          console.error('Error during project creation - section two :', err);
+        }
+      });
+
   }
 
   private initBonusesForm(): void {
@@ -181,40 +193,34 @@ export class SectionTwoComponent implements OnInit  {
     });
   }
 
-  private loadData(): void {
+  private loadData(): Observable<void> {
     this.loadingService.show();
-    this.projectService.readDraft()
-      .pipe(finalize(() => this.loadingService.hide()))
-      .subscribe((project ) => {
+    const draft$ = this.projectService.readDraft('10449080004');
+    const banks$ = this.bankService.readAll();
+    const bonuses$ = this.financialBonusService.readAll();
+
+    return forkJoin([draft$, banks$, bonuses$]).pipe(
+      tap(([project, banks, financialBonuses]) => {
+        console.log('Project current project draft with stages:', project);
+
+        const prevStages = this.project?.projectStages;
         this.project = project as ProjectMock;
-        if(this.project && this.project.projectStages && this.project.projectStages.length > 0) {
-          this.stageBonusTypesCurrent = this.project.projectStages?.at(0)!.stageBonusTypes;
-          this.stageBanksCurrent = this.project.projectStages?.at(0)!.stageBanks;
+
+        if (!this.project.projectStages || this.project.projectStages.length === 0) {
+          this.project.projectStages = prevStages;
         }
-      });
 
-    this.financialsBonus = [ {
-      id: 1, name : "Techo Propio",
-      types : [{
-        id:1, name : "Numero", dataType: DataType.TEXT, required: true
-      }]
-    },
-      {
-        id: 2, name : "Crédito",
-        types : [{
-          id:2, name : "Bono pagador", dataType: DataType.BOOLEAN, required: false
-        },
-          {
-            id:3, name : "Bono verde", dataType: DataType.BOOLEAN, required: true
-          }]
-      }];
+        if (this.project?.projectStages?.length) {
+          this.stageBonusTypesCurrent = this.project.projectStages[0].stageBonusTypes;
+          this.stageBanksCurrent = this.project.projectStages[0].stageBanks;
+        }
 
-    this.banks = [
-      { id: 1, name : "BCP"},
-      { id: 2, name : "BBVA"},
-      { id: 3, name : "INTERBANK"},
-      { id: 4, name : "MI BANCO"}
-    ];
+        this.banks = banks as BankMock[];
+        this.financialsBonus = financialBonuses as FinancialBonusMock[];
+      }),
+      finalize(() => this.loadingService.hide()),
+      map(() => void 0)
+    );
   }
 
 }

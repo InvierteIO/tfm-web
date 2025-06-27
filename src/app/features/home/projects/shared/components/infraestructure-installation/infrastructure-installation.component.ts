@@ -300,7 +300,7 @@ export class InfrastructureInstallationComponent implements OnInit {
 
   private loadData(): void {
     this.loadingService.show();
-    this.projectService.readDraft()
+    this.projectService.readDraft('10449080004')
       .pipe(finalize(() => this.loadingService.hide()))
       .subscribe((project ) => {
         this.project = project as ProjectMock;

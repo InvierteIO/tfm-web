@@ -3,6 +3,7 @@ import {ProjectStageMock} from './project-stage.mock.model';
 import {DocumentMock} from './document.mock.model';
 
 export interface StagePropertyGroupDtoMock {
+  id?: number;
   propertyGroup?: PropertyGroupMock;
   stage?: ProjectStageMock;
   creationDate?: Date;

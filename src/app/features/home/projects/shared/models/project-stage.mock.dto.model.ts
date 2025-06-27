@@ -1,7 +1,7 @@
 import {ProjectStageStatus} from './project-stage-status.model';
 
 export interface ProjectStageDtoMock {
-  id: number;
+  id?: number;
   name?: string;
   stage?: string;
   kmlKmzUrl?: string;

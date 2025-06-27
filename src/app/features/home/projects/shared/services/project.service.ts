@@ -1,25 +1,42 @@
 import {Injectable} from '@angular/core';
 import {HttpService} from '@core/services/http.service';
-import {Observable, of} from 'rxjs';
+import {Observable, throwError, of} from "rxjs";
 import {ProjectMock} from '../models/project.mock.model';
 import {PropertyCategory} from '../../../../shared/models/property-category.model';
 import {ProjectStatus} from '../models/project-status.model';
 import {ProjectStageMock} from '../models/project-stage.mock.model';
 import {CommercializationCycle} from '../../../shared/models/commercialization-cycle.mock.model';
 import {ProjectStageStatus} from '../models/project-stage-status.model';
-
+import { catchError, concatMap, finalize, map } from 'rxjs/operators';
+import { environment } from "@env";
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
 
+  static readonly END_POINT_COMPANY = environment.REST_CORE + '/real-estate-companies';
+
   constructor(private readonly httpService: HttpService) {
   }
 
-  readDraft(): Observable<ProjectMock | undefined> {
+  readDraft(taxIdentificationNumber: string): Observable<ProjectMock | undefined> {
     if(localStorage.getItem('project_draft_new')) {
       const projectDaft =  JSON.parse(localStorage.getItem('project_draft_new')!);
-      return of(projectDaft as ProjectMock);
+      const url = `${ProjectService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects/${encodeURIComponent(projectDaft.id)}`;
+      return this.httpService
+      .error("Error obteniendo información del proyecto")
+      .get(url)
+      .pipe(
+        map((project: ProjectMock) => {
+          console.log("Project read from DB successfully");
+          this.save(project);
+          return project;
+        }),
+        catchError(error => {
+          console.error("Error getting Project", error);
+          return throwError(() => new Error('Error getting Project'));
+        })
+      );
     }
     return of();
   }
@@ -28,30 +45,36 @@ export class ProjectService {
     localStorage.setItem('project_draft_new', JSON.stringify(project));
     return of(project);
   }
+
+  /*
   createDraft(project: ProjectMock): Observable<ProjectMock> {
     if(localStorage.getItem('project_draft_new')) {
       return this.save(project);
     } else this.generateProjectStageMock(project);
-    return of(project);
+    return this.createProject(project);
   }
+  */
 
   generateProjectStageMock(project: ProjectMock): ProjectMock {
-    let projectStages: ProjectStageMock[] = [];
     const romanStages = ['I', 'II', 'III', 'IV', 'V'];
 
-    Array.from({ length: project?.stages! }, (_, i) => {
-      const roman = romanStages[i];
-      projectStages.push({
-        id: 10 + i,
+    if (!project.projectStages) {
+      project.projectStages = [];
+    }
+
+    const currentCount = project.projectStages.length;
+    const targetCount = project.stages ?? 0;
+
+    if (targetCount > currentCount && currentCount < romanStages.length) {
+      const roman = romanStages[currentCount];
+      project.projectStages.push({
         name: `Etapa ${roman}`,
         stage: roman,
         commercializationCycle: CommercializationCycle.PRE_SALES,
         status: ProjectStageStatus.DRAFT
-      })
-    });
-    project.id = 10;
-    project.projectStages = projectStages;
-    project.status = ProjectStatus.DRAFT
+      });
+    }
+    console.log("Modified project with new stage", project);
     localStorage.setItem('project_draft_new', JSON.stringify(project));
     return project;
   }
@@ -147,4 +170,52 @@ export class ProjectService {
     }
     return list.filter(project => project.status === status);
   }
+
+  createDraft(project: ProjectMock, taxIdentificationNumber: string): Observable<ProjectMock> {
+      this.generateProjectStageMock(project);
+      const projectDaft =  JSON.parse(localStorage.getItem('project_draft_new')!);
+      if(projectDaft.id) {
+        return this.updateDraft(project, taxIdentificationNumber);
+      }
+      return this.saveDraft(project, taxIdentificationNumber);
+  }
+
+  saveDraft(project: ProjectMock, taxIdentificationNumber: string): Observable<ProjectMock> {
+      const url = `${ProjectService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects`;
+      console.log(project);
+      return this.httpService
+      .error("Error guardando información del proyecto")
+      .post(url, project)
+      .pipe(
+        map((project: ProjectMock) => {
+          console.log("Project created successfully as Draft");
+          this.save(project)
+          return project;
+        }),
+        catchError(error => {
+          console.error("create project failed", error);
+          return throwError(() => new Error('Create project failed'));
+        })
+      );
+  }
+
+  updateDraft(project: ProjectMock, taxIdentificationNumber: string): Observable<ProjectMock> {
+      const url = `${ProjectService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects/${encodeURIComponent(project.id)}`;
+      console.log(project);
+      return this.httpService
+      .error("Error guardando información del proyecto")
+      .put(url, project)
+      .pipe(
+        map((project: ProjectMock) => {
+          console.log("Project updated successfully as Draft");
+          this.save(project)
+          return project;
+        }),
+        catchError(error => {
+          console.error("Update project failed", error);
+          return throwError(() => new Error('Update project failed'));
+        })
+      );
+  }
+
 }

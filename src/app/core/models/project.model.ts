@@ -4,4 +4,5 @@ export interface Project {
     officeNumber?: string;
     supervisor?: string;
     stages?: number;
+    description?: string;
 }
