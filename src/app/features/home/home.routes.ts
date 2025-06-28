@@ -7,7 +7,7 @@ import {SectionOneComponent} from './projects/project-creation/section-one/secti
 import {PropertyTypeComponent} from './projects/shared/components/property-type/property-type.component';
 import {
   InfrastructureInstallationComponent
-} from './projects/shared/components/infraestructure-installation/infrastructure-installation.component';
+} from './projects/shared/components/infrastructure-installation/infrastructure-installation.component';
 import {ComplementaryComponent} from './projects/project-creation/complementary/complementary.component';
 import {PropertiesComponent} from "./projects/shared/components/properties/properties.component";
 import {

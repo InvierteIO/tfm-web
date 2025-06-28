@@ -1,6 +1,6 @@
-import {InfraestructureInstallationMock} from './infraestructure-installation.mock';
+import {InfrastructureInstallationMock} from './infrastructure-installation.mock';
 
 export interface StageInfrastructureInstallationMock {
   fieldValue: string;
-  infraInstallation?: InfraestructureInstallationMock;
+  infraInstallation?: InfrastructureInstallationMock;
 }

@@ -10,7 +10,7 @@ export const tokenInterceptor: HttpInterceptorFn =
 
         if (request.url.includes('/token')) {
             return next(request);
-        }        
+        }
 
         if (token) {
             request = request.clone({

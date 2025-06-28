@@ -4,7 +4,7 @@ import {ProjectStageInfoGeneralComponent} from './project-stage-info-general.com
 import {ProjectStageInfoBonusBankComponent} from './project-stage-info-bonus-bank.component';
 import {
   InfrastructureInstallationComponent
-} from '../../../shared/components/infraestructure-installation/infrastructure-installation.component';
+} from '../../../shared/components/infrastructure-installation/infrastructure-installation.component';
 import {ProjectStageDtoMock} from '../../../shared/models/project-stage.mock.dto.model';
 import {ProjectStageInfoLocationComponent} from './project-stage-info-location.component';
 

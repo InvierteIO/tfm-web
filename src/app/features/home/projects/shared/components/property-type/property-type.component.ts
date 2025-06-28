@@ -79,6 +79,7 @@ export class PropertyTypeComponent  implements OnInit  {
 
   ngOnInit(): void {
     this.loadDataAsync().subscribe(() => {
+      console.log('currentpropert group : ', this.propertyGroupCurrent);
       this.initLandFeaturesForm(
         this.propertyGroupCurrent?.propertyCategory === PropertyCategory.LAND
           ? this.propertyGroupCurrent.propertyFeatures ?? []
@@ -197,7 +198,7 @@ export class PropertyTypeComponent  implements OnInit  {
     landFeaturesFormArray.clear();
 
     this.landFeatures.forEach(features => {
-      const checked = selected.some(s => s.feature?.id === features.id && s.featureValue === 'SI');
+      const checked = selected.some(s => s.feature?.id === features.id && s.featureValue === 'YES');
       landFeaturesFormArray.push(
         this.fb.group({
           id:      [features.id],
@@ -212,7 +213,7 @@ export class PropertyTypeComponent  implements OnInit  {
     houseFeaturesFormArray.clear();
 
     this.houseFeatures.forEach(features => {
-      const checked = selected.some(s => s.feature?.id === features.id && s.featureValue === 'SI');
+      const checked = selected.some(s => s.feature?.id === features.id && s.featureValue === 'YES');
       houseFeaturesFormArray.push(
         this.fb.group({
           id:      [features.id],
@@ -227,7 +228,7 @@ export class PropertyTypeComponent  implements OnInit  {
     apartmentFeaturesFormArray.clear();
 
     this.apartmentFeatures.forEach(features => {
-      const checked = selected.some(s => s.feature?.id === features.id && s.featureValue === 'SI');
+      const checked = selected.some(s => s.feature?.id === features.id && s.featureValue === 'YES');
       apartmentFeaturesFormArray.push(
         this.fb.group({
           id:      [features.id],
@@ -282,7 +283,8 @@ export class PropertyTypeComponent  implements OnInit  {
                 this.loadingService.hide();
               })).subscribe();
           } else {
-              this.projectPropertyTypesSvc.create(this.captureData())
+            zip(this.projectPropertyTypesSvc.removePropertyGroup(this.propertyGroupCurrent, this.project!),
+              this.projectPropertyTypesSvc.create(this.captureData()))
               .pipe(finalize(() => {
                 if(this.projectStore.status() !== ProjectActionStatus.NEW) {
                   this.back();
@@ -405,18 +407,20 @@ export class PropertyTypeComponent  implements OnInit  {
 
   private loadDataAsync(): Observable<void> {
     const feature$ = this.featureService.readAll().pipe(
-      tap((features: FeatureMock[]) => {
-        this.landFeatures = features;
-        this.apartmentFeatures = features;
-        this.houseFeatures = features;
-      })
+        tap(() => {
+          if (this.propertyGroupCurrent) {
+            this.loadInfoForUpdateOrView();
+          }
+        }),
+        tap((features: FeatureMock[]) => {
+          this.landFeatures = features;
+          this.apartmentFeatures = features;
+          this.houseFeatures = features;
+        }),
+        map(() => void 0)
     );
 
-    if (this.propertyGroupCurrent) {
-      this.loadInfoForUpdateOrView(); // assumed to be synchronous
-    }
-
-    return feature$.pipe(map(() => void 0));
+    return feature$;
   }
 
 

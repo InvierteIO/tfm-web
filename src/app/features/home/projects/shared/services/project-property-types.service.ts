@@ -95,6 +95,24 @@ export class ProjectPropertyTypesService {
       );
   }
 
+   update(stagePropertyGroups: StagePropertyGroupDtoMock[]): Observable<StagePropertyGroupDtoMock[]> {
+        const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/property-groups`;
+        console.log(stagePropertyGroups);
+        return this.httpService
+        .error("Error guardando información del Tipo de Propiedad")
+        .put(url, stagePropertyGroups)
+        .pipe(
+          map((stagePropertyGroups: StagePropertyGroupDtoMock[]) => {
+            console.log("Property-group created successfully");
+            return stagePropertyGroups;
+          }),
+          catchError(error => {
+            console.error("create Property-group failed", error);
+            return throwError(() => new Error('Create Property-group failed'));
+          })
+        );
+   }
+
    assignment(stagePropertyGroups: StagePropertyGroupDtoMock[]): Observable<StagePropertyGroupDtoMock[]> {
       const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/property-groups/assign`;
       console.log(stagePropertyGroups);
