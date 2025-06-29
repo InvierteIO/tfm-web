@@ -7,6 +7,7 @@ import {ProjectStatus} from '../models/project-status.model';
 import {ProjectStageMock} from '../models/project-stage.mock.model';
 import {CommercializationCycle} from '../../../shared/models/commercialization-cycle.mock.model';
 import {ProjectStageStatus} from '../models/project-stage-status.model';
+import {ProjectDocumentMock} from '../models/project-document.mock.model';
 import { catchError, concatMap, finalize, map } from 'rxjs/operators';
 import { environment } from "@env";
 @Injectable({
@@ -45,15 +46,6 @@ export class ProjectService {
     localStorage.setItem('project_draft_new', JSON.stringify(project));
     return of(project);
   }
-
-  /*
-  createDraft(project: ProjectMock): Observable<ProjectMock> {
-    if(localStorage.getItem('project_draft_new')) {
-      return this.save(project);
-    } else this.generateProjectStageMock(project);
-    return this.createProject(project);
-  }
-  */
 
   generateProjectStageMock(project: ProjectMock): ProjectMock {
     const romanStages = ['I', 'II', 'III', 'IV', 'V'];
@@ -214,6 +206,43 @@ export class ProjectService {
         catchError(error => {
           console.error("Update project failed", error);
           return throwError(() => new Error('Update project failed'));
+        })
+      );
+  }
+
+  uploadDocument(taxIdentificationNumber: string, projectId: number,
+    file: File, projectDocument: ProjectDocumentMock): Observable<ProjectDocumentMock> {
+    const url = `${ProjectService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects/${encodeURIComponent(projectId)}/documents`;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('projectDocument', new Blob([JSON.stringify(projectDocument)], { type: 'application/json' }));
+
+    return this.httpService
+      .error('Error cargando documento')
+      .post(url, formData)
+      .pipe(
+        map((document: ProjectDocumentMock) => {
+          console.log('Document uploaded successfully');
+          return document;
+        }),
+        catchError(error => {
+          console.error('Upload document failed', error);
+          return throwError(() => new Error('Upload document failed'));
+        })
+      );
+  }
+
+  removeDocument(taxIdentificationNumber: string, projectId: number, projectDocumentId: number): Observable<void> {
+    const url = `${ProjectService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects/${encodeURIComponent(projectId)}/documents/${encodeURIComponent(projectDocumentId)}`;
+
+    return this.httpService
+      .error('Error eliminando documento')
+      .delete(url)
+      .pipe(
+        catchError(error => {
+          console.error('Remove document failed', error);
+          return throwError(() => new Error('Remove document failed'));
         })
       );
   }

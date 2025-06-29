@@ -73,7 +73,9 @@ export class ProjectPropertyTypesComponent implements OnInit {
     console.log('ngOnChanges');
     if (changes['project'] && this.project && this.project.id > 0) {
       console.log('project init ppt', this.project);
+      this.loadingService.show();
       this.loadData();
+      this.loadingService.hide();
     }
   }
 

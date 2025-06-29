@@ -251,6 +251,7 @@ export class InfrastructureInstallationComponent implements OnInit {
       return;
     }
     setTimeout(() => {
+      this.loadingService.show()
       this.captureData();
       this.projectService.updateDraft(this.project, '10449080004')
         .pipe(finalize(() => this.loadingService.hide()))

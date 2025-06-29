@@ -24,6 +24,8 @@ import {finalize, map} from 'rxjs/operators';
 import {Observable, throwError, of, tap, forkJoin} from "rxjs";
 import {ProjectMock} from '../../shared/models/project.mock.model';
 import {ProjectService} from '../../shared/services/project.service';
+import {CatalogDetailCodes} from '../../shared/models/catalog-detail-code-data.type';
+import {CatalogDetailMock} from '../../../shared/models/catalog-detail.mock.model';
 
 @Component({
   selector: 'app-legal-scope-habilitation',
@@ -98,6 +100,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
   onDropFile(event: DragEvent, type: 'parent_parcel' | 'official_copy'
     | 'public_deed' | 'municipal_licence' | 'feasibility_certificate'
   | 'certificate_development_approval'): void {
+    console.log('onDropFile');
     event.preventDefault();
     event.stopPropagation();
     const files = event.dataTransfer?.files;
@@ -111,6 +114,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
   onFileSelected(event: Event, type: 'parent_parcel' | 'official_copy'
     | 'public_deed' | 'municipal_licence' | 'feasibility_certificate'
     | 'certificate_development_approval'): void {
+    console.log('onFileSelected');
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
@@ -132,34 +136,36 @@ export class LegalScopeHabilitationComponent implements OnInit {
   }
 
   loadFileParentParcel(file: File): void {
+    console.log('loadFileParentParcel-Step 1');
     if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
-    setTimeout(() => {
-      const document = this.createDocumentMock(file, this.parentParcelDocs);//mock
-      this.parentParcelDocs.push(document);
-      this.checkImageInDocument(this.parentParcelDocs, 'parent_parcel');
-      this.loadingService.hide();
-    }, 1000);
+    this.createDocumentMock(file, this.parentParcelDocs,CatalogDetailCodes.STEP_ONE_CODE).subscribe({
+      next: (document) => {
+        this.parentParcelDocs.push(document);
+        this.checkImageInDocument(this.parentParcelDocs, 'parent_parcel');
+        this.loadingService.hide();
+      },
+      error: (err) => console.error('Upload failed', err)
+    });
   }
 
-  createDocumentMock(file: File, documents: ProjectDocumentMock[]): ProjectDocumentMock {
-    const extension = file.name?.toLowerCase().split('.').pop();
-    let path :string = "";
-    if (extension === 'pdf') path = 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/keyboard-shortcuts-windows.pdf';
-    else {
-      path= (documents.length + 1) % 2 == 0 ? 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/Calendario09-10.PNG' :
-        (documents.length + 1) % 3 == 0 ? 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/FondoLideres.png'
-          :'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg';
-    }
-    return {
-      id: documents.length + 1, filename: file.name, name: file.name,
-      path,
-      createdAt: new Date(),
+  createDocumentMock(file: File, documents: ProjectDocumentMock[], catalogCode: string): Observable<ProjectDocumentMock> {
+    console.log('createDocumentMock');
+    const projectDocumentBase: ProjectDocumentMock = {
+      description: 'None',
+      catalogDetail: {
+        code: catalogCode
+      } as CatalogDetailMock
     } as ProjectDocumentMock;
+
+    return this.projectService.uploadDocument('10449080004', this.project.id, file, projectDocumentBase).pipe(
+      map((uploadedDoc: ProjectDocumentMock) => uploadedDoc)
+    );
   }
 
   checkImageInDocument(documents: ProjectDocumentMock[],type: string): void {
+    console.log('checkImageInDocument');
     this.ksModalGallerySvc.removeAllImages(type);
     documents.forEach(document => {
       const extension = document.filename?.toLowerCase().split('.').pop();
@@ -170,68 +176,87 @@ export class LegalScopeHabilitationComponent implements OnInit {
   }
 
   loadFileOfficialCopy(file: File): void {
+    console.log('loadFileOfficialCopy');
     if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
-    setTimeout(() => {
-      const document = this.createDocumentMock(file, this.officialCopyDocs);//mock
-      this.officialCopyDocs.push(document);
-      this.checkImageInDocument(this.officialCopyDocs, 'official_copy');
-      this.loadingService.hide();
-    }, 1000);
+    this.createDocumentMock(file, this.officialCopyDocs, CatalogDetailCodes.STEP_TWO_CODE).subscribe({
+      next: (document) => {
+        this.officialCopyDocs.push(document);
+        this.checkImageInDocument(this.officialCopyDocs, 'official_copy');
+        this.loadingService.hide();
+      },
+      error: (err) => {
+        this.loadingService.hide();
+        console.error('Upload failed', err);
+      }
+    });
   }
 
   loadFilePublicDeed(file: File): void {
+    console.log('loadFilePublicDeed');
     if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
-    setTimeout(() => {
-      const document = this.createDocumentMock(file, this.publicDeedDocs);//mock
-      this.publicDeedDocs.push(document);
-      this.checkImageInDocument(this.publicDeedDocs, 'public_deed');
-      this.loadingService.hide();
-    }, 1000);
+    this.createDocumentMock(file, this.publicDeedDocs, CatalogDetailCodes.STEP_THREE_CODE).subscribe({
+      next: (document) => {
+        this.publicDeedDocs.push(document);
+        this.checkImageInDocument(this.publicDeedDocs, 'public_deed');
+        this.loadingService.hide();
+      },
+      error: (err) => console.error('Upload failed', err)
+    });
   }
 
   loadFileMunicipalLicence(file: File): void {
+    console.log('loadFileMunicipalLicence');
     if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
-    setTimeout(() => {
-      const document = this.createDocumentMock(file, this.municipalLicenceDocs);//mock
-      this.municipalLicenceDocs.push(document);
-      this.checkImageInDocument(this.municipalLicenceDocs, 'municipal_licence');
-      this.loadingService.hide();
-    }, 1000);
+    this.createDocumentMock(file, this.municipalLicenceDocs, CatalogDetailCodes.STEP_FOUR_CODE).subscribe({
+      next: (document) => {
+        this.municipalLicenceDocs.push(document);
+        this.checkImageInDocument(this.municipalLicenceDocs, 'municipal_licence');
+        this.loadingService.hide();
+      },
+      error: (err) => console.error('Upload failed', err)
+    });
   }
 
   loadFileFeasibilityCertificate(file: File): void {
+    console.log('loadFileFeasibilityCertificate');
     if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
-    setTimeout(() => {
-      const document = this.createDocumentMock(file, this.feasibilityCertificateDocs);//mock
-      this.feasibilityCertificateDocs.push(document);
-      this.checkImageInDocument(this.feasibilityCertificateDocs, 'feasibility_certificate');
-      this.loadingService.hide();
-    }, 1000);
+    this.createDocumentMock(file, this.feasibilityCertificateDocs, CatalogDetailCodes.STEP_FIVE_CODE).subscribe({
+      next: (document) => {
+        this.feasibilityCertificateDocs.push(document);
+        this.checkImageInDocument(this.feasibilityCertificateDocs, 'feasibility_certificate');
+        this.loadingService.hide();
+      },
+      error: (err) => console.error('Upload failed', err)
+    });
   }
 
   loadCertificateDevelopmentApproval(file: File): void {
+    console.log('loadCertificateDevelopmentApproval');
     if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
-    setTimeout(() => {
-      const document = this.createDocumentMock(file, this.certificateDevelopmentApprovalDocs);//mock
-      this.certificateDevelopmentApprovalDocs.push(document);
-      this.checkImageInDocument(this.certificateDevelopmentApprovalDocs, 'certificate_development_approval');
-      this.loadingService.hide();
-    }, 1000);
+    this.createDocumentMock(file, this.certificateDevelopmentApprovalDocs, CatalogDetailCodes.STEP_SIX_CODE).subscribe({
+      next: (document) => {
+        this.certificateDevelopmentApprovalDocs.push(document);
+        this.checkImageInDocument(this.certificateDevelopmentApprovalDocs, 'parent_parcel');
+        this.loadingService.hide();
+      },
+      error: (err) => console.error('Upload failed', err)
+    });
   }
 
   viewDocument(file: ProjectDocumentMock, type : 'parent_parcel' | 'official_copy'
     | 'public_deed' | 'municipal_licence' | 'feasibility_certificate'
     | 'certificate_development_approval'): void {
+    console.log('viewDocument');
     const extension = file.filename?.toLowerCase().split('.').pop();
     if (extension === 'pdf') {
       this.viewPdf(file);
@@ -241,98 +266,174 @@ export class LegalScopeHabilitationComponent implements OnInit {
   }
 
   viewPdf(file: ProjectDocumentMock): void {
+    console.log('viewPdf');
     const modalRef = this.modalService.open(PdfViewerModalComponent, {
       size: 'xl',
       backdrop: 'static',
       windowClass: 'pdf-viewer-modal'
     });
-
+    console.log('vide pdf:', file);
     modalRef.componentInstance.title = file.filename ?? '';
     modalRef.componentInstance.pdfUrl = file.path ?? '';
     return;
   }
 
   deleteParentParcel(file: ProjectDocumentMock) {
+    console.log('deleteParentParcel: ', file);
+    if (file == undefined || file.id == undefined) {
+      console.error('Document ID is missing, cannot delete');
+      return;
+    }
+
+    const documentId: number = file.id;
+
     Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el archivo de terreno matriz?"))
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          setTimeout(() => {
-            this.ksModalGallerySvc.removeImage('parent_parcel', { ...file } as Document);
-            this.parentParcelDocs.splice(this.parentParcelDocs.indexOf(file), 1); // backend
-            this.loadingService.hide();
-          }, 1000);
+          this.projectService.removeDocument('10449080004', this.project.id, documentId).subscribe({
+            next: () => {
+              this.ksModalGallerySvc.removeImage('parent_parcel', { ...file } as Document);
+              this.parentParcelDocs.splice(this.parentParcelDocs.indexOf(file), 1);
+              this.loadingService.hide();
+            },
+            error: (err) => {
+              console.error('Failed to remove document', err);
+              this.loadingService.hide();
+            }
+          });
         }
       });
   }
 
   deleteOfficialCopy(file: ProjectDocumentMock) {
+    console.log('deleteOfficialCopy');
+
+    if (file == undefined || file.id == undefined) {
+      console.error('Document ID is missing, cannot delete');
+      return;
+    }
+    const documentId: number = file.id;
+
     Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el archivo de copia literal?"))
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          setTimeout(() => {
-            this.ksModalGallerySvc.removeImage('official_copy', { ...file } as Document);
-            this.officialCopyDocs.splice(this.officialCopyDocs.indexOf(file), 1);
-            this.loadingService.hide();
-          }, 1000);
+          this.projectService.removeDocument('10449080004', this.project.id, documentId).subscribe({
+            next: () => {
+              this.ksModalGallerySvc.removeImage('official_copy', { ...file } as Document);
+              this.officialCopyDocs.splice(this.officialCopyDocs.indexOf(file), 1);
+              this.loadingService.hide();
+            },
+            error: (err) => {
+              console.error('Failed to remove document', err);
+              this.loadingService.hide();
+            }
+          });
         }
       });
   }
 
   deletePublicDeed(file: ProjectDocumentMock) {
+    console.log('deletePublicDeed');
+    if (file == undefined || file.id == undefined) {
+      console.error('Document ID is missing, cannot delete');
+      return;
+    }
+    const documentId: number = file.id;
     Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el archivo de escritura pública?"))
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          setTimeout(() => {
+          this.projectService.removeDocument('10449080004', this.project.id, documentId).subscribe({
+            next: () => {
             this.ksModalGallerySvc.removeImage('public_deed', { ...file } as Document);
             this.publicDeedDocs.splice(this.publicDeedDocs.indexOf(file), 1);
             this.loadingService.hide();
-          }, 1000);
+            },
+            error: (err) => {
+              console.error('Failed to remove document', err);
+              this.loadingService.hide();
+            }
+          });
         }
       });
   }
 
   deleteMunicipalLicence(file: ProjectDocumentMock) {
+    console.log('deleteMunicipalLicence');
+    if (file == undefined || file.id == undefined) {
+      console.error('Document ID is missing, cannot delete');
+      return;
+    }
+    const documentId: number = file.id;
     Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el archivo de licencia municipal?"))
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          setTimeout(() => {
+          this.projectService.removeDocument('10449080004', this.project.id, documentId).subscribe({
+            next: () => {
             this.ksModalGallerySvc.removeImage('municipal_licence', { ...file } as Document);
             this.municipalLicenceDocs.splice(this.municipalLicenceDocs.indexOf(file), 1);
-
             this.loadingService.hide();
-          }, 1000);
+            },
+            error: (err) => {
+              console.error('Failed to remove document', err);
+              this.loadingService.hide();
+            }
+          });
         }
       });
   }
 
   deleteFeasibilityCertificate(file: ProjectDocumentMock) {
+    console.log('deleteFeasibilityCertificate');
+    if (file == undefined || file.id == undefined) {
+      console.error('Document ID is missing, cannot delete');
+      return;
+    }
+    const documentId: number = file.id;
     Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el archivo de certificado de servicios (Luz, Agua, Desague, Accesos)?"))
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          setTimeout(() => {
+          this.projectService.removeDocument('10449080004', this.project.id, documentId).subscribe({
+            next: () => {
             this.ksModalGallerySvc.removeImage('feasibility_certificate', { ...file } as Document);
             this.feasibilityCertificateDocs.splice(this.feasibilityCertificateDocs.indexOf(file), 1);
             this.loadingService.hide();
-          }, 1000);
+            },
+            error: (err) => {
+              console.error('Failed to remove document', err);
+              this.loadingService.hide();
+            }
+          });
         }
       });
   }
 
   deleteCertificateDevelopmentApproval(file: ProjectDocumentMock) {
+    console.log('deleteCertificateDevelopmentApproval');
+    if (file == undefined || file.id == undefined) {
+      console.error('Document ID is missing, cannot delete');
+      return;
+    }
+    const documentId: number = file.id;
     Swal.fire(DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el archivo de certificado de habilitación (habilitación urbana)?"))
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          setTimeout(() => {
+          this.projectService.removeDocument('10449080004', this.project.id, documentId).subscribe({
+            next: () => {
             this.ksModalGallerySvc.removeImage('certificate_development_approval', { ...file } as Document);
             this.certificateDevelopmentApprovalDocs.splice(this.certificateDevelopmentApprovalDocs.indexOf(file), 1);
             this.loadingService.hide();
-          }, 1000);
+            },
+            error: (err) => {
+              console.error('Failed to remove document', err);
+              this.loadingService.hide();
+            }
+          });
         }
       });
   }
@@ -369,11 +470,48 @@ export class LegalScopeHabilitationComponent implements OnInit {
     return this.projectService.readDraft('10449080004').pipe(
       tap((project) => {
         this.project = project as ProjectMock;
+        this.handleLoadProjectDocuments(this.project)
       }),
       finalize(() => this.loadingService.hide()),
       map(() => void 0)
     );
   }
+
+  private handleLoadProjectDocuments(project: ProjectMock): void {
+    this.project = project;
+
+    for (const doc of project.projectDocuments || []) {
+      const code = doc.catalogDetail?.code;
+
+      switch (code) {
+        case CatalogDetailCodes.STEP_ONE_CODE:
+          this.parentParcelDocs.push(doc);
+          this.checkImageInDocument(this.parentParcelDocs, 'parent_parcel');
+          break;
+        case CatalogDetailCodes.STEP_TWO_CODE:
+          this.officialCopyDocs.push(doc);
+          this.checkImageInDocument(this.officialCopyDocs, 'official_copy');
+          break;
+        case CatalogDetailCodes.STEP_THREE_CODE:
+          this.publicDeedDocs.push(doc);
+          this.checkImageInDocument(this.publicDeedDocs, 'public_deed');
+          break;
+        case CatalogDetailCodes.STEP_FOUR_CODE:
+          this.municipalLicenceDocs.push(doc);
+          this.checkImageInDocument(this.municipalLicenceDocs, 'municipal_licence');
+          break;
+        case CatalogDetailCodes.STEP_FIVE_CODE:
+          this.feasibilityCertificateDocs.push(doc);
+          this.checkImageInDocument(this.feasibilityCertificateDocs, 'feasibility_certificate');
+          break;
+        case CatalogDetailCodes.STEP_SIX_CODE:
+          this.certificateDevelopmentApprovalDocs.push(doc);
+          this.checkImageInDocument(this.certificateDevelopmentApprovalDocs, 'certificate_development_approval');
+          break;
+      }
+    }
+  }
+
 
   get isViewPage() {
     return this.projectStore.draftStatus() == ProjectDraftStatus.VIEW;
