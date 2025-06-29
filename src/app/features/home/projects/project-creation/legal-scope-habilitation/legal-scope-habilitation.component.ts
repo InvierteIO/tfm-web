@@ -20,6 +20,10 @@ import {KsModalGalleryService} from '@core/services/ks-modal-gallery.service';
 import { Document } from '@core/models/document.model';
 import {ProjectStoreService} from '../../shared/services/project-store.service';
 import {ProjectDraftStatus} from '../../shared/models/project-draft-status';
+import {finalize, map} from 'rxjs/operators';
+import {Observable, throwError, of, tap, forkJoin} from "rxjs";
+import {ProjectMock} from '../../shared/models/project.mock.model';
+import {ProjectService} from '../../shared/services/project.service';
 
 @Component({
   selector: 'app-legal-scope-habilitation',
@@ -50,10 +54,12 @@ export class LegalScopeHabilitationComponent implements OnInit {
   codeQr?: string;
   scanning:boolean = false;
   qrDataUrl?: string;
+  public project: ProjectMock = { id : 0 };
 
   constructor(private readonly router: Router,
               private readonly fb: FormBuilder,
               private readonly loadingService: LoadingService,
+              private readonly projectService: ProjectService,
               private readonly ksModalGallerySvc: KsModalGalleryService,
               private readonly modalService: NgbModal,
               protected readonly projectStore: ProjectStoreService) {
@@ -61,6 +67,11 @@ export class LegalScopeHabilitationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadData().subscribe(() => {
+      if (this.isViewPage) {
+        this.form.disable({ emitEvent: false });
+      }
+    });
   }
 
   private buildForm(): FormGroup {
@@ -350,6 +361,18 @@ export class LegalScopeHabilitationComponent implements OnInit {
       this.router.navigate(['/public/home/projects']);
       this.loadingService.hide();
     }, 500);
+  }
+
+  private loadData(): Observable<void> {
+    this.loadingService.show();
+
+    return this.projectService.readDraft('10449080004').pipe(
+      tap((project) => {
+        this.project = project as ProjectMock;
+      }),
+      finalize(() => this.loadingService.hide()),
+      map(() => void 0)
+    );
   }
 
   get isViewPage() {

@@ -7,6 +7,7 @@ import {FileDropzoneComponent} from "@common/components/file-dropzone.component"
 import Swal from "sweetalert2";
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from "@common/dialogs/dialogs-swal.constants";
 import {ProjectDocumentMock} from "../../shared/models/project-document.mock.model";
+import {ProjectMock} from "../../shared/models/project.mock.model";
 import {TypeFileIconGoogleFontsPipe} from "@common/pipes/typefile-icon-googlefonts.pipe";
 import {LoadingService} from "@core/services/loading.service";
 import {FormUtil} from '@common/utils/form.util';
@@ -22,6 +23,11 @@ import {
 } from '../../shared/components/location-information/location-information.component';
 import {ProjectStoreService} from '../../shared/services/project-store.service';
 import {ProjectDraftStatus} from '../../shared/models/project-draft-status';
+import {finalize, map, tap} from 'rxjs/operators';
+import {Observable, throwError, of, forkJoin,} from "rxjs";
+import {ProjectService} from '../../shared/services/project.service';
+import {ProjectStageMock} from '../../shared/models/project-stage.mock.model';
+import {LocationCode} from '../../shared/models/location-code.mock.model';
 
 @Component({
   selector: 'app-complementary',
@@ -46,21 +52,28 @@ export class ComplementaryComponent implements OnInit {
   blueprintName: string = '';
   blueprintNameError: boolean = false;
   blueprints: ProjectDocumentMock[] = [];
+  public project: ProjectMock = { id : 0 };
+  @ViewChild(LocationInformationComponent)
+  locationCodeComponent!: LocationInformationComponent;
 
   constructor(private readonly router: Router,
               private readonly fb: FormBuilder,
               private readonly ksModalGallerySvc: KsModalGalleryService,
               private readonly modalService: NgbModal,
               private readonly loadingService: LoadingService,
-              protected readonly projectStore: ProjectStoreService) {
+              protected readonly projectStore: ProjectStoreService,
+              private readonly projectService: ProjectService) {
   }
 
   ngOnInit(): void {
-    if(this.isViewPage) {
-      this.form.disable({ emitEvent: false });
-      this.form.get('bonuses')?.disable({ emitEvent: false });
-      this.form.get('banks')?.disable({ emitEvent: false });
-    }
+    this.loadingService.show();
+    this.loadData().subscribe(() => {
+      this.initializeForm();
+      if(this.isViewPage) {
+        this.form.disable({ emitEvent: false });
+      }
+    });
+    this.loadingService.hide();
   }
 
   onDropFile(event: DragEvent): void {
@@ -196,13 +209,64 @@ export class ComplementaryComponent implements OnInit {
       return;
     }
     this.loadingService.show();
-    setTimeout(() => {
-      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/legal-scope`]);
-      this.loadingService.hide();
-    }, 50);
+    this.captureData();
+    this.projectService.updateDraft(this.project, '10449080004')
+      .pipe(finalize(() => this.loadingService.hide()))
+      .subscribe({
+        next: (project: ProjectMock) => {
+          this.project = project;
+          console.log('Project draft complementary successfully:', this.project);
+          this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/legal-scope`],
+          {state: {project: this.project}});
+        },
+        error: (err : string) => {
+          console.error('Error during project complementary :', err);
+        }
+      });
   }
 
   get isViewPage() {
     return this.projectStore.draftStatus() == ProjectDraftStatus.VIEW;
   }
+
+  private loadData(): Observable<void> {
+    this.loadingService.show();
+    return this.projectService.readDraft('10449080004').pipe(
+      tap((project) => {
+        this.project = project as ProjectMock;
+      }),
+      map(() => void 0)
+    );
+  }
+
+  private captureData():void {
+    const districtCode = this.form.get('district')!.value;
+
+    this.project.projectStages?.forEach((stage: ProjectStageMock) => {
+      stage.address = this.form.get('address')!.value;
+      stage.addressNumber = this.form.get('address_number')!.value;
+      stage.addressReference = this.form.get('address_reference')!.value;
+      stage.zipCode = this.form.get('zipcode')!.value;
+      stage.kmlKmzUrl = this.form.get('klm_url')!.value;
+
+      const matchedLocationCode = this.locationCodeComponent.districts.find(loc => loc.code === districtCode);
+      stage.locationCode = matchedLocationCode ? matchedLocationCode : undefined;
+    });
+    console.log('captureData project', this.project);
+  }
+
+  private initializeForm(): void {
+    const projectStageCurrent = this.project?.projectStages?.[0];
+
+    console.log('initializeForm', projectStageCurrent);
+    this.form?.reset({
+      address: projectStageCurrent?.address || '',
+      address_number: projectStageCurrent?.addressNumber || '',
+      address_reference: projectStageCurrent?.addressReference || '',
+      zipcode: projectStageCurrent?.zipCode || '',
+      klm_url: projectStageCurrent?.kmlKmzUrl || ''
+    });
+    this.locationCodeComponent.setLocationByDistrictCode(projectStageCurrent?.locationCode?.code!);
+  }
+
 }

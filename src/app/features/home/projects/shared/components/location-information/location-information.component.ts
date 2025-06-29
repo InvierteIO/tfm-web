@@ -51,6 +51,7 @@ export class LocationInformationComponent implements OnInit {
               private readonly loadingService: LoadingService) {}
 
   ngOnInit(): void {
+    this.loadingService.show();
     if (!this.form) {
       this.form = this.buildForm();
     } else {
@@ -67,6 +68,7 @@ export class LocationInformationComponent implements OnInit {
     this.initLocations();
     //this.urlKmlKmz = 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/example.kml';
     this.urlKmlKmz = 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/example2.kmz';
+    this.loadingService.hide();
   }
 
   private buildForm(): FormGroup {
@@ -136,7 +138,6 @@ export class LocationInformationComponent implements OnInit {
 
       this.loadingService.hide();
     }, 1000);
-
   }
 
   refreshMap(): void {
@@ -177,6 +178,25 @@ export class LocationInformationComponent implements OnInit {
       input.value = '';
       this.loadFileKmlKmz(file);
     }
+  }
+
+  public setLocationByDistrictCode(districtCode: string): void {
+    if (!districtCode || districtCode.length < 6) return;
+
+    const regionCode = districtCode.slice(0, 2);
+    const provinceCode = districtCode.slice(0, 4);
+
+    this.form.get('region')?.setValue(regionCode);
+
+    this.locationsSvc.listProvinces(regionCode).subscribe(provinces => {
+      this.provinces = provinces;
+      this.form.get('province')?.setValue(provinceCode);
+
+      this.locationsSvc.listDistricts(provinceCode).subscribe(districts => {
+        this.districts = districts;
+        this.form.get('district')?.setValue(districtCode);
+      });
+    });
   }
 
 }
