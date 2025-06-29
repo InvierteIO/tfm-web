@@ -63,6 +63,8 @@ export class PropertiesComponent implements OnInit {
     this.isView = nav?.extras.state?.["view"];
     this.project = nav?.extras.state?.["project"];
     this.originFlow = nav?.extras.state?.["originFlow"];
+    console.log('stagePropertyType', this.stagePropertyType);
+    console.log('projectStages', this.projectStages);
   }
 
   ngOnInit(): void {

@@ -9,5 +9,8 @@ export enum CatalogDetailCodes {
   STEP_EIGHT_CODE = '023008',
   STEP_EIGHT_ONE_CODE = '023009',
   STEP_NINE_CODE = '023010',
-  STEP_TEN_CODE = '023011'
+  BLUEPRINT = '020002',
+  TEMPLATE = '022001'
+
+
 }

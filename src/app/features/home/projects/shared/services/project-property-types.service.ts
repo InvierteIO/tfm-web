@@ -191,4 +191,41 @@ export class ProjectPropertyTypesService {
     window.open(url, '_blank');
     URL.revokeObjectURL(url);
   }
+
+  uploadDocument(taxIdentificationNumber: string, propertyGroupId: number,
+    file: File, propertyGroupDocument: DocumentMock): Observable<DocumentMock> {
+    const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/property-groups/${encodeURIComponent(propertyGroupId)}/documents`;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('propertyGroupDocument', new Blob([JSON.stringify(propertyGroupDocument)], { type: 'application/json' }));
+
+    return this.httpService
+      .error('Error cargando documento')
+      .post(url, formData)
+      .pipe(
+        map((document: DocumentMock) => {
+          console.log('Document uploaded successfully');
+          return document;
+        }),
+        catchError(error => {
+          console.error('Upload document failed', error);
+          return throwError(() => new Error('Upload document failed'));
+        })
+      );
+  }
+
+  removeDocument(taxIdentificationNumber: string, propertyGroupId: number, propertyGroupDocumentId: number): Observable<void> {
+    const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/property-groups/${encodeURIComponent(propertyGroupId)}/documents/${encodeURIComponent(propertyGroupDocumentId)}`;
+
+    return this.httpService
+      .error('Error eliminando documento')
+      .delete(url)
+      .pipe(
+        catchError(error => {
+          console.error('Remove document failed', error);
+          return throwError(() => new Error('Remove document failed'));
+        })
+      );
+  }
 }

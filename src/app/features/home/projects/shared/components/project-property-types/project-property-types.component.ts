@@ -21,7 +21,8 @@ import {PropertyGroupMock} from '../../models/property-group.mock.model';
 import {DocumentMock} from '../../models/document.mock.model';
 import {PdfViewerModalComponent} from '@common/components/pdf-viewer-modal.component';
 import {ProjectPropertyTypesService} from '../../services/project-property-types.service';
-import {finalize} from 'rxjs/operators';
+import {Observable, throwError, of} from "rxjs";
+import { catchError, concatMap, finalize, map, tap, switchMap} from 'rxjs/operators';
 import {FileUtil} from '@common/utils/file.util';
 import {StageAssignmentModalComponent} from './stage-assignment-modal.component';
 import {PropertyTypeDuplicationModalComponent} from './property-type-duplication-modal.component';
@@ -29,6 +30,8 @@ import {ProjectStoreService} from '../../services/project-store.service';
 import {ProjectDraftStatus} from '../../models/project-draft-status';
 import {ProjectActionStatus} from '../../models/project-action-status';
 import {TypeFileIconGoogleFontsPipe} from '@common/pipes/typefile-icon-googlefonts.pipe';
+import {CatalogDetailCodes} from '../../models/catalog-detail-code-data.type';
+import {CatalogDetailMock} from '../../../../shared/models/catalog-detail.mock.model';
 
 @Component({
   selector: 'app-project-property-types',
@@ -149,22 +152,35 @@ export class ProjectPropertyTypesComponent implements OnInit {
 
   deleteFile(event:Event, stagePropertyType: StagePropertyGroupDtoMock, fileType: "blueprint" | "template"):void {
     console.log('deleteFile');
+
     const button = event.currentTarget as HTMLButtonElement;
     let title = button?.title ?? '';
     title = title.toLocaleLowerCase();
+    let stagePropertyGroupId : number = stagePropertyType.id ?? 0;
+    let documentId: number = (fileType === 'blueprint') ?
+      stagePropertyType.architecturalBluetprint?.id ?? 0 :
+      stagePropertyType.formatTemplateLoaded?.id ?? 0;
+
     Swal.fire(
       DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.WARNING]("¿Desea "+title+"?"))
       .then(result => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          setTimeout(() => {
-            if(fileType == "blueprint") {
-              this.stagesPropertyTypes.at(this.stagesPropertyTypes.indexOf(stagePropertyType))!.architecturalBluetprint = undefined;
-            } else {
-              this.stagesPropertyTypes.at(this.stagesPropertyTypes.indexOf(stagePropertyType))!.formatTemplateLoaded = undefined;
+          this.projectPropertyTypeSvc.removeDocument('10449080004', stagePropertyGroupId, documentId).subscribe({
+            next: () => {
+              if(fileType == "blueprint") {
+                this.stagesPropertyTypes.at(this.stagesPropertyTypes.indexOf(stagePropertyType))!.architecturalBluetprint = undefined;
+              } else {
+                this.stagesPropertyTypes.at(this.stagesPropertyTypes.indexOf(stagePropertyType))!.formatTemplateLoaded = undefined;
+              }
+              this.loadingService.hide();
+            },
+            error: (err) => {
+              console.error('Failed to remove document', err);
+              this.loadingService.hide();
             }
-            this.loadingService.hide();
-          }, 2000);
+          });
+
         }
       });
   }
@@ -223,39 +239,53 @@ export class ProjectPropertyTypesComponent implements OnInit {
     console.log('loadTemplate');
     if(!FileUtil.validateFileExtensionMessage(file, ['xls','xlsx'])) return;
     this.loadingService.show();
-    setTimeout(() => {
-      this.stagesPropertyTypes.at(this.stagesPropertyTypes.indexOf(stagePropertyType))!.formatTemplateLoaded
-        = this.createDocumentMock(file, 'template'); //mock
-      this.loadingService.hide();
-    }, 1000);
+    this.createDocumentMock(file,'template', stagePropertyType).subscribe({
+      next: (document : DocumentMock) => {
+        this.stagesPropertyTypes.at(this.stagesPropertyTypes.indexOf(stagePropertyType))!.formatTemplateLoaded = document;
+        this.loadingService.hide();
+      },
+      error: (err: any) => {
+        console.error('Upload failed', err);
+        this.loadingService.hide();
+      }
+    });
+
   }
 
   loadBlueprint(file: File, stagePropertyType: StagePropertyGroupDtoMock) {
     console.log('loadBlueprint');
     if(!FileUtil.validateFileExtensionMessage(file)) return;
     this.loadingService.show();
-    setTimeout(() => {
-      this.stagesPropertyTypes.at(this.stagesPropertyTypes.indexOf(stagePropertyType))!.architecturalBluetprint
-        = this.createDocumentMock(file, 'blueprint'); //mock
-      this.loadingService.hide();
-    }, 1000);
+    this.createDocumentMock(file,'blueprint', stagePropertyType).subscribe({
+      next: (document : DocumentMock) => {
+        this.stagesPropertyTypes.at(this.stagesPropertyTypes.indexOf(stagePropertyType))!.architecturalBluetprint = document;
+        this.loadingService.hide();
+      },
+      error: (err: any) => {
+        console.error('Upload failed', err);
+        this.loadingService.hide();
+      }
+    });
+
   }
 
-  createDocumentMock(file: File, fileType: 'blueprint'| 'template'): DocumentMock {
+  createDocumentMock(file: File, fileType: 'blueprint'| 'template', stagePropertyType: StagePropertyGroupDtoMock): Observable<DocumentMock> {
     console.log('createDocumentMock');
-    const extension = file.name?.toLowerCase().split('.').pop();
-    let path :string = "";
-    let id :number = this.stagesPropertyTypes.length + (fileType == "blueprint" ? 2 : 1);
-    if(fileType == "blueprint"){
-      if (extension === 'pdf') path = 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/keyboard-shortcuts-windows.pdf';
-      else path= 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/Calendario09-10.PNG';
-    } else path= 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/TemplateFormat_InvierteIO.xlsx';
+    if(stagePropertyType.id == undefined){
+      return of();
+    }
 
-    return {
-      id, filename: file.name, name: file.name,
-      path,
-      createdAt: new Date(),
+    const catalogCode = (fileType === 'blueprint') ? CatalogDetailCodes.BLUEPRINT : CatalogDetailCodes.TEMPLATE;
+    const documentBase: DocumentMock = {
+      description: 'None',
+      catalogDetail: {
+        code: catalogCode
+      } as CatalogDetailMock
     } as DocumentMock;
+    return this.projectPropertyTypeSvc.uploadDocument('10449080004', stagePropertyType.id, file, documentBase)
+    .pipe(
+      map((uploadedDoc: DocumentMock) => uploadedDoc)
+    );
   }
 
   downloadFile(file: DocumentMock | undefined): void {
@@ -334,8 +364,19 @@ export class ProjectPropertyTypesComponent implements OnInit {
     this.projectPropertyTypeSvc.readStagePropertyGroupByProject(this.project)
       .pipe(finalize(() => this.loadingService.hide()))
       .subscribe(spg => {
-        console.log('stagesPropertyTypes : ', spg)
-        this.stagesPropertyTypes = spg
+          console.log('stagesPropertyTypes : ', spg);
+          spg.forEach(item => {
+            if (!item.propertyGroupDocuments) return;
+
+            item.architecturalBluetprint = item.propertyGroupDocuments.find(
+              doc => doc.catalogDetail?.code === CatalogDetailCodes.BLUEPRINT
+            );
+
+            item.formatTemplateLoaded = item.propertyGroupDocuments.find(
+              doc => doc.catalogDetail?.code === CatalogDetailCodes.TEMPLATE
+            );
+          });
+          this.stagesPropertyTypes = spg;
         });
   }
 

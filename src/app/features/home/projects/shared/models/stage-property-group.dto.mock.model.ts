@@ -8,6 +8,8 @@ export interface StagePropertyGroupDtoMock {
   stage?: ProjectStageMock;
   creationDate?: Date;
   // --- de property_group_document
+
+  propertyGroupDocuments?: DocumentMock[];
   architecturalBluetprint?: DocumentMock;
   formatTemplateLoaded?: DocumentMock;
 }
