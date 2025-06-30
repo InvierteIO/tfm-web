@@ -10,6 +10,7 @@ import {Router} from "@angular/router";
 import {DropdownSearchComponent} from '@common/components/dropdown-search.component';
 import {ProjectStoreService} from './shared/services/project-store.service';
 import {ProjectActionStatus} from './shared/models/project-action-status';
+import {LoadingService} from '@core/services/loading.service';
 
 @Component({
   selector: 'app-projects',
@@ -34,6 +35,7 @@ export class ProjectsComponent implements OnInit {
 
   constructor(private readonly router: Router,
               private readonly projectService: ProjectService,
+              private readonly loadingService: LoadingService,
               private readonly projectStore: ProjectStoreService) { }
 
   create(): void {
@@ -48,10 +50,12 @@ export class ProjectsComponent implements OnInit {
   search(): void {
     console.log('Buscando por:', this.selectedFilter);
     console.log('this.categoryCurrent:', this.categoryCurrent,  ' - statusCurrent:', this.statusCurrent);
-    this.projectService.listProject(this.categoryCurrent, this.statusCurrent, "")
+    this.loadingService.show();
+    this.projectService.listProject(this.categoryCurrent, this.statusCurrent, "", "10449080004")
       .subscribe(projects => {
         this.projects = projects;
         console.log(this.projects);
+        this.loadingService.hide();
       });
   }
 

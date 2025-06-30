@@ -10,6 +10,9 @@ import {ProjectStageStatus} from '../models/project-stage-status.model';
 import {ProjectDocumentMock} from '../models/project-document.mock.model';
 import { catchError, concatMap, finalize, map } from 'rxjs/operators';
 import { environment } from "@env";
+import {HttpParams} from '@angular/common/http';
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -71,96 +74,37 @@ export class ProjectService {
     return project;
   }
 
-  listProject(category: PropertyCategory, status: ProjectStatus, search: string): Observable<ProjectMock[]> {
-    let list = this.listLogicMock(category, status);
-    return of(list);
+  listProject(category: PropertyCategory, status: ProjectStatus, search: string, taxIdentificationNumber: string): Observable<ProjectMock[]> {
+    return this.listLogicMock(category, status, taxIdentificationNumber);
+
   }
 
-  listLogicMock(category: PropertyCategory, status: ProjectStatus): ProjectMock[] {
+  listLogicMock(category: PropertyCategory, status: ProjectStatus, taxIdentificationNumber: string): Observable<ProjectMock[]> {
     let list: ProjectMock[] = [];
-    if(category == PropertyCategory.LAND) {
-      list = [{
-        id: 1,
-        name: "Proyecto Marmolejo",
-        address: "Av. 57b #3 - 25 Bella vista",
-        numberApartments:25,
-        numberHouses: 1,
-        numberLands: 75,
-        areaTotal: 700,
-        stages: 3,
-        status: ProjectStatus.DRAFT
-      }, {
-        id: 2,
-        name: "Terrenos Las Marias",
-        address: "Av. 57b #3 - 25 Las marias",
-        numberHouses: 0,
-        numberLands: 123,
-        areaTotal: 820,
-        stages: 2,
-        status: ProjectStatus.DRAFT
-      }];
-    }
-    if(category == PropertyCategory.APARTMENT) {
-      list = [{
-        id: 3,
-        name: "Proyecto XYZ",
-        address: "Av. 57b #3 - 25 Bella vista",
-        numberApartments:17,
-        numberHouses: 11,
-        numberLands: 1,
-        stages: 4,
-        areaTotal: 70,
-        status: ProjectStatus.DRAFT
-      }, {
-        id: 4,
-        name: "Edificios Solos",
-        address: "Av. 12b #3 - 25 Solo",
-        numberApartments:11,
-        numberHouses: 1,
-        numberLands: 0,
-        stages: 1,
-        areaTotal: 87,
-        status: ProjectStatus.DRAFT
-      }];
-    }
-    if(category == PropertyCategory.HOUSE) {
-      list = [{
-        id: 5,
-        name: "Proyecto Galicias",
-        address: "Av. 4b #11 - 1 Quiñones Gonzales",
-        numberApartments:6,
-        numberHouses: 5,
-        numberLands: 2,
-        stages: 4,
-        areaTotal: 11,
-        status: ProjectStatus.DRAFT
-      }, {
-        id: 6,
-        name: "Proyecto Juan Pablo II",
-        address: "Av. 11b #4 - Chiclayo",
-        numberHouses: 6,
-        stages: 1,
-        areaTotal: 110,
-        status: ProjectStatus.NOPUBLISHED
-      }, {
-        id: 7,
-        name: "Proyecto Leon IV",
-        address: "Av. 11b #4 - Trujillo",
-        numberHouses: 99,
-        stages: 2,
-        areaTotal: 166,
-        status: ProjectStatus.ACTIVE
-      }, {
-        id: 8,
-        name: "Proyecto Fe y Alegria",
-        address: "Av. 11b #4 - Lima",
-        numberHouses: 88,
-        stages: 1,
-        areaTotal: 199,
-        status: ProjectStatus.DISABLED
-      }];
-    }
-    return list.filter(project => project.status === status);
+
+
+    const url = `${ProjectService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects/summary`;
+    return this.httpService
+    .param('propertyType', category)
+    .param('projectStatus', status)
+    .error("Error obteniendo información resumida de proyectos")
+    .get(url)
+    .pipe(
+      map((projectSummary: ProjectMock[]) => {
+        console.log("Project summary read from DB successfully");
+
+        projectSummary.forEach((summary: ProjectMock) => {
+          list.push(summary);
+        })
+
+        return projectSummary;
+      }),
+      catchError(error => {
+        console.error("Error getting Project summary", error);
+        return throwError(() => new Error('Error getting Project summary'));
+      })
+    );
+    return of(list);
   }
 
   createDraft(project: ProjectMock, taxIdentificationNumber: string): Observable<ProjectMock> {
