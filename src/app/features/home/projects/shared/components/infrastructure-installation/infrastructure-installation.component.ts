@@ -61,6 +61,8 @@ export class InfrastructureInstallationComponent implements OnInit {
               private readonly infrastructureInstallationService: InfrastructureInstallationService,
               protected readonly draftStore: ProjectStoreService) {
     this.form = this.buildForm();
+    const nav = this.router.getCurrentNavigation();
+    this.project = nav?.extras.state?.['project'];
   }
 
   ngOnInit(): void {
@@ -201,11 +203,11 @@ export class InfrastructureInstallationComponent implements OnInit {
 
 
   toGoSection1(): void {
-    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/section1`]);
+    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/section1`], {state: {project: this.project}});
   }
 
   back():void {
-    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/section2`]);
+    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/section2`], {state: {project: this.project}});
   }
 
   onSubmit(): void {
@@ -240,7 +242,7 @@ export class InfrastructureInstallationComponent implements OnInit {
 
   next(): void {
     if(this.isViewPage) {
-      this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/complementary`]);
+      this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/complementary`], {state: {project: this.project}});
       return;
     }
 
@@ -257,9 +259,9 @@ export class InfrastructureInstallationComponent implements OnInit {
         .pipe(finalize(() => this.loadingService.hide()))
         .subscribe(project => {
           this.project = project;
-          this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/complementary`]);
+          this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/complementary`], {state: {project: this.project}});
         });
-    }, 200);
+    }, 0);
   }
 
   isListForInfra(infra: InfrastructureInstallationMock): boolean {
@@ -307,7 +309,7 @@ export class InfrastructureInstallationComponent implements OnInit {
   private loadData(): Observable<void> {
     this.loadingService.show();
 
-    const draft$ = this.projectService.readDraft('10449080004');
+    const draft$ = this.projectService.readDraft('10449080004', this.project);
     const infraInstallations$ = this.infrastructureInstallationService.readAll();
 
     return forkJoin([draft$, infraInstallations$]).pipe(

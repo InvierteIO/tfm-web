@@ -23,30 +23,37 @@ export class ProjectService {
   constructor(private readonly httpService: HttpService) {
   }
 
-  readDraft(taxIdentificationNumber: string): Observable<ProjectMock | undefined> {
-    if(localStorage.getItem('project_draft_new')) {
-      const projectDaft =  JSON.parse(localStorage.getItem('project_draft_new')!);
-      const url = `${ProjectService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects/${encodeURIComponent(projectDaft.id)}`;
-      return this.httpService
-      .error("Error obteniendo información del proyecto")
-      .get(url)
-      .pipe(
-        map((project: ProjectMock) => {
-          console.log("Project read from DB successfully");
-          this.save(project);
-          return project;
-        }),
-        catchError(error => {
-          console.error("Error getting Project", error);
-          return throwError(() => new Error('Error getting Project'));
-        })
-      );
+  readDraft(taxIdentificationNumber: string, projectDaft: ProjectMock): Observable<ProjectMock | undefined> {
+
+    let projectId : number;
+    if (projectDaft && projectDaft.id !== undefined) {
+      projectId = projectDaft.id;
+    } else {
+      return of();
     }
+
+    //const projectDaft =  JSON.parse(localStorage.getItem('project_draft_new')!);
+    const url = `${ProjectService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects/${encodeURIComponent(projectId)}`;
+    return this.httpService
+    .error("Error obteniendo información del proyecto")
+    .get(url)
+    .pipe(
+      map((project: ProjectMock) => {
+        console.log("Project read from DB successfully");
+        this.save(project);
+        return project;
+      }),
+      catchError(error => {
+        console.error("Error getting Project", error);
+        return throwError(() => new Error('Error getting Project'));
+      })
+    );
+
     return of();
   }
 
   save(project: ProjectMock): Observable<ProjectMock> {
-    localStorage.setItem('project_draft_new', JSON.stringify(project));
+    //localStorage.setItem('project_draft_new', JSON.stringify(project));
     return of(project);
   }
 
@@ -70,7 +77,7 @@ export class ProjectService {
       });
     }
     console.log("Modified project with new stage", project);
-    localStorage.setItem('project_draft_new', JSON.stringify(project));
+    //localStorage.setItem('project_draft_new', JSON.stringify(project));
     return project;
   }
 
@@ -109,8 +116,8 @@ export class ProjectService {
 
   createDraft(project: ProjectMock, taxIdentificationNumber: string): Observable<ProjectMock> {
       this.generateProjectStageMock(project);
-      const projectDaft =  JSON.parse(localStorage.getItem('project_draft_new')!);
-      if(projectDaft.id) {
+      //const projectDaft =  JSON.parse(localStorage.getItem('project_draft_new')!);
+      if(project.id! > 0) {
         return this.updateDraft(project, taxIdentificationNumber);
       }
       return this.saveDraft(project, taxIdentificationNumber);
@@ -136,7 +143,7 @@ export class ProjectService {
   }
 
   updateDraft(project: ProjectMock, taxIdentificationNumber: string): Observable<ProjectMock> {
-      const url = `${ProjectService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects/${encodeURIComponent(project.id)}`;
+      const url = `${ProjectService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects/${encodeURIComponent(project.id!)}`;
       console.log(project);
       return this.httpService
       .error("Error guardando información del proyecto")

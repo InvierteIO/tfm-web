@@ -30,7 +30,7 @@ import { catchError, concatMap, finalize } from 'rxjs/operators';
 export class SectionOneComponent  implements OnInit  {
   public form: FormGroup;
   loading:boolean = false;
-  public project?: ProjectMock;
+  public project: ProjectMock = {  };
   public projectDraftStatus:ProjectDraftStatus = ProjectDraftStatus.NEW;
 
   constructor(private readonly  router: Router,
@@ -75,7 +75,7 @@ export class SectionOneComponent  implements OnInit  {
       .subscribe({
         next: (project: ProjectMock) => {
           this.project = project;
-          this.projectStore.setProjectId(this.project.id);
+          this.projectStore.setProjectId(this.project.id!);
           console.log('Project draft successfully:', this.project);
           this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`],
           {state: {project: this.project}});
@@ -113,7 +113,7 @@ export class SectionOneComponent  implements OnInit  {
 
   private loadData(): void {
     this.loadingService.show();
-    this.projectService.readDraft('10449080004')
+    this.projectService.readDraft('10449080004', this.project)
       .pipe(finalize(() => this.loadingService.hide()))
       .subscribe((projectDraft ) => {
         if(projectDraft) {

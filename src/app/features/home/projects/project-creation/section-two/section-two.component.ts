@@ -54,6 +54,8 @@ export class SectionTwoComponent implements OnInit  {
               private readonly financialBonusService: FinancialBonusService,
               protected readonly projectStore: ProjectStoreService) {
     this.form = this.buildForm();
+    const nav = this.router.getCurrentNavigation();
+    this.project = nav?.extras.state?.["project"];
   }
 
   ngOnInit(): void {
@@ -81,12 +83,12 @@ export class SectionTwoComponent implements OnInit  {
   }
 
   toGoSection1(): void {
-    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section1`]);
+    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section1`], {state: {project: this.project}});
   }
 
   next(): void {
     if(this.projectDraftStatus == ProjectDraftStatus.VIEW) {
-      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/infrastructure-installation`]);
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/infrastructure-installation`], {state: {project: this.project}});
     }
     if (this.form?.invalid) {
       FormUtil.markAllAsTouched(this.form);
@@ -195,7 +197,7 @@ export class SectionTwoComponent implements OnInit  {
 
   private loadData(): Observable<void> {
     this.loadingService.show();
-    const draft$ = this.projectService.readDraft('10449080004');
+    const draft$ = this.projectService.readDraft('10449080004', this.project);
     const banks$ = this.bankService.readAll();
     const bonuses$ = this.financialBonusService.readAll();
 

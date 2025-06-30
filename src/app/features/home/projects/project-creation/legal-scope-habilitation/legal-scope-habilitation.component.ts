@@ -67,6 +67,8 @@ export class LegalScopeHabilitationComponent implements OnInit {
               private readonly modalService: NgbModal,
               protected readonly projectStore: ProjectStoreService) {
     this.form = this.buildForm();
+    const nav = this.router.getCurrentNavigation();
+    this.project = nav?.extras.state?.['project'];
   }
 
   ngOnInit(): void {
@@ -160,7 +162,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
       } as CatalogDetailMock
     } as ProjectDocumentMock;
 
-    return this.projectService.uploadDocument('10449080004', this.project.id, file, projectDocumentBase).pipe(
+    return this.projectService.uploadDocument('10449080004', this.project.id!, file, projectDocumentBase).pipe(
       map((uploadedDoc: ProjectDocumentMock) => uploadedDoc)
     );
   }
@@ -292,7 +294,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          this.projectService.removeDocument('10449080004', this.project.id, documentId).subscribe({
+          this.projectService.removeDocument('10449080004', this.project.id!, documentId).subscribe({
             next: () => {
               this.ksModalGallerySvc.removeImage('parent_parcel', { ...file } as Document);
               this.parentParcelDocs.splice(this.parentParcelDocs.indexOf(file), 1);
@@ -320,7 +322,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          this.projectService.removeDocument('10449080004', this.project.id, documentId).subscribe({
+          this.projectService.removeDocument('10449080004', this.project.id!, documentId).subscribe({
             next: () => {
               this.ksModalGallerySvc.removeImage('official_copy', { ...file } as Document);
               this.officialCopyDocs.splice(this.officialCopyDocs.indexOf(file), 1);
@@ -346,7 +348,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          this.projectService.removeDocument('10449080004', this.project.id, documentId).subscribe({
+          this.projectService.removeDocument('10449080004', this.project.id!, documentId).subscribe({
             next: () => {
             this.ksModalGallerySvc.removeImage('public_deed', { ...file } as Document);
             this.publicDeedDocs.splice(this.publicDeedDocs.indexOf(file), 1);
@@ -372,7 +374,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          this.projectService.removeDocument('10449080004', this.project.id, documentId).subscribe({
+          this.projectService.removeDocument('10449080004', this.project.id!, documentId).subscribe({
             next: () => {
             this.ksModalGallerySvc.removeImage('municipal_licence', { ...file } as Document);
             this.municipalLicenceDocs.splice(this.municipalLicenceDocs.indexOf(file), 1);
@@ -398,7 +400,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          this.projectService.removeDocument('10449080004', this.project.id, documentId).subscribe({
+          this.projectService.removeDocument('10449080004', this.project.id!, documentId).subscribe({
             next: () => {
             this.ksModalGallerySvc.removeImage('feasibility_certificate', { ...file } as Document);
             this.feasibilityCertificateDocs.splice(this.feasibilityCertificateDocs.indexOf(file), 1);
@@ -424,7 +426,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          this.projectService.removeDocument('10449080004', this.project.id, documentId).subscribe({
+          this.projectService.removeDocument('10449080004', this.project.id!, documentId).subscribe({
             next: () => {
             this.ksModalGallerySvc.removeImage('certificate_development_approval', { ...file } as Document);
             this.certificateDevelopmentApprovalDocs.splice(this.certificateDevelopmentApprovalDocs.indexOf(file), 1);
@@ -440,11 +442,11 @@ export class LegalScopeHabilitationComponent implements OnInit {
   }
 
   back(): void {
-    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/complementary`]);
+    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/complementary`], { state: { project: this.project } });
   }
 
   toGoSection1(): void {
-    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section1`]);
+    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section1`], { state: { project: this.project } });
   }
 
   toGoTitleSplits(): void {
@@ -479,7 +481,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
   private loadData(): Observable<void> {
     this.loadingService.show();
 
-    return this.projectService.readDraft('10449080004').pipe(
+    return this.projectService.readDraft('10449080004', this.project).pipe(
       tap((project) => {
         this.project = project as ProjectMock;
         this.handleLoadProjectDocuments(this.project)

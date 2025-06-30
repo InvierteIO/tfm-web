@@ -41,7 +41,7 @@ export class ProjectPropertyTypesService {
   }
 
   private getMockAll(): Observable<StagePropertyGroupDtoMock[]> {
-    const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/projects/${encodeURIComponent(this.project.id)}/property-groups`;
+    const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/projects/${encodeURIComponent(this.project.id!)}/property-groups`;
     return this.httpService
     .error("Error obteniendo información del tipos de propiedades")
     .get(url)
@@ -132,7 +132,7 @@ export class ProjectPropertyTypesService {
    }
 
   removePropertyGroup(propertyGroup: PropertyGroupMock, project : ProjectMock): Observable<void> {
-      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/projects/${encodeURIComponent(project.id)}/property-groups/${encodeURIComponent(propertyGroup.id ?? '')}`;
+      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/projects/${encodeURIComponent(project.id!)}/property-groups/${encodeURIComponent(propertyGroup.id ?? '')}`;
       return this.httpService
       .error("Error eliminando tipo de propiedad")
       .delete(url)
@@ -145,7 +145,7 @@ export class ProjectPropertyTypesService {
   }
 
   remove(stagePropertyGroup: StagePropertyGroupDtoMock, project: ProjectMock): Observable<void> {
-      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/projects/${encodeURIComponent(project.id)}/stage-property-groups/${encodeURIComponent(stagePropertyGroup.id ?? '')}`;
+      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/projects/${encodeURIComponent(project.id!)}/stage-property-groups/${encodeURIComponent(stagePropertyGroup.id ?? '')}`;
       return this.httpService
       .error("Error eliminando asignación etapa y tipo de propiedad")
       .delete(url)

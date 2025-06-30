@@ -82,7 +82,7 @@ export class LocationInformationComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log('ngOnChanges');
-    if (changes['project'] && this.project && this.project.id > 0) {
+    if (changes['project'] && this.project && this.project.id! > 0) {
       console.log('project init ppt', this.project);
       this.loadingService.show();
       this.handleLoadProjectDocuments(this.project as ProjectMock);

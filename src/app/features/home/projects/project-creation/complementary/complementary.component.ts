@@ -65,6 +65,8 @@ export class ComplementaryComponent implements OnInit {
               private readonly loadingService: LoadingService,
               protected readonly projectStore: ProjectStoreService,
               private readonly projectService: ProjectService) {
+    const nav = this.router.getCurrentNavigation();
+    this.project = nav?.extras.state?.['project'];
   }
 
   ngOnInit(): void {
@@ -224,12 +226,12 @@ export class ComplementaryComponent implements OnInit {
   }
 
   back():void {
-    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/infrastructure-installation`]);
+    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/infrastructure-installation`], {state: {project: this.project}});
   }
 
   next(): void {
     if(this.isViewPage) {
-      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/legal-scope`]);
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/legal-scope`], {state: {project: this.project}});
       return;
     }
     if (this.form?.invalid) {
@@ -260,7 +262,7 @@ export class ComplementaryComponent implements OnInit {
 
   private loadData(): Observable<void> {
     this.loadingService.show();
-    return this.projectService.readDraft('10449080004').pipe(
+    return this.projectService.readDraft('10449080004', this.project).pipe(
       tap((project) => {
         this.project = project as ProjectMock;
       }),
