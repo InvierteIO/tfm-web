@@ -26,6 +26,7 @@ import {ProjectMock} from '../../shared/models/project.mock.model';
 import {ProjectService} from '../../shared/services/project.service';
 import {CatalogDetailCodes} from '../../shared/models/catalog-detail-code-data.type';
 import {CatalogDetailMock} from '../../../shared/models/catalog-detail.mock.model';
+import {ProjectStatus} from '../../shared/models/project-status.model';
 
 @Component({
   selector: 'app-legal-scope-habilitation',
@@ -447,7 +448,7 @@ export class LegalScopeHabilitationComponent implements OnInit {
   }
 
   toGoTitleSplits(): void {
-    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/title-splits`]);
+    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/title-splits`],{ state: { project: this.project } });
   }
 
   save(): void {
@@ -458,10 +459,21 @@ export class LegalScopeHabilitationComponent implements OnInit {
     }
     console.log(this.form.value);
     this.loadingService.show();
-    setTimeout(() => {
-      this.router.navigate(['/public/home/projects']);
-      this.loadingService.hide();
-    }, 500);
+    this.project.status = ProjectStatus.NOPUBLISHED;
+    this.projectService.updateDraft(this.project, '10449080004')
+      .pipe(finalize(() => this.loadingService.hide()))
+      .subscribe({
+        next: (project: ProjectMock) => {
+          this.project = project;
+          console.log('Project changed to no_publicado:', this.project);
+          this.router.navigate(['/public/home/projects']);
+          this.loadingService.hide();
+        },
+        error: (err : string) => {
+          console.error('Error during project creation - section two :', err);
+        }
+      });
+
   }
 
   private loadData(): Observable<void> {

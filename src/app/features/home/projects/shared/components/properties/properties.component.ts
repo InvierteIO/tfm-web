@@ -63,7 +63,7 @@ export class PropertiesComponent implements OnInit {
     this.isView = nav?.extras.state?.["view"];
     this.project = nav?.extras.state?.["project"];
     this.originFlow = nav?.extras.state?.["originFlow"];
-    console.log('stagePropertyType', this.stagePropertyType);
+    console.log('stagePropertyType', this.stagePropertyType?.properties);
     console.log('projectStages', this.projectStages);
   }
 
@@ -214,28 +214,14 @@ export class PropertiesComponent implements OnInit {
 
   search(): void {
     this.loadingService.show();
-    setTimeout(() => {
-      const data: PropertyMock[] = [
-        {
-          id: 1,
-          codeSystem: '00000001',
-          codeEnterprise: 'T1000001',
-          name: 'Casa 1',
-          isParkingSpace: false,
-          isAvailableSale: true,
-          price: 120000,
-          address: 'Calle ABC',
-          commercializationCycle: CommercializationCycle.PRE_SALES
-        }
-      ];
-      this.rows = data.map(p => ({
-        property: { ...p },
-        form: this.buildForm(p),
-        editing: false,
-        isNew: false
-      }));
-      this.loadingService.hide();
-    }, 500);
+    this.rows = (this.stagePropertyType?.properties ?? []).map(p => ({
+      property: { ...p },
+      form: this.buildForm(p),
+      editing: false,
+      isNew: false
+    }));
+    this.loadingService.hide();
+
   }
 
   get titleBreadcrumbBase() {

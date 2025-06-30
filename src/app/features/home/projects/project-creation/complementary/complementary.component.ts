@@ -28,6 +28,8 @@ import {Observable, throwError, of, forkJoin,} from "rxjs";
 import {ProjectService} from '../../shared/services/project.service';
 import {ProjectStageMock} from '../../shared/models/project-stage.mock.model';
 import {LocationCode} from '../../shared/models/location-code.mock.model';
+import {CatalogDetailCodes} from '../../shared/models/catalog-detail-code-data.type';
+import {CatalogDetailMock} from '../../../shared/models/catalog-detail.mock.model';
 
 @Component({
   selector: 'app-complementary',
@@ -72,8 +74,8 @@ export class ComplementaryComponent implements OnInit {
       if(this.isViewPage) {
         this.form.disable({ emitEvent: false });
       }
+      this.loadingService.hide();
     });
-    this.loadingService.hide();
   }
 
   onDropFile(event: DragEvent): void {
@@ -109,14 +111,17 @@ export class ComplementaryComponent implements OnInit {
     if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
-    setTimeout(() => {
-      const document = this.createDocumentMock(file, this.blueprints);//mock
-      document.name = this.blueprintName;
-      this.blueprints.push(document);
-      this.checkImageInDocument(this.blueprints, 'blueprint');
-      this.loadingService.hide();
-      this.blueprintName = '';
-    }, 1000);
+
+    this.createDocumentMock(file, this.blueprints, CatalogDetailCodes.SUBDIVISION_PLAN, this.blueprintName).subscribe({
+      next: (document) => {
+        document.name = this.blueprintName;
+        this.blueprints.push(document);
+        this.checkImageInDocument(this.blueprints, 'blueprint');
+        this.loadingService.hide();
+        this.blueprintName = '';
+      },
+      error: (err) => console.error('Upload failed', err)
+    });
   }
 
 
@@ -130,20 +135,25 @@ export class ComplementaryComponent implements OnInit {
     })
   }
 
-  createDocumentMock(file: File, documents: ProjectDocumentMock[]): ProjectDocumentMock {
-    const extension = file.name?.toLowerCase().split('.').pop();
-    let path :string = "";
-    if (extension === 'pdf') path = 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/keyboard-shortcuts-windows.pdf';
-    else {
-      path= (documents.length + 1) % 2 == 0 ? 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/Calendario09-10.PNG' :
-        (documents.length + 1) % 3 == 0 ? 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/FondoLideres.png'
-          :'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg';
+  createDocumentMock(file: File, documents: ProjectDocumentMock[], catalogCode: string, description: string): Observable<ProjectDocumentMock> {
+    let projectId : number;
+    if (this.project && this.project.id !== undefined) {
+      projectId = this.project.id;
+    } else {
+      throw new Error('Project or project ID is undefined');
     }
-    return {
-      id: documents.length + 1, filename: file.name, name: file.name,
-      path,
-      createdAt: new Date(),
+
+    console.log('createDocumentMock');
+    const projectDocumentBase: ProjectDocumentMock = {
+      description: description,
+      catalogDetail: {
+        code: catalogCode
+      } as CatalogDetailMock
     } as ProjectDocumentMock;
+
+    return this.projectService.uploadDocument('10449080004', projectId, file, projectDocumentBase).pipe(
+      map((uploadedDoc: ProjectDocumentMock) => uploadedDoc)
+    );
   }
 
   onBlueprintNameChange(name: string): void {
@@ -178,18 +188,37 @@ export class ComplementaryComponent implements OnInit {
   }
 
   deleteBlueprint(file: ProjectDocumentMock) {
+    if (file == undefined || file.id == undefined) {
+      console.error('Document ID is missing, cannot delete');
+      return;
+    }
+
+    if (this.project == undefined || this.project.id == undefined) {
+      console.error('Project ID is missing, cannot delete');
+      return;
+    }
+
+    const documentId: number = file.id;
+    const projectId: number = this.project.id;
+
     Swal.fire(
         DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el plano?"))
         .then((result) => {
           if (result.isConfirmed) {
 
             this.loadingService.show();
-            setTimeout(() => {
-              this.ksModalGallerySvc.removeImage('blueprint', { ...file } as Document);
-              this.blueprints.splice(this.blueprints.indexOf(file), 1);
-              this.blueprintNameError = false;
-              this.loadingService.hide();
-              }, 1000);
+            this.projectService.removeDocument('10449080004', projectId, documentId).subscribe({
+              next: () => {
+                this.ksModalGallerySvc.removeImage('blueprint', { ...file } as Document);
+                this.blueprints.splice(this.blueprints.indexOf(file), 1);
+                this.blueprintNameError = false;
+                this.loadingService.hide();
+              },
+              error: (err) => {
+                console.error('Failed to remove document', err);
+                this.loadingService.hide();
+              }
+            });
           }
         });
   }
@@ -267,6 +296,20 @@ export class ComplementaryComponent implements OnInit {
       klm_url: projectStageCurrent?.kmlKmzUrl || ''
     });
     this.locationCodeComponent.setLocationByDistrictCode(projectStageCurrent?.locationCode?.code!);
+    this.handleLoadProjectDocuments(this.project)
   }
 
+  private handleLoadProjectDocuments(project: ProjectMock): void {
+    console.log('project-handle:', project);
+    for (const doc of project.projectDocuments || []) {
+      const code = doc.catalogDetail?.code;
+      console.log('code-doc:', doc);
+      switch (code) {
+        case CatalogDetailCodes.SUBDIVISION_PLAN:
+          this.blueprints.push(doc);
+          this.checkImageInDocument(this.blueprints, 'blueprint');
+          break;
+      }
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild, SimpleChanges} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {LocationCode} from '../../models/location-code.mock.model';
 import {GeographicalLocationService} from '../../services/geographical-location.service';
@@ -17,6 +17,14 @@ import {FileDropzoneComponent} from '@common/components/file-dropzone.component'
 import {NgForOf, NgIf} from '@angular/common';
 import {NumericOnlyDirective} from '@common/directives/numeric-only.directive';
 import {ProjectStageDtoMock} from '../../models/project-stage.mock.dto.model';
+import {ProjectDocumentMock} from "../../models/project-document.mock.model";
+import {ProjectMock} from '../../models/project.mock.model';
+import {ProjectService} from '../../services/project.service';
+import {CatalogDetailCodes} from '../../models/catalog-detail-code-data.type';
+import {CatalogDetailMock} from '../../../../shared/models/catalog-detail.mock.model';
+import {finalize, map} from 'rxjs/operators';
+import {Observable, throwError, of, tap, forkJoin} from "rxjs";
+
 
 @Component({
   selector: 'app-location-information',
@@ -38,6 +46,7 @@ export class LocationInformationComponent implements OnInit {
   @Input() form!: FormGroup;
   @Input() projectStageCurrent?: ProjectStageDtoMock;
   @Input() isView:boolean = false;
+  @Input() project?: ProjectMock;
 
   regions: LocationCode[] = [];
   provinces: LocationCode[] = [];
@@ -48,6 +57,7 @@ export class LocationInformationComponent implements OnInit {
 
   constructor(private readonly fb: FormBuilder,
               private readonly locationsSvc: GeographicalLocationService,
+              private readonly projectService: ProjectService,
               private readonly loadingService: LoadingService) {}
 
   ngOnInit(): void {
@@ -66,10 +76,20 @@ export class LocationInformationComponent implements OnInit {
       this.form.disable({ emitEvent: false });
     }
     this.initLocations();
-    //this.urlKmlKmz = 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/example.kml';
-    this.urlKmlKmz = 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/example2.kmz';
+
     this.loadingService.hide();
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('ngOnChanges');
+    if (changes['project'] && this.project && this.project.id > 0) {
+      console.log('project init ppt', this.project);
+      this.loadingService.show();
+      this.handleLoadProjectDocuments(this.project as ProjectMock);
+      this.loadingService.hide();
+    }
+  }
+
 
   private buildForm(): FormGroup {
     return this.fb.group({
@@ -126,18 +146,15 @@ export class LocationInformationComponent implements OnInit {
   loadFileKmlKmz(file: File) {
     if(!FileUtil.validateFileExtensionMessage(file, ['.kml', 'kmz'],
       'Debes seleccionar archivos KML o KMZ')) return;
-
-    const pathsKmlKmz = [
-      'https://invierteio-klm.s3.eu-west-1.amazonaws.com/example.kml',
-      'https://invierteio-klm.s3.eu-west-1.amazonaws.com/example2.kmz'
-    ];
     this.loadingService.show();
-    setTimeout(() => {
-      this.urlKmlKmz = pathsKmlKmz[(Math.floor(Math.random() * 10) % 2 === 0) ? 0 : 1];
-      console.log("Path: "+this.urlKmlKmz);
+    this.createDocumentMock(file, CatalogDetailCodes.KML_KMZ, 'KML').subscribe({
+      next: (document) => {
+        this.urlKmlKmz = document.path;
+        this.loadingService.hide();
+      },
+      error: (err) => console.error('Upload failed', err)
+    });
 
-      this.loadingService.hide();
-    }, 1000);
   }
 
   refreshMap(): void {
@@ -197,6 +214,40 @@ export class LocationInformationComponent implements OnInit {
         this.form.get('district')?.setValue(districtCode);
       });
     });
+  }
+
+  private handleLoadProjectDocuments(project: ProjectMock): void {
+    console.log('project-handle:', project);
+    for (const doc of project.projectDocuments || []) {
+      const code = doc.catalogDetail?.code;
+      console.log('code-doc:', doc);
+      switch (code) {
+        case CatalogDetailCodes.KML_KMZ:
+          this.urlKmlKmz = doc.path;
+          break;
+      }
+    }
+  }
+
+  createDocumentMock(file: File, catalogCode: string, description: string): Observable<ProjectDocumentMock> {
+    let projectId : number;
+    if (this.project && this.project.id !== undefined) {
+      projectId = this.project.id;
+    } else {
+      throw new Error('Project or project ID is undefined');
+    }
+
+    console.log('createDocumentMock');
+    const projectDocumentBase: ProjectDocumentMock = {
+      description: description,
+      catalogDetail: {
+        code: catalogCode
+      } as CatalogDetailMock
+    } as ProjectDocumentMock;
+
+    return this.projectService.uploadDocument('10449080004', projectId, file, projectDocumentBase).pipe(
+      map((uploadedDoc: ProjectDocumentMock) => uploadedDoc)
+    );
   }
 
 }

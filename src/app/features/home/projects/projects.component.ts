@@ -47,6 +47,7 @@ export class ProjectsComponent implements OnInit {
 
   search(): void {
     console.log('Buscando por:', this.selectedFilter);
+    console.log('this.categoryCurrent:', this.categoryCurrent,  ' - statusCurrent:', this.statusCurrent);
     this.projectService.listProject(this.categoryCurrent, this.statusCurrent, "")
       .subscribe(projects => {
         this.projects = projects;
