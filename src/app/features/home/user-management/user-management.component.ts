@@ -12,7 +12,6 @@ import { LoadingComponent } from "@common/components/loading.component";
 import { UserManagementService } from './user-management.service';
 import {Staff} from "@core/models/staff.model";
 
-
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.component.html',
@@ -27,11 +26,13 @@ import {Staff} from "@core/models/staff.model";
 export class UserManagementComponent {
   userForm: FormGroup;
   loading:boolean = false;
+  public taxIdentificationNumber? : string = "";
 
   constructor(private fb: FormBuilder,
     private readonly authService: AuthService,
     private readonly userManagementService: UserManagementService
   ) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     this.userForm = this.createForm();
   }
 
@@ -83,7 +84,7 @@ export class UserManagementComponent {
     const phone = this.userForm.get('numbercontact')?.value;
     const jobTitle = this.userForm.get('jobtitle')?.value;
     const address = this.userForm.get('address')?.value;
-    const taxIdentificationNumber = '10449080004';
+    const taxIdentificationNumber = this.taxIdentificationNumber!;
 
     const staffDto: Staff = {
       email: email,

@@ -16,6 +16,7 @@ import {StagePropertyGroupDtoMock} from '../../models/stage-property-group.dto.m
 import {ProjectStageMock} from '../../models/project-stage.mock.model';
 import {ProjectPropertyTypesService} from '../../services/project-property-types.service';
 import {finalize} from 'rxjs/operators';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-property-type-duplication-modal',
@@ -38,10 +39,13 @@ export class PropertyTypeDuplicationModalComponent {
   projectStages: ProjectStageMock[] = [];
   form: FormGroup;
   loading:boolean = false;
+  public taxIdentificationNumber? : string = "";
 
   constructor(public readonly activeModal: NgbActiveModal,
               private readonly projectPropertyTypeSvc: ProjectPropertyTypesService,
+              private readonly authService: AuthService,
               private readonly fb: FormBuilder) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     this.form = this.buildForm();
   }
 
@@ -64,7 +68,7 @@ export class PropertyTypeDuplicationModalComponent {
        con las mismas características con el nombre de '${this.form.get('name')?.value}'?`))
       .then((result) => {
         if (result.isConfirmed) {
-          this.projectPropertyTypeSvc.duplicate(this.captureData())
+          this.projectPropertyTypeSvc.duplicate(this.captureData(), this.taxIdentificationNumber!)
             .pipe(finalize(() => this.loading= false))
             .subscribe(spgs => this.activeModal.close(spgs));
         }

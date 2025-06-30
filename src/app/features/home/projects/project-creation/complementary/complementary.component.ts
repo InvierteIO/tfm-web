@@ -30,6 +30,7 @@ import {ProjectStageMock} from '../../shared/models/project-stage.mock.model';
 import {LocationCode} from '../../shared/models/location-code.mock.model';
 import {CatalogDetailCodes} from '../../shared/models/catalog-detail-code-data.type';
 import {CatalogDetailMock} from '../../../shared/models/catalog-detail.mock.model';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-complementary',
@@ -57,6 +58,7 @@ export class ComplementaryComponent implements OnInit {
   public project: ProjectMock = { id : 0 };
   @ViewChild(LocationInformationComponent)
   locationCodeComponent!: LocationInformationComponent;
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly router: Router,
               private readonly fb: FormBuilder,
@@ -64,7 +66,9 @@ export class ComplementaryComponent implements OnInit {
               private readonly modalService: NgbModal,
               private readonly loadingService: LoadingService,
               protected readonly projectStore: ProjectStoreService,
+              private readonly authService: AuthService,
               private readonly projectService: ProjectService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     const nav = this.router.getCurrentNavigation();
     this.project = nav?.extras.state?.['project'];
   }
@@ -153,7 +157,7 @@ export class ComplementaryComponent implements OnInit {
       } as CatalogDetailMock
     } as ProjectDocumentMock;
 
-    return this.projectService.uploadDocument('10449080004', projectId, file, projectDocumentBase).pipe(
+    return this.projectService.uploadDocument(this.taxIdentificationNumber!, projectId, file, projectDocumentBase).pipe(
       map((uploadedDoc: ProjectDocumentMock) => uploadedDoc)
     );
   }
@@ -209,7 +213,7 @@ export class ComplementaryComponent implements OnInit {
           if (result.isConfirmed) {
 
             this.loadingService.show();
-            this.projectService.removeDocument('10449080004', projectId, documentId).subscribe({
+            this.projectService.removeDocument(this.taxIdentificationNumber!, projectId, documentId).subscribe({
               next: () => {
                 this.ksModalGallerySvc.removeImage('blueprint', { ...file } as Document);
                 this.blueprints.splice(this.blueprints.indexOf(file), 1);
@@ -241,7 +245,7 @@ export class ComplementaryComponent implements OnInit {
     }
     this.loadingService.show();
     this.captureData();
-    this.projectService.updateDraft(this.project, '10449080004')
+    this.projectService.updateDraft(this.project, this.taxIdentificationNumber!)
       .pipe(finalize(() => this.loadingService.hide()))
       .subscribe({
         next: (project: ProjectMock) => {
@@ -262,7 +266,7 @@ export class ComplementaryComponent implements OnInit {
 
   private loadData(): Observable<void> {
     this.loadingService.show();
-    return this.projectService.readDraft('10449080004', this.project).pipe(
+    return this.projectService.readDraft(this.taxIdentificationNumber!, this.project).pipe(
       tap((project) => {
         this.project = project as ProjectMock;
       }),
@@ -314,4 +318,5 @@ export class ComplementaryComponent implements OnInit {
       }
     }
   }
+
 }

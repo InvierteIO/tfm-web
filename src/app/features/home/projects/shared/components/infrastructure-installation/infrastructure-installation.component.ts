@@ -25,6 +25,7 @@ import {ProjectStageDtoMock} from '../../models/project-stage.mock.dto.model';
 import {ProjectStoreService} from '../../services/project-store.service';
 import {ProjectDraftStatus} from '../../models/project-draft-status';
 import {InfrastructureInstallationService} from '../../services/infrastructure-installation.service';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-infrastructure-installation',
@@ -53,13 +54,16 @@ export class InfrastructureInstallationComponent implements OnInit {
   protected infraInstallations: InfrastructureInstallationMock[] = [];
   private stageInfraInstallationsCurrent?: StageInfrastructureInstallationMock[];
   private stageCatalogDetailsCurrent?: StageCatalogDetail[];
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly router: Router,
               private readonly fb: FormBuilder,
               private readonly projectService: ProjectService,
               private readonly loadingService: LoadingService,
+              private readonly authService: AuthService,
               private readonly infrastructureInstallationService: InfrastructureInstallationService,
               protected readonly draftStore: ProjectStoreService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     this.form = this.buildForm();
     const nav = this.router.getCurrentNavigation();
     this.project = nav?.extras.state?.['project'];
@@ -255,7 +259,7 @@ export class InfrastructureInstallationComponent implements OnInit {
     setTimeout(() => {
       this.loadingService.show()
       this.captureData();
-      this.projectService.updateDraft(this.project, '10449080004')
+      this.projectService.updateDraft(this.project, this.taxIdentificationNumber!)
         .pipe(finalize(() => this.loadingService.hide()))
         .subscribe(project => {
           this.project = project;
@@ -309,7 +313,7 @@ export class InfrastructureInstallationComponent implements OnInit {
   private loadData(): Observable<void> {
     this.loadingService.show();
 
-    const draft$ = this.projectService.readDraft('10449080004', this.project);
+    const draft$ = this.projectService.readDraft(this.taxIdentificationNumber!, this.project);
     const infraInstallations$ = this.infrastructureInstallationService.readAll();
 
     return forkJoin([draft$, infraInstallations$]).pipe(

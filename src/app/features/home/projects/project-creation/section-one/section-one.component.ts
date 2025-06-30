@@ -14,6 +14,7 @@ import {ProjectStoreService} from '../../shared/services/project-store.service';
 import {Project} from "@core/models/project.model";
 import {Observable, throwError, of} from "rxjs";
 import { catchError, concatMap, finalize } from 'rxjs/operators';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-section-one',
@@ -32,12 +33,15 @@ export class SectionOneComponent  implements OnInit  {
   loading:boolean = false;
   public project: ProjectMock = {  };
   public projectDraftStatus:ProjectDraftStatus = ProjectDraftStatus.NEW;
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly  router: Router,
               private readonly fb: FormBuilder,
               private readonly projectService: ProjectService,
               private readonly loadingService: LoadingService,
+              private readonly authService: AuthService,
               protected readonly projectStore: ProjectStoreService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     this.form = this.buildForm();
     const nav = this.router.getCurrentNavigation();
     this.project = nav?.extras.state?.['project'];
@@ -70,7 +74,7 @@ export class SectionOneComponent  implements OnInit  {
     console.log(this.form.value);
     this.loadingService.show();
 
-    this.projectService.createDraft(this.captureData(), '10449080004')
+    this.projectService.createDraft(this.captureData(), this.taxIdentificationNumber!)
       .pipe(finalize(() => this.loadingService.hide()))
       .subscribe({
         next: (project: ProjectMock) => {
@@ -107,13 +111,13 @@ export class SectionOneComponent  implements OnInit  {
       officeNumber: this.form.get('office_number')!.value,
       supervisor: this.form.get('supervisor')!.value,
       stages: this.form.get('stages')!.value,
-      taxIdentificationNumber: '10449080004'
+      taxIdentificationNumber: this.taxIdentificationNumber!
     } as ProjectMock;
   }
 
   private loadData(): void {
     this.loadingService.show();
-    this.projectService.readDraft('10449080004', this.project)
+    this.projectService.readDraft(this.taxIdentificationNumber!, this.project)
       .pipe(finalize(() => this.loadingService.hide()))
       .subscribe((projectDraft ) => {
         if(projectDraft) {

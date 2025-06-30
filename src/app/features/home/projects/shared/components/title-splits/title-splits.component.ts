@@ -16,7 +16,7 @@ import {ProjectPropertyTypesService} from '../../services/project-property-types
 import {StagePropertyGroupDtoMock} from '../../models/stage-property-group.dto.mock.model';
 import {ProjectMock} from '../../models/project.mock.model';
 import {finalize, map} from 'rxjs/operators';
-
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-title-splits',
@@ -36,12 +36,15 @@ export class TitleSplitsComponent  implements OnInit {
   properties: PropertyDocumentDtoMock[] = [];
   selectedFilter: string = 'Nombre';
   public project: ProjectMock = { id : 0 };
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly  router: Router,
               private readonly modalService: NgbModal,
               private readonly loadingService: LoadingService,
               private readonly  projectPropertyTypeSvc: ProjectPropertyTypesService,
+              private readonly authService: AuthService,
               protected readonly draftStore: ProjectStoreService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     const nav = this.router.getCurrentNavigation();
     this.project = nav?.extras.state?.['project'];
   }
@@ -66,7 +69,7 @@ export class TitleSplitsComponent  implements OnInit {
     this.loadingService.show();
     this.properties = [];
 
-    this.projectPropertyTypeSvc.readStagePropertyGroupByProject(this.project)
+    this.projectPropertyTypeSvc.readStagePropertyGroupByProject(this.project, this.taxIdentificationNumber!)
       .pipe(finalize(() => this.loadingService.hide()))
       .subscribe(spg => {
           console.log('stagesPropertyTypes : ', spg);
@@ -109,7 +112,7 @@ export class TitleSplitsComponent  implements OnInit {
   }
 
   back(): void {
-    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/legal-scope`]);
+    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/legal-scope`], { state: { project: this.project } });
   }
 
   toGoSection1(): void {

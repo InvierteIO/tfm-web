@@ -18,6 +18,7 @@ import {Observable, throwError, of, tap, forkJoin} from "rxjs";
 import {CatalogDetailCodes} from '../../models/catalog-detail-code-data.type';
 import {CatalogDetailMock} from '../../../../shared/models/catalog-detail.mock.model';
 import {ProjectMock} from '../../models/project.mock.model';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-project-multimedia',
@@ -38,11 +39,14 @@ export class ProjectMultimediaComponent  implements OnInit {
   brochures: ProjectDocumentMock[] = [];
   multimediaDescription: string = '';
   multimediaDescriptionError: boolean = false;
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly ksModalGallerySvc: KsModalGalleryService,
               private readonly modalService: NgbModal,
               private readonly projectService: ProjectService,
+              private readonly authService: AuthService,
               private readonly loadingService: LoadingService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
   }
 
   ngOnInit(): void {
@@ -137,7 +141,7 @@ export class ProjectMultimediaComponent  implements OnInit {
       } as CatalogDetailMock
     } as ProjectDocumentMock;
 
-    return this.projectService.uploadDocument('10449080004', projectId, file, projectDocumentBase).pipe(
+    return this.projectService.uploadDocument(this.taxIdentificationNumber!, projectId, file, projectDocumentBase).pipe(
       map((uploadedDoc: ProjectDocumentMock) => uploadedDoc)
     );
   }
@@ -206,7 +210,7 @@ export class ProjectMultimediaComponent  implements OnInit {
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          this.projectService.removeDocument('10449080004', projectId, documentId).subscribe({
+          this.projectService.removeDocument(this.taxIdentificationNumber!, projectId, documentId).subscribe({
             next: () => {
               this.ksModalGallerySvc.removeImage('photographic_record', { ...file } as Document);
               this.photographicRecords.splice(this.photographicRecords.indexOf(file), 1);
@@ -241,7 +245,7 @@ export class ProjectMultimediaComponent  implements OnInit {
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          this.projectService.removeDocument('10449080004', projectId, documentId).subscribe({
+          this.projectService.removeDocument(this.taxIdentificationNumber!, projectId, documentId).subscribe({
             next: () => {
               this.ksModalGallerySvc.removeImage('brochure', { ...file } as Document);
               this.brochures.splice(this.brochures.indexOf(file), 1);

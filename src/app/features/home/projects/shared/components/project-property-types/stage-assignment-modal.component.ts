@@ -15,6 +15,7 @@ import {ProjectStageMock} from '../../models/project-stage.mock.model';
 import {ProjectPropertyTypesService} from '../../services/project-property-types.service';
 import {StagePropertyGroupMock} from '../../models/stage-property-group.mock.model';
 import {finalize} from 'rxjs/operators';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-stage-assignment-modal',
@@ -40,11 +41,13 @@ export class StageAssignmentModalComponent implements OnInit{
   form: FormGroup;
   projectStagesSelected: ProjectStageMock[] = [];
   loading:boolean = false;
-
+  public taxIdentificationNumber? : string = "";
 
   constructor(public readonly activeModal: NgbActiveModal,
               private readonly fb: FormBuilder,
+              private readonly authService: AuthService,
               private readonly projectPropertyTypeSvc: ProjectPropertyTypesService,) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     this.form = this.buildForm();
   }
 
@@ -76,7 +79,7 @@ export class StageAssignmentModalComponent implements OnInit{
               stageProjectStages.push({propertyGroup: this.propertyGroup, stage: sgp});
           });
           ;
-          this.projectPropertyTypeSvc.assignment(stageProjectStages)
+          this.projectPropertyTypeSvc.assignment(stageProjectStages, this.taxIdentificationNumber!)
             .pipe(finalize(()=> this.activeModal.close(stageProjectStages)))
             .subscribe();
         }

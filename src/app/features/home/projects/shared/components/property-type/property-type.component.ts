@@ -34,6 +34,7 @@ import {ProjectStoreService} from '../../services/project-store.service';
 import {ProjectMock} from '../../models/project.mock.model';
 import {ProjectActionStatus} from '../../models/project-action-status';
 import {FeatureService} from '../../services/feature.service';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
     imports: [
@@ -66,19 +67,24 @@ export class PropertyTypeComponent  implements OnInit  {
   propertyGroupCurrent?: PropertyGroupMock;
   titleBreadcrumbPage: string = "Agregar tipo de inmueble";
   isView: boolean = false;
-
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly router: Router, private readonly fb: FormBuilder,
               private readonly loadingService: LoadingService,
               private readonly projectPropertyTypesSvc: ProjectPropertyTypesService,
               private readonly featureService: FeatureService,
+              private readonly authService: AuthService,
               protected readonly projectStore: ProjectStoreService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     this.form = this.buildForm();
     this.loadInfoFromNavigation();
   }
 
   ngOnInit(): void {
-    this.loadDataAsync().subscribe(() => {
+    this.loadingService.show();
+    this.loadDataAsync()
+    .pipe(finalize(() => this.loadingService.hide()))
+    .subscribe(() => {
       console.log('currentpropert group : ', this.propertyGroupCurrent);
       this.initLandFeaturesForm(
         this.propertyGroupCurrent?.propertyCategory === PropertyCategory.LAND
@@ -256,7 +262,8 @@ export class PropertyTypeComponent  implements OnInit  {
         state: { project: this.project,  activeId: 'propertytypes' }
       });
     } else {
-      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`],
+      {state: { project: this.project}});
     }
   }
 
@@ -273,23 +280,23 @@ export class PropertyTypeComponent  implements OnInit  {
         if (result.isConfirmed) {
           this.loadingService.show();
           if(!this.propertyGroupCurrent) {
-            this.projectPropertyTypesSvc.create(this.captureData())
+            this.projectPropertyTypesSvc.create(this.captureData(), this.taxIdentificationNumber!)
               .pipe(finalize(() => {
                 if(this.projectStore.status() !== ProjectActionStatus.NEW) {
                   this.back();
                 } else {
-                  this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
+                  this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`], {state: { project: this.project}});
                 }
                 this.loadingService.hide();
               })).subscribe();
           } else {
-            zip(this.projectPropertyTypesSvc.removePropertyGroup(this.propertyGroupCurrent, this.project!),
-              this.projectPropertyTypesSvc.create(this.captureData()))
+            zip(this.projectPropertyTypesSvc.removePropertyGroup(this.propertyGroupCurrent, this.project!,this.taxIdentificationNumber!),
+              this.projectPropertyTypesSvc.create(this.captureData(), this.taxIdentificationNumber!))
               .pipe(finalize(() => {
                 if(this.projectStore.status() !== ProjectActionStatus.NEW) {
                   this.back();
                 } else {
-                  this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
+                  this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`], {state: { project: this.project}});
                 }
                 this.loadingService.hide();
               })).subscribe();

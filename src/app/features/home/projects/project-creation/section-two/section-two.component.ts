@@ -24,6 +24,7 @@ import {ProjectDraftStatus} from '../../shared/models/project-draft-status';
 import {BankService} from '../../shared/services/bank.service';
 import {FinancialBonusService} from '../../shared/services/financial-bonus.service';
 import {Observable, throwError, of, forkJoin,} from "rxjs";
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-section-two',
@@ -45,6 +46,7 @@ export class SectionTwoComponent implements OnInit  {
   stageBanksCurrent?: StageBankMock[];
   stageBonusTypesCurrent?: StageBonusTypeMock[];
   public projectDraftStatus:ProjectDraftStatus = ProjectDraftStatus.NEW;
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly  router: Router,
               private readonly fb: FormBuilder,
@@ -52,23 +54,29 @@ export class SectionTwoComponent implements OnInit  {
               private readonly loadingService: LoadingService,
               private readonly bankService: BankService,
               private readonly financialBonusService: FinancialBonusService,
+              private readonly authService: AuthService,
               protected readonly projectStore: ProjectStoreService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     this.form = this.buildForm();
     const nav = this.router.getCurrentNavigation();
     this.project = nav?.extras.state?.["project"];
   }
 
   ngOnInit(): void {
-    this.loadData().subscribe(() => {
-      this.initBonusesForm();
-      this.initBanksForm();
+    this.loadingService.show();
 
-      if (this.isViewPage) {
-        this.form.disable({ emitEvent: false });
-        this.form.get('bonuses')?.disable({ emitEvent: false });
-        this.form.get('banks')?.disable({ emitEvent: false });
-      }
-    });
+    this.loadData()
+      .pipe(finalize(() => this.loadingService.hide()))
+      .subscribe(() => {
+        this.initBonusesForm();
+        this.initBanksForm();
+
+        if (this.isViewPage) {
+          this.form.disable({ emitEvent: false });
+          this.form.get('bonuses')?.disable({ emitEvent: false });
+          this.form.get('banks')?.disable({ emitEvent: false });
+        }
+      });
   }
 
   get isViewPage() {
@@ -98,7 +106,7 @@ export class SectionTwoComponent implements OnInit  {
 
     this.loadingService.show();
     this.captureData();
-    this.projectService.updateDraft(this.project, '10449080004')
+    this.projectService.updateDraft(this.project, this.taxIdentificationNumber!)
       .pipe(finalize(() => this.loadingService.hide()))
       .subscribe({
         next: (project: ProjectMock) => {
@@ -196,8 +204,8 @@ export class SectionTwoComponent implements OnInit  {
   }
 
   private loadData(): Observable<void> {
-    this.loadingService.show();
-    const draft$ = this.projectService.readDraft('10449080004', this.project);
+
+    const draft$ = this.projectService.readDraft(this.taxIdentificationNumber!, this.project);
     const banks$ = this.bankService.readAll();
     const bonuses$ = this.financialBonusService.readAll();
 
@@ -220,7 +228,6 @@ export class SectionTwoComponent implements OnInit  {
         this.banks = banks as BankMock[];
         this.financialsBonus = financialBonuses as FinancialBonusMock[];
       }),
-      finalize(() => this.loadingService.hide()),
       map(() => void 0)
     );
   }

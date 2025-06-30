@@ -67,8 +67,8 @@ export class ProjectService {
     const currentCount = project.projectStages.length;
     const targetCount = project.stages ?? 0;
 
-    if (targetCount > currentCount && currentCount < romanStages.length) {
-      const roman = romanStages[currentCount];
+    for (let i = currentCount; i < targetCount && i < romanStages.length; i++) {
+      const roman = romanStages[i];
       project.projectStages.push({
         name: `Etapa ${roman}`,
         stage: roman,
@@ -76,8 +76,8 @@ export class ProjectService {
         status: ProjectStageStatus.DRAFT
       });
     }
-    console.log("Modified project with new stage", project);
-    //localStorage.setItem('project_draft_new', JSON.stringify(project));
+
+    console.log("Modified project with new stages", project);
     return project;
   }
 

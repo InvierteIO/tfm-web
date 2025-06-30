@@ -20,19 +20,19 @@ export class ProjectPropertyTypesService {
   constructor(private readonly httpService: HttpService) {
   }
 
-  readStagePropertyGroupByProject(project: ProjectMock): Observable<StagePropertyGroupDtoMock[]> {
+  readStagePropertyGroupByProject(project: ProjectMock, taxIdentificationNumber : string): Observable<StagePropertyGroupDtoMock[]> {
     const stageIds = (project.projectStages ?? []).map(stage => stage.id);
     this.project = project;
     console.log('project: - readStagePropertyGroupByProject', this.project);
 
-    return this.getMockAll()
+    return this.getMockAll(taxIdentificationNumber)
       .pipe(
         map(stagePropertyGroups =>
           stagePropertyGroups.filter(spg => spg.stage && stageIds.includes(spg.stage.id))));
   }
 
-  readStagePropertyGroupByPropertyType(propertyGroup: PropertyGroupMock): Observable<StagePropertyGroupDtoMock[]> {
-    return this.getMockAll().pipe(
+  readStagePropertyGroupByPropertyType(propertyGroup: PropertyGroupMock, taxIdentificationNumber : string): Observable<StagePropertyGroupDtoMock[]> {
+    return this.getMockAll(taxIdentificationNumber).pipe(
       map(stagePropertyGroups =>
         stagePropertyGroups.filter(spg =>
           spg.propertyGroup && spg.propertyGroup.id === propertyGroup.id
@@ -40,8 +40,8 @@ export class ProjectPropertyTypesService {
       ));
   }
 
-  private getMockAll(): Observable<StagePropertyGroupDtoMock[]> {
-    const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/projects/${encodeURIComponent(this.project.id!)}/property-groups`;
+  private getMockAll(taxIdentificationNumber : string): Observable<StagePropertyGroupDtoMock[]> {
+    const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects/${encodeURIComponent(this.project.id!)}/property-groups`;
     return this.httpService
     .error("Error obteniendo información del tipos de propiedades")
     .get(url)
@@ -57,8 +57,8 @@ export class ProjectPropertyTypesService {
     );
   }
 
-  private logicMockWithLastId(stagePropertyGroups: StagePropertyGroupDtoMock[]): Observable<StagePropertyGroupDtoMock[]> {
-    return this.getMockAll().pipe(
+  private logicMockWithLastId(stagePropertyGroups: StagePropertyGroupDtoMock[], taxIdentificationNumber : string): Observable<StagePropertyGroupDtoMock[]> {
+    return this.getMockAll(taxIdentificationNumber).pipe(
       map(existingGroups => {
         const uniqueGroups = existingGroups
           .map(spg => spg.propertyGroup)
@@ -77,8 +77,8 @@ export class ProjectPropertyTypesService {
     );
   }
 
-  create(stagePropertyGroups: StagePropertyGroupDtoMock[]): Observable<StagePropertyGroupDtoMock[]> {
-      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/property-groups`;
+  create(stagePropertyGroups: StagePropertyGroupDtoMock[], taxIdentificationNumber : string): Observable<StagePropertyGroupDtoMock[]> {
+      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/property-groups`;
       console.log(stagePropertyGroups);
       return this.httpService
       .error("Error guardando información del Tipo de Propiedad")
@@ -95,8 +95,8 @@ export class ProjectPropertyTypesService {
       );
   }
 
-   update(stagePropertyGroups: StagePropertyGroupDtoMock[]): Observable<StagePropertyGroupDtoMock[]> {
-        const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/property-groups`;
+   update(stagePropertyGroups: StagePropertyGroupDtoMock[], taxIdentificationNumber : string): Observable<StagePropertyGroupDtoMock[]> {
+        const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/property-groups`;
         console.log(stagePropertyGroups);
         return this.httpService
         .error("Error guardando información del Tipo de Propiedad")
@@ -113,8 +113,8 @@ export class ProjectPropertyTypesService {
         );
    }
 
-   assignment(stagePropertyGroups: StagePropertyGroupDtoMock[]): Observable<StagePropertyGroupDtoMock[]> {
-      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/property-groups/assign`;
+   assignment(stagePropertyGroups: StagePropertyGroupDtoMock[], taxIdentificationNumber : string): Observable<StagePropertyGroupDtoMock[]> {
+      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/property-groups/assign`;
       console.log(stagePropertyGroups);
       return this.httpService
       .error("Error asignando Etapa y Tipo de Propiedad")
@@ -131,8 +131,8 @@ export class ProjectPropertyTypesService {
       );
    }
 
-  removePropertyGroup(propertyGroup: PropertyGroupMock, project : ProjectMock): Observable<void> {
-      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/projects/${encodeURIComponent(project.id!)}/property-groups/${encodeURIComponent(propertyGroup.id ?? '')}`;
+  removePropertyGroup(propertyGroup: PropertyGroupMock, project : ProjectMock, taxIdentificationNumber : string): Observable<void> {
+      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects/${encodeURIComponent(project.id!)}/property-groups/${encodeURIComponent(propertyGroup.id ?? '')}`;
       return this.httpService
       .error("Error eliminando tipo de propiedad")
       .delete(url)
@@ -144,8 +144,8 @@ export class ProjectPropertyTypesService {
       );
   }
 
-  remove(stagePropertyGroup: StagePropertyGroupDtoMock, project: ProjectMock): Observable<void> {
-      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/projects/${encodeURIComponent(project.id!)}/stage-property-groups/${encodeURIComponent(stagePropertyGroup.id ?? '')}`;
+  remove(stagePropertyGroup: StagePropertyGroupDtoMock, project: ProjectMock, taxIdentificationNumber: string): Observable<void> {
+      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/projects/${encodeURIComponent(project.id!)}/stage-property-groups/${encodeURIComponent(stagePropertyGroup.id ?? '')}`;
       return this.httpService
       .error("Error eliminando asignación etapa y tipo de propiedad")
       .delete(url)
@@ -157,8 +157,8 @@ export class ProjectPropertyTypesService {
       );
   }
 
-  duplicate(stagePropertyGroups: StagePropertyGroupDtoMock[]): Observable<StagePropertyGroupDtoMock[]> {
-      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent('10449080004')}/property-groups/duplicate`;
+  duplicate(stagePropertyGroups: StagePropertyGroupDtoMock[], taxIdentificationNumber: string): Observable<StagePropertyGroupDtoMock[]> {
+      const url = `${ProjectPropertyTypesService.END_POINT_COMPANY}/${encodeURIComponent(taxIdentificationNumber)}/property-groups/duplicate`;
       console.log(stagePropertyGroups);
       return this.httpService
       .error("Error al duplicar Tipo de Propiedad")

@@ -24,7 +24,7 @@ import {CatalogDetailCodes} from '../../models/catalog-detail-code-data.type';
 import {CatalogDetailMock} from '../../../../shared/models/catalog-detail.mock.model';
 import {finalize, map} from 'rxjs/operators';
 import {Observable, throwError, of, tap, forkJoin} from "rxjs";
-
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-location-information',
@@ -54,11 +54,16 @@ export class LocationInformationComponent implements OnInit {
   urlKmlKmz: string| undefined;
   @ViewChild(MapComponent)
   private mapComponent?: MapComponent;
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly fb: FormBuilder,
               private readonly locationsSvc: GeographicalLocationService,
               private readonly projectService: ProjectService,
-              private readonly loadingService: LoadingService) {}
+              private readonly authService: AuthService,
+              private readonly loadingService: LoadingService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
+  }
+
 
   ngOnInit(): void {
     this.loadingService.show();
@@ -245,7 +250,7 @@ export class LocationInformationComponent implements OnInit {
       } as CatalogDetailMock
     } as ProjectDocumentMock;
 
-    return this.projectService.uploadDocument('10449080004', projectId, file, projectDocumentBase).pipe(
+    return this.projectService.uploadDocument(this.taxIdentificationNumber!, projectId, file, projectDocumentBase).pipe(
       map((uploadedDoc: ProjectDocumentMock) => uploadedDoc)
     );
   }

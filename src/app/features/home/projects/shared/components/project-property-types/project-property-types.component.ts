@@ -32,6 +32,7 @@ import {ProjectActionStatus} from '../../models/project-action-status';
 import {TypeFileIconGoogleFontsPipe} from '@common/pipes/typefile-icon-googlefonts.pipe';
 import {CatalogDetailCodes} from '../../models/catalog-detail-code-data.type';
 import {CatalogDetailMock} from '../../../../shared/models/catalog-detail.mock.model';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-project-property-types',
@@ -55,13 +56,16 @@ export class ProjectPropertyTypesComponent implements OnInit {
   isView: boolean = false;
   stagesPropertyTypes: StagePropertyGroupDtoMock[]= [];
   pathBase?: string;
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly router: Router,
               private readonly ksModalGallerySvc: KsModalGalleryService,
               private readonly modalService: NgbModal,
               private readonly loadingService: LoadingService,
+              private readonly authService: AuthService,
               private readonly projectPropertyTypeSvc: ProjectPropertyTypesService,
               protected readonly projectStore: ProjectStoreService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
   }
 
   ngOnInit(): void {
@@ -73,12 +77,11 @@ export class ProjectPropertyTypesComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     console.log('ngOnChanges');
     if (changes['project'] && this.project && this.project.id! > 0) {
       console.log('project init ppt', this.project);
-      this.loadingService.show();
       this.loadData();
-      this.loadingService.hide();
     }
   }
 
@@ -96,7 +99,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   viewPropertyType(propertyType: PropertyGroupMock):void {
     console.log('viewPropertyType');
     this.loadingService.show();
-    this.projectPropertyTypeSvc.readStagePropertyGroupByPropertyType(propertyType!)
+    this.projectPropertyTypeSvc.readStagePropertyGroupByPropertyType(propertyType!, this.taxIdentificationNumber!)
       .pipe(finalize(() => this.loadingService.hide()))
       .subscribe(spgs => {
         propertyType.stagePropertyGroups = spgs;
@@ -110,7 +113,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
       .then(result => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          this.projectPropertyTypeSvc.readStagePropertyGroupByPropertyType(propertyType!)
+          this.projectPropertyTypeSvc.readStagePropertyGroupByPropertyType(propertyType!, this.taxIdentificationNumber!)
             .pipe(finalize(() => this.loadingService.hide()))
             .subscribe(spgs => {
               propertyType.stagePropertyGroups = spgs;
@@ -127,7 +130,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
       .then(result => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          this.projectPropertyTypeSvc.removePropertyGroup(propertyType, this.project)
+          this.projectPropertyTypeSvc.removePropertyGroup(propertyType, this.project, this.taxIdentificationNumber!)
           .subscribe(()=>{
             this.loadData();
           })
@@ -142,7 +145,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
       .then(result => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          this.projectPropertyTypeSvc.remove(stagePropertyType, this.project)
+          this.projectPropertyTypeSvc.remove(stagePropertyType, this.project, this.taxIdentificationNumber!)
             .subscribe(()=>{
               this.loadData();
             })
@@ -166,7 +169,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
       .then(result => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          this.projectPropertyTypeSvc.removeDocument('10449080004', stagePropertyGroupId, documentId).subscribe({
+          this.projectPropertyTypeSvc.removeDocument(this.taxIdentificationNumber!, stagePropertyGroupId, documentId).subscribe({
             next: () => {
               if(fileType == "blueprint") {
                 this.stagesPropertyTypes.at(this.stagesPropertyTypes.indexOf(stagePropertyType))!.architecturalBluetprint = undefined;
@@ -188,18 +191,15 @@ export class ProjectPropertyTypesComponent implements OnInit {
   toGoProperties(stagePropertyType: StagePropertyGroupDtoMock) : void {
     console.log('toGoProperties');
     this.loadingService.show();
-    setTimeout(() => {
 
-      this.loadingService.hide();
-      this.projectPropertyTypeSvc.readStagePropertyGroupByPropertyType(stagePropertyType?.propertyGroup!)
-        .pipe(finalize(() => this.loadingService.hide()))
-        .subscribe(spgs => {
-          stagePropertyType!.propertyGroup!.stagePropertyGroups = spgs ?? [];
-          this.router.navigate([`${this.pathBase}properties`],
-            { state: {  stagePropertyType, projectStages: this.project.projectStages ?? [], originFlow: "PROJECT"} });
-        });
-
-    }, 1000);
+    this.projectPropertyTypeSvc.readStagePropertyGroupByPropertyType(stagePropertyType?.propertyGroup!, this.taxIdentificationNumber!)
+      .pipe(finalize(() => this.loadingService.hide()))
+      .subscribe(spgs => {
+        stagePropertyType!.propertyGroup!.stagePropertyGroups = spgs ?? [];
+        console.log('spgs', spgs);
+        this.router.navigate([`${this.pathBase}properties`],
+          { state: {  project: this.project,stagePropertyType, projectStages: this.project.projectStages ?? [], originFlow: "PROJECT"} });
+      });
   }
 
   onDropFile(event: DragEvent, stagePropertyType: StagePropertyGroupDtoMock, type: 'blueprint' | 'template'): void {
@@ -282,7 +282,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
         code: catalogCode
       } as CatalogDetailMock
     } as DocumentMock;
-    return this.projectPropertyTypeSvc.uploadDocument('10449080004', stagePropertyType.id, file, documentBase)
+    return this.projectPropertyTypeSvc.uploadDocument(this.taxIdentificationNumber!, stagePropertyType.id, file, documentBase)
     .pipe(
       map((uploadedDoc: DocumentMock) => uploadedDoc)
     );
@@ -361,7 +361,7 @@ export class ProjectPropertyTypesComponent implements OnInit {
   loadData(): void {
     console.log('loadData');
     this.loadingService.show();
-    this.projectPropertyTypeSvc.readStagePropertyGroupByProject(this.project)
+    this.projectPropertyTypeSvc.readStagePropertyGroupByProject(this.project, this.taxIdentificationNumber!)
       .pipe(finalize(() => this.loadingService.hide()))
       .subscribe(spg => {
           console.log('stagesPropertyTypes : ', spg);
