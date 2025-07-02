@@ -33,6 +33,11 @@ jobs:
 
       - name: Deploy
         if: success()
-        run: aws s3 sync dist/tfm-web/browser s3://tfm-web-s3 --delete
+        run: |
+          aws s3 sync dist/tfm-web/browser s3://tfm-web-s3 --delete \
+            --exclude ".bzr" --exclude ".bzr/*" \
+            --exclude "._darcs" --exclude "._darcs/*" \
+            --exclude ".hg" --exclude ".hg/*" \
+            --exclude "BitKeeper" --exclude "BitKeeper/*"
       - name: Cloudfront Invalidation
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
