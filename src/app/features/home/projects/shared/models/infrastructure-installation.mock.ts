@@ -2,7 +2,7 @@ import {InstallationType} from './installation-data.type';
 import {CatalogMock} from '../../../shared/models/catalog.mock.model';
 import {InstallationDataType} from './installation-type.model';
 
-export interface InfraestructureInstallationMock {
+export interface InfrastructureInstallationMock {
   id?: number;
   code?: string;
   name?: string;

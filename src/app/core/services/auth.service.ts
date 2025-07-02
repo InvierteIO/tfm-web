@@ -98,4 +98,9 @@ export class AuthService {
     getCompanyRoles(): CompanyRole[] | undefined {
       return this.isAuthenticated() ? this.user?.companyRoles : undefined;
     }
+
+    getTexIdentificationNumber(): string | undefined {
+        return this.isAuthenticated() ? this.user?.companyRoles?.[0].taxIdentificationNumber : undefined;
+    }
+
 }

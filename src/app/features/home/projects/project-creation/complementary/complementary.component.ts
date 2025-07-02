@@ -7,6 +7,7 @@ import {FileDropzoneComponent} from "@common/components/file-dropzone.component"
 import Swal from "sweetalert2";
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from "@common/dialogs/dialogs-swal.constants";
 import {ProjectDocumentMock} from "../../shared/models/project-document.mock.model";
+import {ProjectMock} from "../../shared/models/project.mock.model";
 import {TypeFileIconGoogleFontsPipe} from "@common/pipes/typefile-icon-googlefonts.pipe";
 import {LoadingService} from "@core/services/loading.service";
 import {FormUtil} from '@common/utils/form.util';
@@ -22,6 +23,14 @@ import {
 } from '../../shared/components/location-information/location-information.component';
 import {ProjectStoreService} from '../../shared/services/project-store.service';
 import {ProjectDraftStatus} from '../../shared/models/project-draft-status';
+import {finalize, map, tap} from 'rxjs/operators';
+import {Observable, throwError, of, forkJoin,} from "rxjs";
+import {ProjectService} from '../../shared/services/project.service';
+import {ProjectStageMock} from '../../shared/models/project-stage.mock.model';
+import {LocationCode} from '../../shared/models/location-code.mock.model';
+import {CatalogDetailCodes} from '../../shared/models/catalog-detail-code-data.type';
+import {CatalogDetailMock} from '../../../shared/models/catalog-detail.mock.model';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-complementary',
@@ -46,21 +55,33 @@ export class ComplementaryComponent implements OnInit {
   blueprintName: string = '';
   blueprintNameError: boolean = false;
   blueprints: ProjectDocumentMock[] = [];
+  public project: ProjectMock = { id : 0 };
+  @ViewChild(LocationInformationComponent)
+  locationCodeComponent!: LocationInformationComponent;
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly router: Router,
               private readonly fb: FormBuilder,
               private readonly ksModalGallerySvc: KsModalGalleryService,
               private readonly modalService: NgbModal,
               private readonly loadingService: LoadingService,
-              protected readonly projectStore: ProjectStoreService) {
+              protected readonly projectStore: ProjectStoreService,
+              private readonly authService: AuthService,
+              private readonly projectService: ProjectService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
+    const nav = this.router.getCurrentNavigation();
+    this.project = nav?.extras.state?.['project'];
   }
 
   ngOnInit(): void {
-    if(this.isViewPage) {
-      this.form.disable({ emitEvent: false });
-      this.form.get('bonuses')?.disable({ emitEvent: false });
-      this.form.get('banks')?.disable({ emitEvent: false });
-    }
+    this.loadingService.show();
+    this.loadData().subscribe(() => {
+      this.initializeForm();
+      if(this.isViewPage) {
+        this.form.disable({ emitEvent: false });
+      }
+      this.loadingService.hide();
+    });
   }
 
   onDropFile(event: DragEvent): void {
@@ -96,14 +117,17 @@ export class ComplementaryComponent implements OnInit {
     if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
-    setTimeout(() => {
-      const document = this.createDocumentMock(file, this.blueprints);//mock
-      document.name = this.blueprintName;
-      this.blueprints.push(document);
-      this.checkImageInDocument(this.blueprints, 'blueprint');
-      this.loadingService.hide();
-      this.blueprintName = '';
-    }, 1000);
+
+    this.createDocumentMock(file, this.blueprints, CatalogDetailCodes.SUBDIVISION_PLAN, this.blueprintName).subscribe({
+      next: (document) => {
+        document.name = this.blueprintName;
+        this.blueprints.push(document);
+        this.checkImageInDocument(this.blueprints, 'blueprint');
+        this.loadingService.hide();
+        this.blueprintName = '';
+      },
+      error: (err) => console.error('Upload failed', err)
+    });
   }
 
 
@@ -117,20 +141,25 @@ export class ComplementaryComponent implements OnInit {
     })
   }
 
-  createDocumentMock(file: File, documents: ProjectDocumentMock[]): ProjectDocumentMock {
-    const extension = file.name?.toLowerCase().split('.').pop();
-    let path :string = "";
-    if (extension === 'pdf') path = 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/keyboard-shortcuts-windows.pdf';
-    else {
-      path= (documents.length + 1) % 2 == 0 ? 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/Calendario09-10.PNG' :
-        (documents.length + 1) % 3 == 0 ? 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/FondoLideres.png'
-          :'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg';
+  createDocumentMock(file: File, documents: ProjectDocumentMock[], catalogCode: string, description: string): Observable<ProjectDocumentMock> {
+    let projectId : number;
+    if (this.project && this.project.id !== undefined) {
+      projectId = this.project.id;
+    } else {
+      throw new Error('Project or project ID is undefined');
     }
-    return {
-      id: documents.length + 1, filename: file.name, name: file.name,
-      path,
-      createdAt: new Date(),
+
+    console.log('createDocumentMock');
+    const projectDocumentBase: ProjectDocumentMock = {
+      description: description,
+      catalogDetail: {
+        code: catalogCode
+      } as CatalogDetailMock
     } as ProjectDocumentMock;
+
+    return this.projectService.uploadDocument(this.taxIdentificationNumber!, projectId, file, projectDocumentBase).pipe(
+      map((uploadedDoc: ProjectDocumentMock) => uploadedDoc)
+    );
   }
 
   onBlueprintNameChange(name: string): void {
@@ -165,29 +194,48 @@ export class ComplementaryComponent implements OnInit {
   }
 
   deleteBlueprint(file: ProjectDocumentMock) {
+    if (file == undefined || file.id == undefined) {
+      console.error('Document ID is missing, cannot delete');
+      return;
+    }
+
+    if (this.project == undefined || this.project.id == undefined) {
+      console.error('Project ID is missing, cannot delete');
+      return;
+    }
+
+    const documentId: number = file.id;
+    const projectId: number = this.project.id;
+
     Swal.fire(
         DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el plano?"))
         .then((result) => {
           if (result.isConfirmed) {
 
             this.loadingService.show();
-            setTimeout(() => {
-              this.ksModalGallerySvc.removeImage('blueprint', { ...file } as Document);
-              this.blueprints.splice(this.blueprints.indexOf(file), 1);
-              this.blueprintNameError = false;
-              this.loadingService.hide();
-              }, 1000);
+            this.projectService.removeDocument(this.taxIdentificationNumber!, projectId, documentId).subscribe({
+              next: () => {
+                this.ksModalGallerySvc.removeImage('blueprint', { ...file } as Document);
+                this.blueprints.splice(this.blueprints.indexOf(file), 1);
+                this.blueprintNameError = false;
+                this.loadingService.hide();
+              },
+              error: (err) => {
+                console.error('Failed to remove document', err);
+                this.loadingService.hide();
+              }
+            });
           }
         });
   }
 
   back():void {
-    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/infrastructure-installation`]);
+    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/infrastructure-installation`], {state: {project: this.project}});
   }
 
   next(): void {
     if(this.isViewPage) {
-      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/legal-scope`]);
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/legal-scope`], {state: {project: this.project}});
       return;
     }
     if (this.form?.invalid) {
@@ -196,13 +244,79 @@ export class ComplementaryComponent implements OnInit {
       return;
     }
     this.loadingService.show();
-    setTimeout(() => {
-      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/legal-scope`]);
-      this.loadingService.hide();
-    }, 50);
+    this.captureData();
+    this.projectService.updateDraft(this.project, this.taxIdentificationNumber!)
+      .pipe(finalize(() => this.loadingService.hide()))
+      .subscribe({
+        next: (project: ProjectMock) => {
+          this.project = project;
+          console.log('Project draft complementary successfully:', this.project);
+          this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/legal-scope`],
+          {state: {project: this.project}});
+        },
+        error: (err : string) => {
+          console.error('Error during project complementary :', err);
+        }
+      });
   }
 
   get isViewPage() {
     return this.projectStore.draftStatus() == ProjectDraftStatus.VIEW;
   }
+
+  private loadData(): Observable<void> {
+    this.loadingService.show();
+    return this.projectService.readDraft(this.taxIdentificationNumber!, this.project).pipe(
+      tap((project) => {
+        this.project = project as ProjectMock;
+      }),
+      map(() => void 0)
+    );
+  }
+
+  private captureData():void {
+    const districtCode = this.form.get('district')!.value;
+
+    this.project.projectStages?.forEach((stage: ProjectStageMock) => {
+      stage.address = this.form.get('address')!.value;
+      stage.addressNumber = this.form.get('address_number')!.value;
+      stage.addressReference = this.form.get('address_reference')!.value;
+      stage.zipCode = this.form.get('zipcode')!.value;
+      stage.kmlKmzUrl = this.form.get('klm_url')!.value;
+
+      const matchedLocationCode = this.locationCodeComponent.districts.find(loc => loc.code === districtCode);
+      stage.locationCode = matchedLocationCode ? matchedLocationCode : undefined;
+    });
+    console.log('captureData project', this.project);
+  }
+
+  private initializeForm(): void {
+    const projectStageCurrent = this.project?.projectStages?.[0];
+
+    console.log('initializeForm', projectStageCurrent);
+    this.form?.reset({
+      address: projectStageCurrent?.address || '',
+      address_number: projectStageCurrent?.addressNumber || '',
+      address_reference: projectStageCurrent?.addressReference || '',
+      zipcode: projectStageCurrent?.zipCode || '',
+      klm_url: projectStageCurrent?.kmlKmzUrl || ''
+    });
+    this.locationCodeComponent.setLocationByDistrictCode(projectStageCurrent?.locationCode?.code!);
+    this.handleLoadProjectDocuments(this.project)
+  }
+
+  private handleLoadProjectDocuments(project: ProjectMock): void {
+    console.log('project-handle:', project);
+    for (const doc of project.projectDocuments || []) {
+      const code = doc.catalogDetail?.code;
+      console.log('code-doc:', doc);
+      switch (code) {
+        case CatalogDetailCodes.SUBDIVISION_PLAN:
+          this.blueprints.push(doc);
+          this.checkImageInDocument(this.blueprints, 'blueprint');
+          break;
+      }
+    }
+  }
+
 }

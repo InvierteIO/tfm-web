@@ -6,7 +6,7 @@ export class BooleanLabelPipe implements PipeTransform {
     value: boolean | null | undefined,
     options: Partial<{ true: string; false: string; null: string }> = {}
   ): string {
-    const lbl = { true: 'SI', false: 'NO', null: '', ...options };
+    const lbl = { true: 'YES', false: 'NO', null: '', ...options };
     if (value === true) return lbl.true;
     if (value === false) return lbl.false;
     return lbl.null;

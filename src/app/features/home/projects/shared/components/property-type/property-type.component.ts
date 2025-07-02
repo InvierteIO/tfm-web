@@ -25,14 +25,16 @@ import {PropertyGroupHouseMock} from '../../models/property-group-house.mock.mod
 import {PropertyGroupLandMock} from '../../models/property-group-land.mock.model';
 import {PropertyFeatureMock} from '../../models/property-feature.mock.model';
 import {ProjectPropertyTypesService} from '../../services/project-property-types.service';
-import {finalize} from 'rxjs/operators';
+import {finalize, map, tap} from 'rxjs/operators';
 import {HouseFloorAreaMock} from '../../models/house-floor-area.mock.model';
 import Swal from 'sweetalert2';
 import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swal.constants';
-import {zip} from 'rxjs';
+import {Observable, zip} from 'rxjs';
 import {ProjectStoreService} from '../../services/project-store.service';
 import {ProjectMock} from '../../models/project.mock.model';
 import {ProjectActionStatus} from '../../models/project-action-status';
+import {FeatureService} from '../../services/feature.service';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
     imports: [
@@ -65,44 +67,55 @@ export class PropertyTypeComponent  implements OnInit  {
   propertyGroupCurrent?: PropertyGroupMock;
   titleBreadcrumbPage: string = "Agregar tipo de inmueble";
   isView: boolean = false;
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly router: Router, private readonly fb: FormBuilder,
               private readonly loadingService: LoadingService,
               private readonly projectPropertyTypesSvc: ProjectPropertyTypesService,
+              private readonly featureService: FeatureService,
+              private readonly authService: AuthService,
               protected readonly projectStore: ProjectStoreService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     this.form = this.buildForm();
     this.loadInfoFromNavigation();
   }
 
   ngOnInit(): void {
-    this.loadDataAsync();
-    this.initLandFeaturesForm(
-      this.propertyGroupCurrent?.propertyCategory === PropertyCategory.LAND
-        ? this.propertyGroupCurrent.propertyFeatures ?? []
-        : []
-    );
-    this.initHouseFeaturesForm(
-      this.propertyGroupCurrent?.propertyCategory === PropertyCategory.HOUSE
-        ? this.propertyGroupCurrent.propertyFeatures ?? []
-        : []
-    );
-    this.initApartmentFeaturesForm(
-      this.propertyGroupCurrent?.propertyCategory === PropertyCategory.APARTMENT
-        ? this.propertyGroupCurrent.propertyFeatures ?? []
-        : []
-    );
+    this.loadingService.show();
+    this.loadDataAsync()
+    .pipe(finalize(() => this.loadingService.hide()))
+    .subscribe(() => {
+      console.log('currentpropert group : ', this.propertyGroupCurrent);
+      this.initLandFeaturesForm(
+        this.propertyGroupCurrent?.propertyCategory === PropertyCategory.LAND
+          ? this.propertyGroupCurrent.propertyFeatures ?? []
+          : []
+      );
+      this.initHouseFeaturesForm(
+        this.propertyGroupCurrent?.propertyCategory === PropertyCategory.HOUSE
+          ? this.propertyGroupCurrent.propertyFeatures ?? []
+          : []
+      );
+      this.initApartmentFeaturesForm(
+        this.propertyGroupCurrent?.propertyCategory === PropertyCategory.APARTMENT
+          ? this.propertyGroupCurrent.propertyFeatures ?? []
+          : []
+      );
 
-    this.form.get('category')!
-      .valueChanges
-      .subscribe((cat: PropertyCategory) => this.onCategoryChange(cat));
+      this.form.get('category')!
+        .valueChanges
+        .subscribe((cat: PropertyCategory) => this.onCategoryChange(cat));
 
-    this.onCategoryChange(this.form.get('category')!.value);
+      this.onCategoryChange(this.form.get('category')!.value);
 
-    this.apartmentFormGroup.get('apartment_type')!
-      .valueChanges
-      .subscribe(type => this.onApartmentTypeChange(type));
-    this.onApartmentTypeChange(this.apartmentFormGroup.get('apartment_type')!.value);
+      this.apartmentFormGroup.get('apartment_type')!
+        .valueChanges
+        .subscribe(type => this.onApartmentTypeChange(type));
+
+      this.onApartmentTypeChange(this.apartmentFormGroup.get('apartment_type')!.value);
+    });
   }
+
 
   private onCategoryChange(cat: PropertyCategory) {
     const land = this.landFormGroup;
@@ -191,7 +204,7 @@ export class PropertyTypeComponent  implements OnInit  {
     landFeaturesFormArray.clear();
 
     this.landFeatures.forEach(features => {
-      const checked = selected.some(s => s.feature?.id === features.id && s.featureValue === 'SI');
+      const checked = selected.some(s => s.feature?.id === features.id && s.featureValue === 'YES');
       landFeaturesFormArray.push(
         this.fb.group({
           id:      [features.id],
@@ -206,7 +219,7 @@ export class PropertyTypeComponent  implements OnInit  {
     houseFeaturesFormArray.clear();
 
     this.houseFeatures.forEach(features => {
-      const checked = selected.some(s => s.feature?.id === features.id && s.featureValue === 'SI');
+      const checked = selected.some(s => s.feature?.id === features.id && s.featureValue === 'YES');
       houseFeaturesFormArray.push(
         this.fb.group({
           id:      [features.id],
@@ -221,7 +234,7 @@ export class PropertyTypeComponent  implements OnInit  {
     apartmentFeaturesFormArray.clear();
 
     this.apartmentFeatures.forEach(features => {
-      const checked = selected.some(s => s.feature?.id === features.id && s.featureValue === 'SI');
+      const checked = selected.some(s => s.feature?.id === features.id && s.featureValue === 'YES');
       apartmentFeaturesFormArray.push(
         this.fb.group({
           id:      [features.id],
@@ -249,7 +262,8 @@ export class PropertyTypeComponent  implements OnInit  {
         state: { project: this.project,  activeId: 'propertytypes' }
       });
     } else {
-      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`],
+      {state: { project: this.project}});
     }
   }
 
@@ -265,31 +279,28 @@ export class PropertyTypeComponent  implements OnInit  {
       .then(result => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          setTimeout(() => {
-            if(!this.propertyGroupCurrent) {
-              this.projectPropertyTypesSvc.create(this.captureData())
-                .pipe(finalize(() => {
-                  if(this.projectStore.status() !== ProjectActionStatus.NEW) {
-                    this.back();
-                  } else {
-                    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
-                  }
-
-                  this.loadingService.hide();
-                })).subscribe();
-            } else {
-              zip(this.projectPropertyTypesSvc.removePropertyGroup(this.propertyGroupCurrent),
-                this.projectPropertyTypesSvc.create(this.captureData()))
-                .pipe(finalize(() => {
-                  if(this.projectStore.status() !== ProjectActionStatus.NEW) {
-                    this.back();
-                  } else {
-                    this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
-                  }
-                  this.loadingService.hide();
-                })).subscribe();
-            }
-          }, 500);
+          if(!this.propertyGroupCurrent) {
+            this.projectPropertyTypesSvc.create(this.captureData(), this.taxIdentificationNumber!)
+              .pipe(finalize(() => {
+                if(this.projectStore.status() !== ProjectActionStatus.NEW) {
+                  this.back();
+                } else {
+                  this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`], {state: { project: this.project}});
+                }
+                this.loadingService.hide();
+              })).subscribe();
+          } else {
+            zip(this.projectPropertyTypesSvc.removePropertyGroup(this.propertyGroupCurrent, this.project!,this.taxIdentificationNumber!),
+              this.projectPropertyTypesSvc.create(this.captureData(), this.taxIdentificationNumber!))
+              .pipe(finalize(() => {
+                if(this.projectStore.status() !== ProjectActionStatus.NEW) {
+                  this.back();
+                } else {
+                  this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`], {state: { project: this.project}});
+                }
+                this.loadingService.hide();
+              })).subscribe();
+          }
         }
       });
   }
@@ -334,7 +345,7 @@ export class PropertyTypeComponent  implements OnInit  {
     this.form.get('apartment')?.value['apartment_features'].forEach((feature: any) => {
       if(feature.checked === true) {
         propertyFeatures.push({
-           featureValue: "SI",
+           featureValue: "YES",
            feature: { id: feature.id }
         });
       }
@@ -356,7 +367,7 @@ export class PropertyTypeComponent  implements OnInit  {
     this.form.get('house')?.value['house_features'].forEach((feature: any) => {
       if(feature.checked === true) {
         propertyFeatures.push({
-          featureValue: "SI",
+          featureValue: "YES",
           feature: { id: feature.id }
         });
       }
@@ -382,7 +393,7 @@ export class PropertyTypeComponent  implements OnInit  {
     this.form.get('land')?.value['land_features'].forEach((feature: any) => {
       if(feature.checked === true) {
         propertyFeatures.push({
-          featureValue: "SI",
+          featureValue: "YES",
           feature: { id: feature.id }
         });
       }
@@ -401,59 +412,24 @@ export class PropertyTypeComponent  implements OnInit  {
     return stagePropertyGroups;
   }
 
-  private loadDataAsync(): void {
-    if(this.propertyGroupCurrent) {
-      this.loadInfoForUpdateOrView();
-    }
+  private loadDataAsync(): Observable<void> {
+    const feature$ = this.featureService.readAll().pipe(
+        tap(() => {
+          if (this.propertyGroupCurrent) {
+            this.loadInfoForUpdateOrView();
+          }
+        }),
+        tap((features: FeatureMock[]) => {
+          this.landFeatures = features;
+          this.apartmentFeatures = features;
+          this.houseFeatures = features;
+        }),
+        map(() => void 0)
+    );
 
-    this.landFeatures = [
-      {id: 1, name : "Video vigilancia"},
-      {id: 2, name : "Control de Acceso"},
-      {id: 3, name : "Parrillas"},
-      {id: 4, name : "Areas verdes"},
-      {id: 5, name : "Canchas Deportivas"},
-      {id: 6, name : "Espacio Co - Work"},
-      {id: 7, name : "Gimnasio"},
-      {id: 8, name : "Mantenimiento"},
-      {id: 9, name : "Seguridad externa (Portico)"},
-      {id: 10, name : "Control de acceso al portico"},
-    ];
-
-    this.apartmentFeatures = [
-      {id: 1, name : "Video vigilancia"},
-      {id: 2, name : "Control de Acceso"},
-      {id: 3, name : "Parrillas"},
-      {id: 4, name : "Areas verdes"},
-      {id: 5, name : "Canchas Deportivas"},
-      {id: 6, name : "Espacio Co - Work"},
-      {id: 7, name : "Gimnasio"},
-      {id: 8, name : "Mantenimiento"},
-      {id: 9, name : "Seguridad externa (Portico)"},
-      {id: 10, name : "Control de acceso al portico"},
-      {id: 11, name : "Area de lavanderia"},
-      {id: 12, name : "Red Wifi"},
-      {id: 13, name : "Calefaccion"},
-      {id: 14, name : "Agua Caliente"},
-      {id: 15, name : "Piscina"},
-    ];
-
-    this.houseFeatures = [
-      {id: 1, name : "Video vigilancia"},
-      {id: 2, name : "Control de Acceso"},
-      {id: 3, name : "Parrillas"},
-      {id: 4, name : "Areas verdes"},
-      {id: 5, name : "Canchas Deportivas"},
-      {id: 6, name : "Espacio Co - Work"},
-      {id: 7, name : "Gimnasio"},
-      {id: 8, name : "Mantenimiento"},
-      {id: 9, name : "Seguridad externa (Portico)"},
-      {id: 10, name : "Control de acceso al portico"},
-      {id: 11, name : "Area de lavanderia"},
-      {id: 12, name : "Red Wifi"},
-      {id: 13, name : "Calefaccion"},
-      {id: 14, name : "Agua Caliente"}
-    ];
+    return feature$;
   }
+
 
   private loadInfoFromNavigation(): void {
     const nav = this.router.getCurrentNavigation();
@@ -461,6 +437,7 @@ export class PropertyTypeComponent  implements OnInit  {
     this.projectStages = this.project?.projectStages  ?? [];
     this.propertyGroupCurrent = nav?.extras.state?.['propertyType'];
     this.isView = nav?.extras.state?.['view'];
+    console.log('project get from nav ', this.project);
   }
 
   private loadInfoForUpdateOrView() {
@@ -485,7 +462,7 @@ export class PropertyTypeComponent  implements OnInit  {
       perimeter: this.propertyGroupCurrent?.perimeter,
       area: this.propertyGroupCurrent?.area,
       parking_space: this.propertyGroupCurrent?.parkingSpace,
-      front_park: this.propertyGroupCurrent?.parkingSpace ? "SI": "NO",
+      front_park: this.propertyGroupCurrent?.parkingSpace ? "YES": "NO",
       currency: this.propertyGroupCurrent?.currency,
       price: this.propertyGroupCurrent?.price,
       percentage_rate: this.propertyGroupCurrent?.annualInterestRate,

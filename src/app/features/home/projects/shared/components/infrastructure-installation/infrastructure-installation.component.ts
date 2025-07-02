@@ -5,14 +5,15 @@ import {FormErrorMessagesPipe} from '@common/pipes/form-errormessages.pipe';
 import {IsInvalidFieldPipe} from '@common/pipes/is-invalid-field.pipe';
 import {NgForOf, NgIf, NgTemplateOutlet} from '@angular/common';
 import {SelectStyleDirective} from '@common/directives/select-style.directive';
-import {InfraestructureInstallationMock} from '../../models/infraestructure-installation.mock';
+import {InfrastructureInstallationMock} from '../../models/infrastructure-installation.mock';
 import {InstallationType} from '../../models/installation-data.type';
 import {InstallationDataType} from '../../models/installation-type.model';
 import {ButtonLoadingComponent} from '@common/components/button-loading.component';
 import {FormUtil} from '@common/utils/form.util';
 import {LoadingService} from '@core/services/loading.service';
 import {ProjectMock} from '../../models/project.mock.model';
-import {finalize} from 'rxjs/operators';
+import {finalize, map} from 'rxjs/operators';
+import {Observable, throwError, of, tap, forkJoin} from "rxjs";
 import {ProjectService} from '../../services/project.service';
 import {StageInfrastructureInstallationMock} from '../../models/stage-infrastructure-installation.mock.model';
 import {ProjectStageMock} from '../../models/project-stage.mock.model';
@@ -23,6 +24,8 @@ import {DIALOG_SWAL_KEYS, DIALOG_SWAL_OPTIONS} from '@common/dialogs/dialogs-swa
 import {ProjectStageDtoMock} from '../../models/project-stage.mock.dto.model';
 import {ProjectStoreService} from '../../services/project-store.service';
 import {ProjectDraftStatus} from '../../models/project-draft-status';
+import {InfrastructureInstallationService} from '../../services/infrastructure-installation.service';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-infrastructure-installation',
@@ -48,27 +51,34 @@ export class InfrastructureInstallationComponent implements OnInit {
   isView = false;
 
   private project: ProjectMock = { id : 0 };
-  protected infraInstallations: InfraestructureInstallationMock[] = [];
+  protected infraInstallations: InfrastructureInstallationMock[] = [];
   private stageInfraInstallationsCurrent?: StageInfrastructureInstallationMock[];
   private stageCatalogDetailsCurrent?: StageCatalogDetail[];
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly router: Router,
               private readonly fb: FormBuilder,
               private readonly projectService: ProjectService,
               private readonly loadingService: LoadingService,
+              private readonly authService: AuthService,
+              private readonly infrastructureInstallationService: InfrastructureInstallationService,
               protected readonly draftStore: ProjectStoreService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     this.form = this.buildForm();
+    const nav = this.router.getCurrentNavigation();
+    this.project = nav?.extras.state?.['project'];
   }
 
   ngOnInit(): void {
-    this.loadData();
-    this.initFeaturesDefinedFormGroup();
-    this.initFeaturesProjectedFormGroup();
-    if(this.isViewPage) {
-      this.form.disable({ emitEvent: false });
-      this.form.get('infra_features_defined')?.disable({ emitEvent: false });
-      this.form.get('infra_features_defined')?.disable({ emitEvent: false });
-    }
+    this.loadData().subscribe(() => {
+      this.initFeaturesDefinedFormGroup();
+      this.initFeaturesProjectedFormGroup();
+      if (this.isViewPage) {
+        this.form.disable({ emitEvent: false });
+        this.form.get('infra_features_defined')?.disable({ emitEvent: false });
+        this.form.get('infra_features_projected')?.disable({ emitEvent: false });
+      }
+    });
   }
 
   private buildForm(): FormGroup {
@@ -90,10 +100,11 @@ export class InfrastructureInstallationComponent implements OnInit {
   private initFeaturesDefinedFormGroup(): void {
     const infraFeaturesFormArray = this.infraFeaturesDefinedFormArray;
     infraFeaturesFormArray.clear();
-
+    console.log('evaluating each element of defined', this.infraInstallationsDefined);
     this.infraInstallationsDefined.forEach(feature => {
       const stageInfraFeature =
         this.stageInfraInstallationsCurrent?.find(sii => sii?.infraInstallation?.id === feature.id);
+      console.log('feature_defined', feature);
       infraFeaturesFormArray.push(
         this.fb.group({
           reference: feature,
@@ -142,7 +153,7 @@ export class InfrastructureInstallationComponent implements OnInit {
     updateTypeState(statusControl!.value);
   }
 
-  isVisibleTypeFeatureProjected(infra: InfraestructureInstallationMock, idx: number): boolean | undefined {
+  isVisibleTypeFeatureProjected(infra: InfrastructureInstallationMock, idx: number): boolean | undefined {
     return (infra?.catalog && infra?.catalog?.catalogDetails
       && infra?.catalog?.catalogDetails!!.length > 0
       && (this.projectedStatusControl(idx)?.value && this.projectedStatusControl(idx)?.value !== 'MISSING'));
@@ -196,11 +207,11 @@ export class InfrastructureInstallationComponent implements OnInit {
 
 
   toGoSection1(): void {
-    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/section1`]);
+    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/section1`], {state: {project: this.project}});
   }
 
   back():void {
-    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/section2`]);
+    this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/section2`], {state: {project: this.project}});
   }
 
   onSubmit(): void {
@@ -235,7 +246,7 @@ export class InfrastructureInstallationComponent implements OnInit {
 
   next(): void {
     if(this.isViewPage) {
-      this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/complementary`]);
+      this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/complementary`], {state: {project: this.project}});
       return;
     }
 
@@ -246,30 +257,31 @@ export class InfrastructureInstallationComponent implements OnInit {
       return;
     }
     setTimeout(() => {
+      this.loadingService.show()
       this.captureData();
-      this.projectService.save(this.project)
+      this.projectService.updateDraft(this.project, this.taxIdentificationNumber!)
         .pipe(finalize(() => this.loadingService.hide()))
         .subscribe(project => {
           this.project = project;
-          this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/complementary`]);
+          this.router.navigate([`/public/home/${this.draftStore.draftPathCurrent()}/complementary`], {state: {project: this.project}});
         });
-    }, 200);
+    }, 0);
   }
 
-  isListForInfra(infra: InfraestructureInstallationMock): boolean {
+  isListForInfra(infra: InfrastructureInstallationMock): boolean {
     return infra.dataType == InstallationDataType.LIST;
   }
 
-  isBooleanForInfra(infra: InfraestructureInstallationMock): boolean {
+  isBooleanForInfra(infra: InfrastructureInstallationMock): boolean {
     return infra.dataType == InstallationDataType.BOOLEAN;
   }
 
-  get infraInstallationsDefined(): InfraestructureInstallationMock[]  {
+  get infraInstallationsDefined(): InfrastructureInstallationMock[]  {
       return this.infraInstallations
         .filter(infra => infra.installationType == InstallationType.DEFINED) ;
   }
 
-  get infraInstallationsProjected(): InfraestructureInstallationMock[]  {
+  get infraInstallationsProjected(): InfrastructureInstallationMock[]  {
     return this.infraInstallations
       .filter(infra => infra.installationType == InstallationType.PROJECTED) ;
   }
@@ -298,156 +310,29 @@ export class InfrastructureInstallationComponent implements OnInit {
     });
   }
 
-  private loadData(): void {
+  private loadData(): Observable<void> {
     this.loadingService.show();
-    this.projectService.readDraft()
-      .pipe(finalize(() => this.loadingService.hide()))
-      .subscribe((project ) => {
+
+    const draft$ = this.projectService.readDraft(this.taxIdentificationNumber!, this.project);
+    const infraInstallations$ = this.infrastructureInstallationService.readAll();
+
+    return forkJoin([draft$, infraInstallations$]).pipe(
+      tap(([project, infraInstallations]) => {
         this.project = project as ProjectMock;
-        if(this.project && this.project.projectStages && this.project.projectStages.length > 0) {
-          this.stageInfraInstallationsCurrent = this.project.projectStages?.at(0)!.stageInfraInstallations;
-          this.stageCatalogDetailsCurrent = this.project.projectStages?.at(0)!.stageCatalogDetails;
+
+        if (this.project?.projectStages?.length) {
+          const stage = this.project.projectStages[0];
+          this.stageInfraInstallationsCurrent = stage.stageInfraInstallations;
+          this.stageCatalogDetailsCurrent = stage.stageCatalogDetails;
           this.resetForm();
         }
-      });
 
-    this.infraInstallations = [
-      {
-        id : 1,
-        code: "0001",
-        name: "Tipo de pista",
-        dataType: InstallationDataType.LIST,
-        installationType: InstallationType.DEFINED,
-        catalog: {
-          id: 1,
-          code: '0001',
-          name: 'Tipo de pista para habilitacion',
-          description: "Tipo de pista para las caracteristicas de habilitacion del proyecto",
-          catalogDetails: [{
-            id : 1,
-            code: "00010001",
-            name: 'Asta Hada',
-          }, {
-            id : 2,
-            code: "00010002",
-            name: 'Pavimento Rígido',
-          }, {
-            id : 3,
-            code: "00010003",
-            name: 'Adoquin',
-          }, {
-            id : 4,
-            code: "00010003",
-            name: 'No tiene',
-          }]
-        }
-      },
-      {
-        id : 2,
-        code: "0002",
-        name: "Tuberías para internet",
-        dataType: InstallationDataType.BOOLEAN,
-        installationType: InstallationType.DEFINED
-      },
-      {
-        id : 3,
-        code: "0003",
-        name: "A filo de Pista",
-        dataType: InstallationDataType.BOOLEAN,
-        installationType: InstallationType.DEFINED
-      },
-      {
-        id : 4,
-        code: "0004",
-        name: "Acceso a pistas y vias expresas",
-        dataType: InstallationDataType.BOOLEAN,
-        installationType: InstallationType.DEFINED
-      },
-      {
-        id : 5,
-        code: "0005",
-        name: "Vereda",
-        dataType: InstallationDataType.BOOLEAN,
-        installationType: InstallationType.DEFINED
-      },
-      {
-        id : 6,
-        code: "0006",
-        name: "Redes electricas",
-        dataType: InstallationDataType.LIST,
-        installationType: InstallationType.PROJECTED,
-        other: "¿Cuenta con redes eléctrica?",
-        catalog: {
-          id: 2,
-          code: '0002',
-          name: 'Redes eléctricas',
-          description: "Redes eléctricas para las caracteristicas de habilitacion del proyecto",
-          other: "Tipo de redes eléctricas",
-          catalogDetails: [{
-            id : 5,
-            code: "00020001",
-            name: 'Subterranea',
-          }, {
-            id : 6,
-            code: "00020002",
-            name: 'Aerea',
-          }]
-        }
-      },
-      {
-        id : 7,
-        code: "0007",
-        name: "Abastecimiento de agua potable",
-        dataType: InstallationDataType.LIST,
-        installationType: InstallationType.PROJECTED,
-        //other: undefined,
-        catalog: {
-          id: 3,
-          code: '0003',
-          name: 'Abastecimiento de agua potable',
-          description: "Abastecimiento de agua potable para las caracteristicas de habilitacion del proyecto",
-          other: "Tipo de abastecimiento de agua potable",
-          catalogDetails: [{
-            id : 7,
-            code: "00030001",
-            name: 'Tanque elevado',
-          }, {
-            id : 8,
-            code: "00030002",
-            name: 'Troncal existente',
-          }]
-        }
-      },
-      {
-        id : 8,
-        code: "0008",
-        name: "Tratamiento de aguas Servidas / Negras",
-        other: "Redes de desague o alcantarillado",
-        dataType: InstallationDataType.LIST,
-        installationType: InstallationType.PROJECTED,
-        //other: undefined,
-        catalog: {
-          id: 4,
-          code: '0004',
-          name: 'recoleccion de aguas servidas / negras',
-          description: "Abastecimiento de agua potable para las caracteristicas de habilitacion del proyecto",
-          other: "Tipo de recolección de aguas servidas / Negras",
-          catalogDetails: [{
-            id : 9,
-            code: "00040001",
-            name: 'Tanque elevado',
-          }, {
-            id : 10,
-            code: "00040002",
-            name: 'Planta de tratamiento Propio',
-          }, {
-            id : 11,
-            code: "00040003",
-            name: 'Biogestores',
-          }]
-        }
-      }
-    ];
+        this.infraInstallations = infraInstallations;
+        console.log('get read all', this.infraInstallations);
+      }),
+      finalize(() => this.loadingService.hide()),
+      map(() => void 0)
+    );
   }
 
   get isViewPage() {

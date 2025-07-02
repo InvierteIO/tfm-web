@@ -52,6 +52,7 @@ export class PropertiesComponent implements OnInit {
               protected readonly projectStore: ProjectStoreService) {
     this.loadInfoFromNavigation();
     if(!this.stagePropertyType || !this.stagePropertyType!.propertyGroup) {
+      console.log('back');
       this.back();
     }
   }
@@ -63,9 +64,12 @@ export class PropertiesComponent implements OnInit {
     this.isView = nav?.extras.state?.["view"];
     this.project = nav?.extras.state?.["project"];
     this.originFlow = nav?.extras.state?.["originFlow"];
+    console.log('stagePropertyType', this.stagePropertyType?.properties);
+    console.log('projectStages', this.projectStages);
   }
 
   ngOnInit(): void {
+    console.log('ngOnInit');
     this.search();
   }
 
@@ -91,14 +95,19 @@ export class PropertiesComponent implements OnInit {
 
   back(): void {
     if(this.projectStore.status() === ProjectActionStatus.NEW) {
-      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
+      console.log('back new ');
+      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`], {
+        state: { project: this.project,  activeId: 'propertytypes' }
+      });
       return;
     }
     if(this.originFlow === 'STAGE') {
+      console.log('stage ');
       this.router.navigate(['/public/home/project-info/stage'], {
         state: { project: this.project, stage: this.stagePropertyType?.stage, activeId: 'propertytypes'  }
       });
     } else if (this.originFlow === 'PROJECT') {
+      console.log('project ');
       this.router.navigate(['/public/home/project-info/'], {
         state: { project: this.project,  activeId: 'propertytypes' }
       });
@@ -212,28 +221,15 @@ export class PropertiesComponent implements OnInit {
 
   search(): void {
     this.loadingService.show();
-    setTimeout(() => {
-      const data: PropertyMock[] = [
-        {
-          id: 1,
-          codeSystem: '00000001',
-          codeEnterprise: 'T1000001',
-          name: 'Casa 1',
-          isParkingSpace: false,
-          isAvailableSale: true,
-          price: 120000,
-          address: 'Calle ABC',
-          commercializationCycle: CommercializationCycle.PRE_SALES
-        }
-      ];
-      this.rows = data.map(p => ({
-        property: { ...p },
-        form: this.buildForm(p),
-        editing: false,
-        isNew: false
-      }));
-      this.loadingService.hide();
-    }, 500);
+    console.log('search  - ', this.stagePropertyType?.properties)
+    this.rows = (this.stagePropertyType?.properties ?? []).map(p => ({
+      property: { ...p },
+      form: this.buildForm(p),
+      editing: false,
+      isNew: false
+    }));
+    this.loadingService.hide();
+
   }
 
   get titleBreadcrumbBase() {

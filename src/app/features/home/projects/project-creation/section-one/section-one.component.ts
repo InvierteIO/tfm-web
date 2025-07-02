@@ -9,9 +9,12 @@ import {IsInvalidFieldPipe} from "@common/pipes/is-invalid-field.pipe";
 import {LoadingService} from '@core/services/loading.service';
 import {ProjectMock} from '../../shared/models/project.mock.model';
 import {ProjectService} from '../../shared/services/project.service';
-import {finalize} from 'rxjs/operators';
 import {ProjectDraftStatus} from '../../shared/models/project-draft-status';
 import {ProjectStoreService} from '../../shared/services/project-store.service';
+import {Project} from "@core/models/project.model";
+import {Observable, throwError, of} from "rxjs";
+import { catchError, concatMap, finalize } from 'rxjs/operators';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-section-one',
@@ -28,14 +31,17 @@ import {ProjectStoreService} from '../../shared/services/project-store.service';
 export class SectionOneComponent  implements OnInit  {
   public form: FormGroup;
   loading:boolean = false;
-  public project?: ProjectMock;
+  public project: ProjectMock = {  };
   public projectDraftStatus:ProjectDraftStatus = ProjectDraftStatus.NEW;
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly  router: Router,
               private readonly fb: FormBuilder,
               private readonly projectService: ProjectService,
               private readonly loadingService: LoadingService,
+              private readonly authService: AuthService,
               protected readonly projectStore: ProjectStoreService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
     this.form = this.buildForm();
     const nav = this.router.getCurrentNavigation();
     this.project = nav?.extras.state?.['project'];
@@ -48,7 +54,7 @@ export class SectionOneComponent  implements OnInit  {
     }
     setTimeout(() => {
       this.loadData();
-    }, 500);
+    }, 0);
   }
 
   public goToProjects(): void {
@@ -66,16 +72,24 @@ export class SectionOneComponent  implements OnInit  {
       return;
     }
     console.log(this.form.value);
-
     this.loadingService.show();
-    setTimeout(() => {
-      this.projectService.createDraft(this.captureData())
-        .pipe(finalize(() => this.loadingService.hide()))
-        .subscribe(project => this.project = project);
 
-      this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`]);
-    }, 50);
+    this.projectService.createDraft(this.captureData(), this.taxIdentificationNumber!)
+      .pipe(finalize(() => this.loadingService.hide()))
+      .subscribe({
+        next: (project: ProjectMock) => {
+          this.project = project;
+          this.projectStore.setProjectId(this.project.id!);
+          console.log('Project draft successfully:', this.project);
+          this.router.navigate([`/public/home/${this.projectStore.draftPathCurrent()}/section2`],
+          {state: {project: this.project}});
+        },
+        error: (err : string) => {
+          console.error('Error during project creation:', err);
+        }
+      });
   }
+
 
   private buildForm(): FormGroup {
     return this.fb.group({
@@ -90,20 +104,20 @@ export class SectionOneComponent  implements OnInit  {
 
   private captureData(): ProjectMock {
     return {
-      id: 10,
+      ...this.project,
       name: this.form.get('project_name')!.value,
       officeAddress: this.form.get('office_address')!.value,
       description: this.form.get('description')!.value,
       officeNumber: this.form.get('office_number')!.value,
       supervisor: this.form.get('supervisor')!.value,
       stages: this.form.get('stages')!.value,
-      ...this.project
+      taxIdentificationNumber: this.taxIdentificationNumber!
     } as ProjectMock;
   }
 
   private loadData(): void {
     this.loadingService.show();
-    this.projectService.readDraft()
+    this.projectService.readDraft(this.taxIdentificationNumber!, this.project)
       .pipe(finalize(() => this.loadingService.hide()))
       .subscribe((projectDraft ) => {
         if(projectDraft) {

@@ -16,7 +16,7 @@
             <div class="row justify-content-center">
                 <div class="col-xl-8 col-lg-10 col-md-11 col-sm-12">
                     <form  [formGroup]="form" (ngSubmit)="next()" >
-                        <app-location-information [form]="form" [isView]="isViewPage" />
+                        <app-location-information [form]="form" [isView]="isViewPage" [project]="project" />
                         <span class="fw-bold  mt-3 mb-1 d-block">Planos General de lotizacion</span>
                         <div class="row">
                           @if (!isViewPage) {
@@ -77,7 +77,8 @@
                           </div>
                         </div>
 
-                        <app-project-multimedia [isView]="isViewPage"/>
+                        <app-project-multimedia [isView]="isViewPage"
+                                                [project]="project"/>
 
                         <app-button-loading
                                 type="submit"

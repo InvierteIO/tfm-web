@@ -14,7 +14,7 @@ export class AccountConfigurationService {
 
     static readonly END_POINT_USER_STAFF = environment.REST_USER + '/users/staff';
     static readonly END_POINT_USER_NO_COMPANY = AccountConfigurationService.END_POINT_USER_STAFF + '/no-company';
-    static readonly END_POINT_COMPANY = environment.REST_CORE + '/real-state-companies';
+    static readonly END_POINT_COMPANY = environment.REST_CORE + '/real-estate-companies';
 
     constructor(private readonly httpService: HttpService) {
     }

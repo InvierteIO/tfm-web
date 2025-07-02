@@ -1,3 +1,4 @@
+import {CatalogDetailMock} from '../../../shared/models/catalog-detail.mock.model';
 export interface DocumentMock {
   id?: number;
   filename?: string;
@@ -5,4 +6,5 @@ export interface DocumentMock {
   creationDate?: Date;
   name?: string;
   description?: string;
+  catalogDetail?: CatalogDetailMock;
 }

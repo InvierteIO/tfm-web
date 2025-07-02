@@ -18,6 +18,11 @@ export class ProjectStoreService {
 
   readonly titleBreadcrumbBase = this._titleBreadcrumbBase.asReadonly();
 
+  private readonly _projectId = signal<number | null>(null);
+
+  readonly projectId = this._projectId.asReadonly();
+
+
   setDraftStatus(status: ProjectDraftStatus): void {
     this._draftStatus.set(status);
     this._status.set(ProjectActionStatus.NEW);
@@ -35,5 +40,9 @@ export class ProjectStoreService {
 
   setTitleBreadcrumbBase(title: string): void {
     this._titleBreadcrumbBase.set(title);
+  }
+
+  setProjectId(id: number): void {
+    this._projectId.set(id);
   }
 }

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, SimpleChanges} from '@angular/core';
 import {ProjectDocumentMock} from '../../models/project-document.mock.model';
 import {KsModalGalleryService} from '@core/services/ks-modal-gallery.service';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -12,6 +12,13 @@ import {FormsModule} from '@angular/forms';
 import {TypeFileIconGoogleFontsPipe} from '@common/pipes/typefile-icon-googlefonts.pipe';
 import {PdfViewerModalComponent} from '@common/components/pdf-viewer-modal.component';
 import {DatePipe, NgForOf, NgIf} from '@angular/common';
+import {ProjectService} from '../../services/project.service';
+import {finalize, map} from 'rxjs/operators';
+import {Observable, throwError, of, tap, forkJoin} from "rxjs";
+import {CatalogDetailCodes} from '../../models/catalog-detail-code-data.type';
+import {CatalogDetailMock} from '../../../../shared/models/catalog-detail.mock.model';
+import {ProjectMock} from '../../models/project.mock.model';
+import {AuthService} from '@core/services/auth.service';
 
 @Component({
   selector: 'app-project-multimedia',
@@ -27,18 +34,32 @@ import {DatePipe, NgForOf, NgIf} from '@angular/common';
 })
 export class ProjectMultimediaComponent  implements OnInit {
   @Input() isView:boolean = false;
+  @Input() project?: ProjectMock;
   photographicRecords: ProjectDocumentMock[] = [];
   brochures: ProjectDocumentMock[] = [];
   multimediaDescription: string = '';
   multimediaDescriptionError: boolean = false;
+  public taxIdentificationNumber? : string = "";
 
   constructor(private readonly ksModalGallerySvc: KsModalGalleryService,
               private readonly modalService: NgbModal,
+              private readonly projectService: ProjectService,
+              private readonly authService: AuthService,
               private readonly loadingService: LoadingService) {
+    this.taxIdentificationNumber = this.authService.getTexIdentificationNumber();
   }
 
   ngOnInit(): void {
-    this.loadData();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('ngOnChanges');
+    if (changes['project'] && this.project && this.project.id! > 0) {
+      console.log('project init ppt', this.project);
+      this.loadingService.show();
+      this.loadData();
+      this.loadingService.hide();
+    }
   }
 
   onDropFile(event: DragEvent, type: 'photographic_record' | 'brochure'): void {
@@ -64,6 +85,7 @@ export class ProjectMultimediaComponent  implements OnInit {
   }
 
   loadFile(type: string, file: File) {
+    console.log('type:', type);
     switch (type) {
       case 'photographic_record': this.loadPhotographicRecord(file); break;
       case 'brochure': this.loadBrochure(file); break;
@@ -81,14 +103,16 @@ export class ProjectMultimediaComponent  implements OnInit {
       'Debes seleccionar imagenes PNG o JPG')) return;
 
     this.loadingService.show();
-    setTimeout(() => {
-      const document = this.createDocumentMock(file, this.photographicRecords);//mock
-      document.description = this.multimediaDescription;
-      this.photographicRecords.push(document);
-      this.checkImageInDocument(this.photographicRecords, 'photographic_record');
-      this.loadingService.hide();
-      this.multimediaDescription = '';
-    }, 1000);
+    this.createDocumentMock(file, this.photographicRecords, CatalogDetailCodes.PHOTOGRAPHIC_RECORD, this.multimediaDescription).subscribe({
+      next: (document) => {
+        document.description = this.multimediaDescription;
+        this.photographicRecords.push(document);
+        this.checkImageInDocument(this.photographicRecords, 'photographic_record');
+        this.loadingService.hide();
+        this.multimediaDescription = '';
+      },
+      error: (err) => console.error('Upload failed', err)
+    });
   }
 
   checkImageInDocument(documents: ProjectDocumentMock[],type: string): void {
@@ -101,20 +125,25 @@ export class ProjectMultimediaComponent  implements OnInit {
     })
   }
 
-  createDocumentMock(file: File, documents: ProjectDocumentMock[]): ProjectDocumentMock {
-    const extension = file.name?.toLowerCase().split('.').pop();
-    let path :string = "";
-    if (extension === 'pdf') path = 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/keyboard-shortcuts-windows.pdf';
-    else {
-      path= (documents.length + 1) % 2 == 0 ? 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/Calendario09-10.PNG' :
-        (documents.length + 1) % 3 == 0 ? 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/FondoLideres.png'
-          :'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg';
+  createDocumentMock(file: File, documents: ProjectDocumentMock[], catalogCode: string, description: string): Observable<ProjectDocumentMock> {
+    let projectId : number;
+    if (this.project && this.project.id !== undefined) {
+      projectId = this.project.id;
+    } else {
+      throw new Error('Project or project ID is undefined');
     }
-    return {
-      id: documents.length + 1, filename: file.name, name: file.name,
-      path,
-      createdAt: new Date(),
+
+    console.log('createDocumentMock');
+    const projectDocumentBase: ProjectDocumentMock = {
+      description: description,
+      catalogDetail: {
+        code: catalogCode
+      } as CatalogDetailMock
     } as ProjectDocumentMock;
+
+    return this.projectService.uploadDocument(this.taxIdentificationNumber!, projectId, file, projectDocumentBase).pipe(
+      map((uploadedDoc: ProjectDocumentMock) => uploadedDoc)
+    );
   }
 
   viewDocument(file: ProjectDocumentMock, type: 'photographic_record' | 'brochure'): void {
@@ -143,12 +172,14 @@ export class ProjectMultimediaComponent  implements OnInit {
     if(!FileUtil.validateFileExtensionMessage(file)) return;
 
     this.loadingService.show();
-    setTimeout(() => {
-      const document = this.createDocumentMock(file, this.brochures);//mock
-      this.brochures.push(document);
-      this.checkImageInDocument(this.brochures, 'parent_parcel');
-      this.loadingService.hide();
-    }, 1000);
+    this.createDocumentMock(file, this.brochures, CatalogDetailCodes.BROCHURE, 'BROCHURE').subscribe({
+      next: (document) => {
+        this.brochures.push(document);
+        this.checkImageInDocument(this.brochures, 'parent_parcel');
+        this.loadingService.hide();
+      },
+      error: (err) => console.error('Upload failed', err)
+    });
 
   }
 
@@ -160,52 +191,94 @@ export class ProjectMultimediaComponent  implements OnInit {
 
 
   deletePhotographicRecord(file: ProjectDocumentMock) {
+
+    if (file == undefined || file.id == undefined) {
+      console.error('Document ID is missing, cannot delete');
+      return;
+    }
+
+    if (this.project == undefined || this.project.id == undefined) {
+      console.error('Project ID is missing, cannot delete');
+      return;
+    }
+
+    const documentId: number = file.id;
+    const projectId: number = this.project.id;
+
     Swal.fire(
       DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el registro fotográfico?"))
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          setTimeout(() => {
-            this.ksModalGallerySvc.removeImage('photographic_record', { ...file } as Document);
-            this.photographicRecords.splice(this.photographicRecords.indexOf(file), 1);
-            this.loadingService.hide();
-          }, 1000);
+          this.projectService.removeDocument(this.taxIdentificationNumber!, projectId, documentId).subscribe({
+            next: () => {
+              this.ksModalGallerySvc.removeImage('photographic_record', { ...file } as Document);
+              this.photographicRecords.splice(this.photographicRecords.indexOf(file), 1);
+              this.loadingService.hide();
+            },
+            error: (err) => {
+              console.error('Failed to remove document', err);
+              this.loadingService.hide();
+            }
+          });
         }
       });
   }
 
   deleteBrochure(file: ProjectDocumentMock) {
+
+    if (file == undefined || file.id == undefined) {
+      console.error('Document ID is missing, cannot delete');
+      return;
+    }
+
+    if (this.project == undefined || this.project.id == undefined) {
+      console.error('Project ID is missing, cannot delete');
+      return;
+    }
+
+    const documentId: number = file.id;
+    const projectId: number = this.project.id;
+
     Swal.fire(
       DIALOG_SWAL_OPTIONS[DIALOG_SWAL_KEYS.QUESTION]("¿Desea eliminar el archivo brochure?"))
       .then((result) => {
         if (result.isConfirmed) {
           this.loadingService.show();
-          setTimeout(() => {
-            this.ksModalGallerySvc.removeImage('brochure', { ...file } as Document);
-            this.brochures.splice(this.brochures.indexOf(file), 1);
-            this.loadingService.hide();
-          }, 1000);
+          this.projectService.removeDocument(this.taxIdentificationNumber!, projectId, documentId).subscribe({
+            next: () => {
+              this.ksModalGallerySvc.removeImage('brochure', { ...file } as Document);
+              this.brochures.splice(this.brochures.indexOf(file), 1);
+              this.loadingService.hide();
+            },
+            error: (err) => {
+              console.error('Failed to remove document', err);
+              this.loadingService.hide();
+            }
+          });
         }
       });
   }
 
   private loadData(): void {
-    this.photographicRecords = [
-      {
-        id: 1,
-        name: 'Image.png',
-        filename: 'Image.png',
-        path: 'https://invierteio-klm.s3.eu-west-1.amazonaws.com/new_pancho.jpg',
-        createdAt: new Date(),
-        catalogDetail: {
-          name: "Registro fotografico",
-          code: "00050001",
-          catalog: {
-            code:"0005",
-            name: "Archivos multimedia del proyecto",
-          }
-        }
+    this.handleLoadProjectDocuments(this.project as ProjectMock);
+  }
+
+  private handleLoadProjectDocuments(project: ProjectMock): void {
+    console.log('project-handle:', project);
+    for (const doc of project.projectDocuments || []) {
+      const code = doc.catalogDetail?.code;
+      console.log('code-doc:', doc);
+      switch (code) {
+        case CatalogDetailCodes.BROCHURE:
+          this.brochures.push(doc);
+          this.checkImageInDocument(this.brochures, 'parent_parcel');
+          break;
+        case CatalogDetailCodes.PHOTOGRAPHIC_RECORD:
+          this.photographicRecords.push(doc);
+          this.checkImageInDocument(this.photographicRecords, 'photographic_record');
+          break;
       }
-    ];
+    }
   }
 }
