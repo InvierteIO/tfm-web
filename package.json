@@ -1,6 +1,6 @@
 {
   "name": "tfm-web",
-  "version": "1.5.0-Release",
+  "version": "1.5.1-Release",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
