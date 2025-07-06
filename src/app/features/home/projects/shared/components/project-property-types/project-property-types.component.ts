@@ -195,8 +195,9 @@ export class ProjectPropertyTypesComponent implements OnInit {
     this.projectPropertyTypeSvc.readStagePropertyGroupByPropertyType(stagePropertyType?.propertyGroup!, this.taxIdentificationNumber!)
       .pipe(finalize(() => this.loadingService.hide()))
       .subscribe(spgs => {
-        stagePropertyType!.propertyGroup!.stagePropertyGroups = spgs ?? [];
-        console.log('spgs', spgs);
+        if (Array.isArray(spgs) && spgs.length > 0) {
+          stagePropertyType = spgs[0];
+        }
         this.router.navigate([`${this.pathBase}properties`],
           { state: {  project: this.project,stagePropertyType, projectStages: this.project.projectStages ?? [], originFlow: "PROJECT"} });
       });
